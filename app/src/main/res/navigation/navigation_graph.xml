@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/authenticationFragment">
+    app:startDestination="@id/libraryFragment">
 
     <fragment
         android:id="@+id/authenticationFragment"
         android:name="ru.blackmesa.studywords.ui.AuthenticationFragment"
         android:label="fragment_authentication"
         tools:layout="@layout/fragment_authentication" />
+    <fragment
+        android:id="@+id/libraryFragment"
+        android:name="ru.blackmesa.studywords.ui.library.LibraryFragment"
+        android:label="fragment_library"
+        tools:layout="@layout/fragment_library" />
 </navigation>

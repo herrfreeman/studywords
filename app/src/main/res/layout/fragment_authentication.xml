@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8D97B9"
     tools:context=".ui.AuthenticationFragment">
 
     <com.google.android.material.textfield.TextInputLayout

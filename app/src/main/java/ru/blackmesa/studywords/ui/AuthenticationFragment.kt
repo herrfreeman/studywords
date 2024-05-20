@@ -5,20 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.google.android.material.textfield.TextInputEditText
-import ru.blackmesa.studywords.R
-import ru.blackmesa.studywords.data.network.AuthRequest
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.blackmesa.studywords.data.network.AuthRequest
+import ru.blackmesa.studywords.databinding.FragmentAuthenticationBinding
 
 class AuthenticationFragment : Fragment() {
 
-//    companion object {
-//        fun newInstance() = AuthenticationFragment()
-//    }
+    companion object {
+        fun newInstance() = AuthenticationFragment()
+    }
 
+    private var _binding: FragmentAuthenticationBinding? = null
+    private val binding: FragmentAuthenticationBinding get() = _binding!!
     private val viewModel: AuthenticationViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,27 +26,34 @@ class AuthenticationFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_authentication, container, false)
+        _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val button = view.findViewById<Button>(R.id.connectButton)
-        val user = view.findViewById<TextInputEditText>(R.id.user_text)
-        val password = view.findViewById<TextInputEditText>(R.id.password_text)
-        val result = view.findViewById<TextView>(R.id.result)
-
         viewModel.message.observe(viewLifecycleOwner) {
-            result.setText(it)
+            binding.result.setText(it)
         }
 
-        button.setOnClickListener {
+        binding.connectButton.setOnClickListener {
             Log.d("STUDY_WORDS", "Connect clicked")
-            viewModel.auth(AuthRequest(user.text.toString(), password.text.toString()))
+            viewModel.auth(
+                AuthRequest(
+                    binding.userText.text.toString(),
+                    binding.passwordText.text.toString()
+                )
+            )
         }
     }
 }

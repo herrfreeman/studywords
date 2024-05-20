@@ -3,6 +3,9 @@ package ru.blackmesa.studywords.data
 import org.koin.dsl.module
 import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.RetrofitNetworkClient
+import ru.blackmesa.studywords.data.settings.LocalSettingsStorage
+import ru.blackmesa.studywords.data.settings.SettingsRepository
+import ru.blackmesa.studywords.data.settings.SettingsRepositoryImpl
 
 val dataModule = module {
 
@@ -21,6 +24,14 @@ val dataModule = module {
     single<NetworkClient> {
         RetrofitNetworkClient(
             context = get(),
+        )
+    }
+
+    single<LibraryRepository> {
+        LibraryRepositoryImpl(
+            context = get(),
+            settings = get(),
+            networkClient = get(),
         )
     }
 }

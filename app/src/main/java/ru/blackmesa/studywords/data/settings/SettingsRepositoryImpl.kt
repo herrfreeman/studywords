@@ -1,4 +1,4 @@
-package ru.blackmesa.studywords.data
+package ru.blackmesa.studywords.data.settings
 
 import ru.blackmesa.studywords.data.models.AppSettings
 

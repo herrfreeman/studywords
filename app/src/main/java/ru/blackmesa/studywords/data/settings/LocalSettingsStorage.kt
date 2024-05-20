@@ -1,4 +1,4 @@
-package ru.blackmesa.studywords.data
+package ru.blackmesa.studywords.data.settings
 
 import android.content.Context
 import com.google.gson.Gson

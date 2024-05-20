@@ -12,6 +12,11 @@ interface StudyWordsApi {
     @Headers("Content-Type: application/json")
     suspend fun authenticate(
         @Body request: AuthRequest,
-    ): Response<AuthResponse>
+    ): AuthResponse
 
+    @POST("/update")
+    @Headers("Content-Type: application/json")
+    suspend fun update(
+        @Body request: UpdateRequest,
+    ): UpdateResponse
 }

@@ -21,9 +21,9 @@ class AuthenticationViewModel(
     fun auth(request: AuthRequest) {
         Log.d("STUDY_WORDS", "VM START")
         viewModelScope.launch {
-            val response = networkClient.doRequest(request)
-            message.postValue(response)
-            Log.d("STUDY_WORDS", "ANSWER: $response")
+//            val response = networkClient.doRequest(request)
+//            message.postValue(response)
+//            Log.d("STUDY_WORDS", "ANSWER: $response")
         }
     }
 
