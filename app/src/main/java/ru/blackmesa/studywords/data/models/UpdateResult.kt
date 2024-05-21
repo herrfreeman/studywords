@@ -4,7 +4,9 @@ sealed interface UpdateResult {
 
     object Synchronized : UpdateResult
 
-    object GotNewData : UpdateResult
+    data class  LibraryUpdated(
+        val library: List<Dictionary>
+    ) : UpdateResult
 
     object NoConnection : UpdateResult
 

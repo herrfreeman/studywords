@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AuthenticationFragment">
+    tools:context=".ui.authentication.AuthenticationFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-
         android:id="@+id/userName"
+
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
@@ -25,13 +25,13 @@
             android:id="@+id/user_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="freeman" />
+            tools:text="login" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:id="@+id/password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
@@ -47,7 +47,7 @@
             android:id="@+id/password_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="12345" />
+            tools:text="password"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -64,14 +64,18 @@
         app:layout_constraintTop_toBottomOf="@id/password" />
 
     <TextView
-        android:id="@+id/result"
-        android:layout_width="wrap_content"
+        android:id="@+id/errorMessage"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
         android:layout_marginTop="30dp"
-        android:text="\?"
+        android:textAlignment="center"
+        android:textColor="#B30000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/connectButton" />
+        app:layout_constraintTop_toBottomOf="@id/connectButton"
+        tools:text="Got some error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

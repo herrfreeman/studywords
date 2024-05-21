@@ -1,6 +1,8 @@
 package ru.blackmesa.studywords.data
 
+import androidx.room.Room
 import org.koin.dsl.module
+import ru.blackmesa.studywords.data.db.AppDatabase
 import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.RetrofitNetworkClient
 import ru.blackmesa.studywords.data.settings.LocalSettingsStorage
@@ -32,6 +34,17 @@ val dataModule = module {
             context = get(),
             settings = get(),
             networkClient = get(),
+            database = get(),
         )
+    }
+
+    single {
+        Room.databaseBuilder(
+            //context = androidContext(),
+            context = get(),
+            klass = AppDatabase::class.java,
+            name = "database.db")
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

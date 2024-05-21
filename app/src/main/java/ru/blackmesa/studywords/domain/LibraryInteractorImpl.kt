@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import ru.blackmesa.studywords.data.LibraryRepository
+import ru.blackmesa.studywords.data.models.AuthState
+import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.UpdateResult
 
 class LibraryInteractorImpl(
@@ -12,5 +14,7 @@ class LibraryInteractorImpl(
 ) : LibraryInteractor {
 
     override suspend fun updateAllData() = reposytory.updateAllData()
+    override suspend fun singIn() = reposytory.signIn()
+    override suspend fun getDictionaries() = reposytory.getDictionaries()
 
 }

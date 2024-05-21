@@ -7,12 +7,20 @@
 
     <fragment
         android:id="@+id/authenticationFragment"
-        android:name="ru.blackmesa.studywords.ui.AuthenticationFragment"
+        android:name="ru.blackmesa.studywords.ui.authentication.AuthenticationFragment"
         android:label="fragment_authentication"
-        tools:layout="@layout/fragment_authentication" />
+        tools:layout="@layout/fragment_authentication" >
+        <action
+            android:id="@+id/action_authenticationFragment_to_libraryFragment"
+            app:destination="@id/libraryFragment" />
+    </fragment>
     <fragment
         android:id="@+id/libraryFragment"
         android:name="ru.blackmesa.studywords.ui.library.LibraryFragment"
         android:label="fragment_library"
-        tools:layout="@layout/fragment_library" />
+        tools:layout="@layout/fragment_library" >
+        <action
+            android:id="@+id/action_libraryFragment_to_authenticationFragment"
+            app:destination="@id/authenticationFragment" />
+    </fragment>
 </navigation>

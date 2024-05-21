@@ -30,24 +30,23 @@
 
         <TextView
             android:id="@+id/loginCaption"
-            android:gravity="end"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
+            android:gravity="end"
             android:lines="1"
-            android:text="freeman"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="20sp" />
 
         <Button
+            android:id="@+id/signOutButton"
             style="@style/Widget.MaterialComponents.Button"
-            android:id="@+id/signInButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:backgroundTint="?attr/colorSecondary"
-            android:text="Sing in"
+            android:text="Sign out"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -63,7 +62,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-
+        android:id="@+id/libraryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"

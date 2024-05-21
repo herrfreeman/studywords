@@ -1,8 +1,8 @@
 package ru.blackmesa.studywords.data.dto
 
-data class DictionaryDto(
+data class WordDto(
     val id: Int,
-    val name: String,
-    val orderfield: Int,
+    val word: String,
     val version: Long,
 )
+
