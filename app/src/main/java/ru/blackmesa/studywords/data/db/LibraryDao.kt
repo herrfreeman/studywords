@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.blackmesa.studywords.data.dto.WordInDictDto
+import ru.blackmesa.studywords.data.models.WordWithTranslate
 
 @Dao
 interface LibraryDao {
@@ -38,6 +38,16 @@ interface LibraryDao {
 
     @Query("SELECT * FROM wordindict_table WHERE dictid = :dictId")
     fun getWordsInDict(dictId: Int): List<WordInDictEntity>
+
+
+    @Query("""SELECT wordindict_table.wordid as wordid,
+ words_table.word as word,
+ wordtranslate_table.translate as translate
+ FROM wordindict_table
+join words_table on words_table.id = wordindict_table.wordid
+join wordtranslate_table on words_table.id = wordtranslate_table.wordid
+WHERE dictid = :dictId""")
+    fun getWords(dictId: Int): List<WordWithTranslate>
 
 }
 

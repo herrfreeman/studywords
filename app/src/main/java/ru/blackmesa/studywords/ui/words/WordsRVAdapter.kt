@@ -5,11 +5,12 @@ import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.Word
+import ru.blackmesa.studywords.data.models.WordWithTranslate
 
 
 class WordsRVAdapter : RecyclerView.Adapter<WordsViewHolder>() {
 
-    val words: MutableList<Word> = emptyList<Word>().toMutableList()
+    val words: MutableList<WordWithTranslate> = emptyList<WordWithTranslate>().toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordsViewHolder =
         WordsViewHolder(parent)

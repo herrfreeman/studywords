@@ -14,6 +14,7 @@ import org.koin.core.parameter.parametersOf
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.data.models.Word
+import ru.blackmesa.studywords.data.models.WordWithTranslate
 import ru.blackmesa.studywords.databinding.FragmentLibraryBinding
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.authentication.AuthenticationFragment
@@ -68,7 +69,7 @@ class WordsFragment : Fragment() {
 
     }
 
-    private fun renderContent(words: List<Word>) {
+    private fun renderContent(words: List<WordWithTranslate>) {
         adapter.words.clear()
         adapter.words.addAll(words)
         adapter.notifyDataSetChanged()
