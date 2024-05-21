@@ -5,17 +5,21 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.blackmesa.studywords.data.models.Dictionary
 
 
-class LibraryRVAdapter : RecyclerView.Adapter<LibraryViewHolder>() {
+class LibraryRVAdapter(private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<LibraryViewHolder>() {
 
     val library: MutableList<Dictionary> = emptyList<Dictionary>().toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder =
-        LibraryViewHolder(parent)
+        LibraryViewHolder(parent, itemClickListener)
 
     override fun getItemCount(): Int = library.count()
 
     override fun onBindViewHolder(holder: LibraryViewHolder, position: Int) {
         holder.bind(library[position])
+    }
+
+    fun interface ItemClickListener {
+        fun onItemClick(item: Dictionary)
     }
 
 }

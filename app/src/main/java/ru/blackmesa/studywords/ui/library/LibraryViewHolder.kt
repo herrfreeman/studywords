@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.Dictionary
 
-class LibraryViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
+class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: LibraryRVAdapter.ItemClickListener) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
         .inflate(R.layout.library_item, parentView, false)
 ) {
@@ -16,6 +16,9 @@ class LibraryViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
 
     fun bind(model: Dictionary) {
         itemCaption.text = model.name
+        itemView.setOnClickListener {
+            itemClickListener.onItemClick(model)
+        }
     }
 
 }

@@ -13,6 +13,7 @@ import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.databinding.FragmentLibraryBinding
 import ru.blackmesa.studywords.ui.authentication.AuthenticationFragment
+import ru.blackmesa.studywords.ui.words.WordsFragment
 
 class LibraryFragment : Fragment() {
 
@@ -23,7 +24,10 @@ class LibraryFragment : Fragment() {
     private var _binding: FragmentLibraryBinding? = null
     private val binding: FragmentLibraryBinding get() = _binding!!
     private val viewModel: LibraryViewModel by viewModel()
-    private val adapter = LibraryRVAdapter()
+    private val adapter = LibraryRVAdapter {
+        findNavController().navigate(R.id.action_libraryFragment_to_wordsFragment,
+            WordsFragment.createArgs(it.id))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

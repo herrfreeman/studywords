@@ -9,6 +9,8 @@ import ru.blackmesa.studywords.data.db.LibraryVersions
 import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.UpdateResult
+import ru.blackmesa.studywords.data.models.Word
+import ru.blackmesa.studywords.data.models.WordInDict
 import ru.blackmesa.studywords.data.network.AuthRequest
 import ru.blackmesa.studywords.data.network.AuthResponse
 import ru.blackmesa.studywords.data.network.NetworkClient
@@ -88,6 +90,15 @@ class LibraryRepositoryImpl(
     override suspend fun getDictionaries(): List<Dictionary> {
         return withContext(Dispatchers.IO) {
             database.libraryDao().getDict().map { it.toDictionary() }
+        }
+    }
+
+    override suspend fun getWords(dictId: Int): List<WordInDict> {
+        return withContext(Dispatchers.IO) {
+            Log.d("STUDY_WORDS_DEBUG", "Load dict id = $dictId")
+            val dictdata = database.libraryDao().getWordsInDict(dictId)
+            Log.d("STUDY_WORDS_DEBUG", "Dict data = $dictdata")
+            dictdata.map { it.toWordInDict() }
         }
     }
 
