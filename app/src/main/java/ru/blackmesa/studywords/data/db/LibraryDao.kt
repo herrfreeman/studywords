@@ -21,6 +21,9 @@ interface LibraryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTranslate(entities: List<WordTranslateEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertProgress(entities: List<ProgressEntity>)
+
     @Query("SELECT version FROM dict_table ORDER BY version DESC LIMIT 1;")
     fun getDictVersion(): List<Long>
 

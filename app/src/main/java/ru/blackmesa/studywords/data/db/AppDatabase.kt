@@ -4,8 +4,14 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    version = 3,
-    entities = [DictEntity::class, WordEntity::class, WordInDictEntity::class, WordTranslateEntity::class]
+    version = 4,
+    entities = [
+        DictEntity::class,
+        WordEntity::class,
+        WordInDictEntity::class,
+        WordTranslateEntity::class,
+        ProgressEntity::class,
+    ]
 )
 abstract class AppDatabase : RoomDatabase() {
 

@@ -18,6 +18,7 @@ import ru.blackmesa.studywords.data.models.WordWithTranslate
 import ru.blackmesa.studywords.databinding.FragmentLibraryBinding
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.authentication.AuthenticationFragment
+import ru.blackmesa.studywords.ui.study.StudyFragment
 
 class WordsFragment : Fragment() {
 
@@ -65,6 +66,11 @@ class WordsFragment : Fragment() {
         }
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.studyButton.setOnClickListener {
+            findNavController().navigate(R.id.action_wordsFragment_to_studyFragment,
+                StudyFragment.createArgs(adapter.words)
+            )
         }
 
     }

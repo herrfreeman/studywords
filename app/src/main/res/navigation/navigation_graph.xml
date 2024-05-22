@@ -30,5 +30,14 @@
         android:id="@+id/wordsFragment"
         android:name="ru.blackmesa.studywords.ui.words.WordsFragment"
         android:label="fragment_words"
-        tools:layout="@layout/fragment_words" />
+        tools:layout="@layout/fragment_words" >
+        <action
+            android:id="@+id/action_wordsFragment_to_studyFragment"
+            app:destination="@id/studyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/studyFragment"
+        android:name="ru.blackmesa.studywords.ui.study.StudyFragment"
+        android:label="fragment_study"
+        tools:layout="@layout/fragment_study" />
 </navigation>

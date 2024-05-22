@@ -2,8 +2,10 @@ package ru.blackmesa.studywords.ui
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import ru.blackmesa.studywords.data.models.WordWithTranslate
 import ru.blackmesa.studywords.ui.authentication.AuthenticationViewModel
 import ru.blackmesa.studywords.ui.library.LibraryViewModel
+import ru.blackmesa.studywords.ui.study.StudyViewModel
 import ru.blackmesa.studywords.ui.words.WordsViewModel
 
 val uiModule2 = module {
@@ -29,6 +31,14 @@ val uiModule2 = module {
             application = get(),
             libInteractor = get(),
             dictionaryId = dictionaryId,
+        )
+    }
+
+    viewModel {(wordList: List<WordWithTranslate>) ->
+        StudyViewModel(
+            application = get(),
+            libInteractor = get(),
+            wordList = wordList,
         )
     }
 }
