@@ -58,7 +58,8 @@ class LibraryViewModel(
 
     fun signOut() {
         viewModelScope.launch {
-            settingsInteractor.setUserKey("")
+            settingsInteractor.userId = 0
+            settingsInteractor.userKey = ""
             updateStateLiveData.postValue(UpdateResult.NotSignedIn)
         }
     }

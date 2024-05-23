@@ -2,7 +2,7 @@ package ru.blackmesa.studywords.ui
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.ui.authentication.AuthenticationViewModel
 import ru.blackmesa.studywords.ui.library.LibraryViewModel
 import ru.blackmesa.studywords.ui.study.StudyViewModel
@@ -34,7 +34,7 @@ val uiModule2 = module {
         )
     }
 
-    viewModel {(wordList: List<WordWithTranslate>) ->
+    viewModel {(wordList: List<WordData>) ->
         StudyViewModel(
             application = get(),
             libInteractor = get(),

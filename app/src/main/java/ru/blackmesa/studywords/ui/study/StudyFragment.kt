@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.blackmesa.studywords.data.models.StudyList
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentStudyBinding
 
 class StudyFragment : Fragment() {
@@ -21,7 +21,7 @@ class StudyFragment : Fragment() {
         fun newInstance() = StudyFragment()
 
         const val WORDLIST_ARG = "DICTIONARY_ID_ARG"
-        fun createArgs(wordList: List<WordWithTranslate>): Bundle =
+        fun createArgs(wordList: List<WordData>): Bundle =
             bundleOf(WORDLIST_ARG to StudyList(wordList))
     }
 
@@ -30,7 +30,7 @@ class StudyFragment : Fragment() {
     private val viewModel: StudyViewModel by viewModel {
         parametersOf(
             requireArguments().getSerializable(WORDLIST_ARG, StudyList::class.java)
-                ?.words ?: emptyList<WordWithTranslate>()
+                ?.words ?: emptyList<WordData>()
         )
 
 //        val testList = listOf<WordWithTranslate>(
@@ -70,24 +70,35 @@ class StudyFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.okButton.setOnClickListener { viewModel.showAnswer() }
-        binding.yesButton.setOnClickListener { viewModel.nextQuestion() }
-        binding.noButton.setOnClickListener { viewModel.nextQuestion() }
+        binding.yesButton.setOnClickListener { viewModel.gotResult(true) }
+        binding.noButton.setOnClickListener { viewModel.gotResult(false) }
 
     }
 
     private fun renderState(state: StudyState) {
         when (state) {
             is StudyState.Question -> {
-                binding.word.text = state.word.word
+
+                binding.word.text = if (state.word.newprogress < 3) {
+                    state.word.word
+                } else {
+                    state.word.translate
+                }
                 binding.answer.text = "?"
                 binding.okButton.isVisible = true
                 binding.yesButton.isVisible = false
                 binding.noButton.isVisible = false
+                binding.statusCaption.text = state.wordsLeft.toString()
             }
 
             is StudyState.Answer -> {
-                binding.word.text = state.word.word
-                binding.answer.text = state.word.translate
+                if (state.word.newprogress < 3) {
+                    binding.word.text = state.word.word
+                    binding.answer.text = state.word.translate
+                } else {
+                    binding.word.text = state.word.translate
+                    binding.answer.text = state.word.word
+                }
                 binding.okButton.isVisible = false
                 binding.yesButton.isVisible = true
                 binding.noButton.isVisible = true

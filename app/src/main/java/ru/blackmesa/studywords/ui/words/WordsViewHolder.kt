@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.blackmesa.studywords.R
-import ru.blackmesa.studywords.data.models.Dictionary
-import ru.blackmesa.studywords.data.models.Word
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import ru.blackmesa.studywords.data.models.WordData
 
 class WordsViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
@@ -15,9 +13,11 @@ class WordsViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
 ) {
 
     private val itemCaption: TextView = itemView.findViewById(R.id.wordCaption)
+    private val itemStatus: TextView = itemView.findViewById(R.id.wordStatus)
 
-    fun bind(model: WordWithTranslate) {
+    fun bind(model: WordData) {
         itemCaption.text = "${model.word} - ${model.translate}"
+        itemStatus.text = "${model.newprogress}"
     }
 
 }

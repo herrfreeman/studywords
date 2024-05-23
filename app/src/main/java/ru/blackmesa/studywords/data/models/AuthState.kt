@@ -10,6 +10,8 @@ sealed interface AuthState {
         val errorMessage: String
     ) : AuthState
 
-    object Success : AuthState
+    data class Success(
+        val message: String
+    ) : AuthState
 
 }

@@ -3,13 +3,15 @@ package ru.blackmesa.studywords.data
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
 import ru.blackmesa.studywords.data.db.LibraryVersions
 import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.data.models.Dictionary
+import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.UpdateResult
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.data.network.AuthRequest
 import ru.blackmesa.studywords.data.network.AuthResponse
 import ru.blackmesa.studywords.data.network.NetworkClient
@@ -25,27 +27,28 @@ class LibraryRepositoryImpl(
 ) : LibraryRepository {
 
     override suspend fun updateAllData(): UpdateResult {
-        Log.d("STUDY_WORDS_DEBUG", "Make update")
 
-        val userKey = settings.getSettings().userKey
-        if (userKey.isEmpty()) {
+        if (settings.userKey.isEmpty() || settings.userId == 0) {
             return UpdateResult.NotSignedIn
         }
 
         val libraryVersions = getLibraryVersions()
 
-        val response = networkClient.doRequest(UpdateRequest(
-            userkey = userKey,
-            dictversion = libraryVersions.dictsVersion,
-            wordsversion = libraryVersions.wordsVersion,
-            wordsindictsversion = libraryVersions.wordsInDictVersion,
-            wordtranslateversion = libraryVersions.wordTranslateVersion,
-        ))
+        val response = networkClient.doRequest(
+            UpdateRequest(
+                userkey = settings.userKey,
+                dictversion = libraryVersions.dictsVersion,
+                wordsversion = libraryVersions.wordsVersion,
+                wordsindictsversion = libraryVersions.wordsInDictVersion,
+                wordtranslateversion = libraryVersions.wordTranslateVersion,
+            )
+        )
         return when (response.resultCode) {
             -1 -> UpdateResult.NoConnection
             200 -> updateLocalData(response as UpdateResponse)
             401 -> {
-                settings.setSettings(settings.getSettings().apply { this.userKey = "" })
+                settings.userKey = ""
+                settings.userId = 0
                 UpdateResult.Error("Auth error from library")
             }
 
@@ -53,11 +56,7 @@ class LibraryRepositoryImpl(
         }
     }
 
-    override suspend fun signIn(): AuthState {
-        Log.d("STUDY_WORDS_DEBUG", "Sign in")
-
-        val userName = settings.getSettings().userName
-        val password = settings.getSettings().password
+    override suspend fun signIn(userName: String, password: String): AuthState {
 
         if (userName.isEmpty()) {
             return AuthState.Error("Login is empty")
@@ -67,18 +66,18 @@ class LibraryRepositoryImpl(
         }
 
         val response = networkClient.doRequest(AuthRequest(userName, password))
-        Log.d("STUDY_WORDS_DEBUG", "Got auth: $response")
         return when (response.resultCode) {
             -1 -> AuthState.NoConnection
             200 -> {
-                settings.setSettings(settings.getSettings().apply {
-                    userKey = (response as AuthResponse).userkey
-                })
-                AuthState.Success
+                settings.userKey = (response as AuthResponse).userkey
+                settings.userId = (response as AuthResponse).userid
+                delay(1500)
+                AuthState.Success((response as AuthResponse).message)
             }
 
             401 -> {
-                settings.setSettings(settings.getSettings().apply { userKey = "" })
+                settings.userKey = ""
+                settings.userId = 0
                 AuthState.Error("Auth error")
             }
 
@@ -92,14 +91,15 @@ class LibraryRepositoryImpl(
         }
     }
 
-    override suspend fun getWords(dictId: Int): List<WordWithTranslate> {
+    override suspend fun getWords(dictId: Int): List<WordData> {
         return withContext(Dispatchers.IO) {
-            database.libraryDao().getWords(dictId)
+            database.libraryDao().getWords(dictId, settings.userId)
+        }
+    }
 
-//            Log.d("STUDY_WORDS_DEBUG", "Load dict id = $dictId")
-//            val dictdata = database.libraryDao().getWordsInDict(dictId)
-//            Log.d("STUDY_WORDS_DEBUG", "Dict data = $dictdata")
-//            dictdata.map { it.toWordInDict() }
+    override suspend fun setProgress(progress: List<Progress>) {
+        withContext(Dispatchers.IO) {
+            database.libraryDao().insertProgress(progress.map { it.toProgressEntity(settings.userId) })
         }
     }
 

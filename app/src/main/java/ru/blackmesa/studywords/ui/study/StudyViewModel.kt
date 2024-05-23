@@ -4,19 +4,22 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import ru.blackmesa.studywords.data.models.Progress
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.domain.LibraryInteractor
 
 class StudyViewModel(
     application: Application,
     private val libInteractor: LibraryInteractor,
-    private val wordList: List<WordWithTranslate>,
+    private val wordList: List<WordData>,
 ) : AndroidViewModel(application) {
 
     private val stateLiveData = MutableLiveData<StudyState>()
     fun observeState(): LiveData<StudyState> = stateLiveData
 
-    private var curIndex = -1
+    private lateinit var currentWord: WordData
 
     companion object {
         val UPDATE_DELAY = 1000L
@@ -27,17 +30,53 @@ class StudyViewModel(
     }
 
     fun showAnswer() {
-        stateLiveData.postValue(StudyState.Answer(wordList[curIndex]))
+        stateLiveData.postValue(StudyState.Answer(currentWord))
     }
+
+    fun gotResult(isCorrect: Boolean) {
+
+
+        currentWord.answerdate = System.currentTimeMillis() / 1000
+        if (isCorrect) {
+            currentWord.newprogress++
+            if (currentWord.newprogress > 4) currentWord.newprogress = 4
+        } else {
+            currentWord.newprogress--
+            currentWord.newprogress--
+            if (currentWord.newprogress < 0) currentWord.newprogress = 0
+        }
+
+        viewModelScope.launch {
+            libInteractor.setProgress(
+                listOf(
+                    Progress(
+                        wordid = currentWord.wordid,
+                        status = currentWord.newprogress,
+                        answerdate = currentWord.answerdate,
+                        version = 0,
+                    )
+                )
+            )
+        }
+
+        nextQuestion()
+
+    }
+
 
     fun nextQuestion() {
-        curIndex++
-        if (wordList.isEmpty() || curIndex > wordList.size - 1) {
-            stateLiveData.postValue(StudyState.Finish)
-        } else {
-            stateLiveData.postValue(StudyState.Question(wordList[curIndex]))
-        }
-    }
 
+        wordList
+            .filter { it.newprogress < it.baseprogress + 2 && it.newprogress < 4 }
+            .apply {
+                if (isEmpty()) {
+                    stateLiveData.postValue(StudyState.Finish)
+                } else {
+                    currentWord = random()
+                    stateLiveData.postValue(StudyState.Question(currentWord, size))
+                }
+            }
+
+    }
 
 }

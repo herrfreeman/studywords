@@ -1,10 +1,12 @@
 package ru.blackmesa.studywords.ui.authentication
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,7 +31,6 @@ class AuthenticationFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -52,10 +53,11 @@ class AuthenticationFragment : Fragment() {
         binding.errorMessage.text = arguments?.getString(ERROR_MESSAGE).orEmpty()
 
         binding.connectButton.setOnClickListener {
-//            viewModel.setCredentials(
-//                binding.userText.text.toString(),
-//                binding.passwordText.text.toString()
-//            )
+            //Hide keyboard when clear button clicked
+
+            hideKeyboard(binding.userText)
+            hideKeyboard(binding.passwordText)
+
             viewModel.singIn(
                 binding.userText.text.toString(),
                 binding.passwordText.text.toString()
@@ -79,18 +81,12 @@ class AuthenticationFragment : Fragment() {
             }
         }
 
-//        viewModel.message.observe(viewLifecycleOwner) {
-//            binding.result.setText(it)
-//        }
-//
-//        binding.connectButton.setOnClickListener {
-//            Log.d("STUDY_WORDS", "Connect clicked")
-//            viewModel.auth(
-//                AuthRequest(
-//                    binding.userText.text.toString(),
-//                    binding.passwordText.text.toString()
-//                )
-//            )
-//        }
+
+    }
+
+    private fun hideKeyboard(view: View) {
+        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
+        view.clearFocus()
     }
 }

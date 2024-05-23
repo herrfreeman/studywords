@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import ru.blackmesa.studywords.data.models.WordWithTranslate
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.domain.LibraryInteractor
 
 class WordsViewModel(
@@ -15,8 +15,8 @@ class WordsViewModel(
     private val dictionaryId: Int,
 ) : AndroidViewModel(application) {
 
-    private val contentLiveData = MutableLiveData<List<WordWithTranslate>>()
-    fun observeContent(): LiveData<List<WordWithTranslate>> = contentLiveData
+    private val contentLiveData = MutableLiveData<List<WordData>>()
+    fun observeContent(): LiveData<List<WordData>> = contentLiveData
 
     companion object {
         val UPDATE_DELAY = 1000L

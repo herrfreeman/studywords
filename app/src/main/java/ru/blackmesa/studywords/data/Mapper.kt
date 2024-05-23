@@ -1,14 +1,17 @@
 package ru.blackmesa.studywords.data
 
 import ru.blackmesa.studywords.data.db.DictEntity
+import ru.blackmesa.studywords.data.db.ProgressEntity
 import ru.blackmesa.studywords.data.db.WordEntity
 import ru.blackmesa.studywords.data.db.WordInDictEntity
 import ru.blackmesa.studywords.data.db.WordTranslateEntity
 import ru.blackmesa.studywords.data.dto.DictionaryDto
+import ru.blackmesa.studywords.data.dto.ProgressDto
 import ru.blackmesa.studywords.data.dto.WordDto
 import ru.blackmesa.studywords.data.dto.WordInDictDto
 import ru.blackmesa.studywords.data.dto.WordTranslateDto
 import ru.blackmesa.studywords.data.models.Dictionary
+import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.Word
 import ru.blackmesa.studywords.data.models.WordInDict
 import ru.blackmesa.studywords.data.models.WordTranslate
@@ -166,5 +169,53 @@ fun WordTranslateDto.toWordTranslate() = WordTranslate(
     id = id,
     wordid = wordid,
     translate = translate,
+    version = version,
+)
+
+fun ProgressEntity.toProgressDto() = ProgressDto(
+    wordid = wordid,
+    userid = userid,
+    status = status,
+    answerdate = answerdate,
+    version = version,
+)
+
+fun ProgressEntity.toProgress() = Progress(
+    wordid = wordid,
+//    userid = userid,
+    status = status,
+    answerdate = answerdate,
+    version = version,
+)
+
+fun Progress.toProgressDto(userid: Int) = ProgressDto(
+    wordid = wordid,
+    userid = userid,
+    status = status,
+    answerdate = answerdate,
+    version = version,
+)
+
+fun Progress.toProgressEntity(userid: Int) = ProgressEntity(
+    wordid = wordid,
+    userid = userid,
+    status = status,
+    answerdate = answerdate,
+    version = version,
+)
+
+fun ProgressDto.toProgressEntity() = ProgressEntity(
+    wordid = wordid,
+    userid = userid,
+    status = status,
+    answerdate = answerdate,
+    version = version,
+)
+
+fun ProgressDto.toProgress() = Progress(
+    wordid = wordid,
+//    userid = userid,
+    status = status,
+    answerdate = answerdate,
     version = version,
 )

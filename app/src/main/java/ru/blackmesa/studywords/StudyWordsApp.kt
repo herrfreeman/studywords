@@ -13,8 +13,8 @@ import ru.blackmesa.studywords.ui.uiModule2
 
 class StudyWordsApp : Application() {
 
-    lateinit var appSettings: AppSettings
-    val settingsInteractor: SettingsInteractor by inject()
+    //lateinit var appSettings: AppSettings
+    val settings: SettingsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -28,13 +28,13 @@ class StudyWordsApp : Application() {
             )
         }
 
-        appSettings = settingsInteractor.getSettings()
+        //appSettings = settingsInteractor
         updateTheme()
     }
 
     fun updateTheme() {
         AppCompatDelegate.setDefaultNightMode(
-            if (appSettings.nightMode) {
+            if (settings.nightMode) {
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
                 AppCompatDelegate.MODE_NIGHT_NO

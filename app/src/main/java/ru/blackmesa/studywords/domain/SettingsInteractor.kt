@@ -1,11 +1,14 @@
 package ru.blackmesa.studywords.domain
 
-import ru.blackmesa.studywords.data.models.AppSettings
+import ru.blackmesa.studywords.data.models.Credentials
 
 interface SettingsInteractor {
-    fun getSettings(): AppSettings
-    fun saveSettings(settings: AppSettings)
 
-    fun setUserKey(userKey: String)
-    fun setUserNamePassword(userName: String, password: String)
+    var userKey: String
+    var userId: Int
+    var nightMode: Boolean
+
+    fun getCredentials(): Credentials
+    fun setCredentials(credentials: Credentials)
+
 }

@@ -2,7 +2,6 @@ package ru.blackmesa.studywords.ui.words
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,8 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.blackmesa.studywords.R
-import ru.blackmesa.studywords.data.models.UpdateResult
-import ru.blackmesa.studywords.data.models.Word
-import ru.blackmesa.studywords.data.models.WordWithTranslate
-import ru.blackmesa.studywords.databinding.FragmentLibraryBinding
+import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
-import ru.blackmesa.studywords.ui.authentication.AuthenticationFragment
 import ru.blackmesa.studywords.ui.study.StudyFragment
 
 class WordsFragment : Fragment() {
@@ -68,14 +63,19 @@ class WordsFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.studyButton.setOnClickListener {
-            findNavController().navigate(R.id.action_wordsFragment_to_studyFragment,
-                StudyFragment.createArgs(adapter.words)
+            findNavController().navigate(
+                R.id.action_wordsFragment_to_studyFragment,
+                StudyFragment.createArgs(
+                    adapter.words
+                        .shuffled()
+                        .take(5)
+                )
             )
         }
 
     }
 
-    private fun renderContent(words: List<WordWithTranslate>) {
+    private fun renderContent(words: List<WordData>) {
         adapter.words.clear()
         adapter.words.addAll(words)
         adapter.notifyDataSetChanged()

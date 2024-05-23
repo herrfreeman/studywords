@@ -29,15 +29,20 @@
             app:tint="?attr/colorOnPrimary" />
 
 
-        <Space
+        <TextView
+            android:id="@+id/statusCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textAlignment="viewEnd"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="20sp"
+            tools:text="10" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
             android:contentDescription="menu_icon"
             android:src="@drawable/ic_menu"
             app:tint="?attr/colorOnPrimary" />
@@ -51,10 +56,10 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@id/wordSeparator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/upBar"
-        app:layout_constraintBottom_toTopOf="@id/wordSeparator"
         tools:text="Word" />
 
     <View
@@ -63,9 +68,9 @@
         android:layout_height="1dp"
         android:layout_marginHorizontal="20dp"
         android:background="?attr/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@id/answer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/answer"
         app:layout_constraintTop_toBottomOf="@id/word" />
 
     <TextView
@@ -76,10 +81,10 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wordSeparator"
-        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         tools:text="Answer" />
 
     <View
@@ -102,11 +107,11 @@
         android:text="OK"
         android:textColor="#000"
         android:textSize="26sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="@id/buttonBox"
         app:layout_constraintStart_toStartOf="@id/buttonBox"
-        app:layout_constraintTop_toTopOf="@id/buttonBox"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="@id/buttonBox" />
 
     <Button
         android:id="@+id/yesButton"
