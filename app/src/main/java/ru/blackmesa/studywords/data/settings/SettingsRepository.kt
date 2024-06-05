@@ -1,8 +1,8 @@
-package ru.blackmesa.studywords.domain
+package ru.blackmesa.studywords.data.settings
 
 import ru.blackmesa.studywords.data.models.Credentials
 
-interface SettingsInteractor {
+interface SettingsRepository {
 
     var userKey: String
     var userId: Int
@@ -10,5 +10,4 @@ interface SettingsInteractor {
 
     fun getCredentials(): Credentials
     fun setCredentials(credentials: Credentials)
-
 }

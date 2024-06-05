@@ -1,0 +1,8 @@
+package ru.blackmesa.studywords.data.models
+
+data class Dictionary(
+    val id: Int,
+    val name: String,
+    val orderfield: Int,
+    val version: Long,
+)

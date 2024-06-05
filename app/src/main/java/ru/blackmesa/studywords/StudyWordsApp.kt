@@ -6,15 +6,15 @@ import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.blackmesa.studywords.data.dataModule
-import ru.blackmesa.studywords.domain.SettingsInteractor
-import ru.blackmesa.studywords.domain.settingsDomainModule
 import ru.blackmesa.studywords.data.models.AppSettings
-import ru.blackmesa.studywords.ui.uiModule
+import ru.blackmesa.studywords.domain.SettingsInteractor
+import ru.blackmesa.studywords.domain.domainModule
+import ru.blackmesa.studywords.ui.uiModule2
 
 class StudyWordsApp : Application() {
 
-    lateinit var appSettings: AppSettings
-    val settingsInteractor: SettingsInteractor by inject()
+    //lateinit var appSettings: AppSettings
+    val settings: SettingsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -23,18 +23,18 @@ class StudyWordsApp : Application() {
             androidContext(this@StudyWordsApp)
             modules(
                 dataModule,
-                settingsDomainModule,
-                uiModule,
+                domainModule,
+                uiModule2,
             )
         }
 
-        appSettings = settingsInteractor.getSettings()
+        //appSettings = settingsInteractor
         updateTheme()
     }
 
     fun updateTheme() {
         AppCompatDelegate.setDefaultNightMode(
-            if (appSettings.nightMode) {
+            if (settings.nightMode) {
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
                 AppCompatDelegate.MODE_NIGHT_NO
