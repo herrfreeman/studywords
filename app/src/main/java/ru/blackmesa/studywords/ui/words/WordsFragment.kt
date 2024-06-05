@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -30,7 +31,9 @@ class WordsFragment : Fragment() {
     private val viewModel: WordsViewModel by viewModel {
         parametersOf(requireArguments().getInt(DICTIONARY_ID_ARG))
     }
-    private val adapter = WordsRVAdapter()
+    private val adapter = WordsRVAdapter {
+        Toast.makeText(requireContext(), "${it.word} - ${it.translate} : ${it.status}", Toast.LENGTH_LONG).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,25 +62,47 @@ class WordsFragment : Fragment() {
         viewModel.observeContent().observe(viewLifecycleOwner) {
             renderContent(it)
         }
-        binding.backButton.setOnClickListener {
+
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.topAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.clearProgress -> {
+                    viewModel.clearProgress(adapter.words)
+                    true
+                }
+
+                else -> false
+            }
+        }
+
         binding.studyButton.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_wordsFragment_to_studyFragment,
-                StudyFragment.createArgs(
-                    adapter.words
-                        .shuffled()
-                        .take(5)
+            val currentTimestamp = System.currentTimeMillis() / 1000
+            val wordsToStudy = adapter.words
+                .filter { it.status < 12 && (it.repeatdate == 0L || it.repeatdate <= currentTimestamp) }
+                .shuffled()
+                .sortedBy { if (it.repeatdate > 0) 1 else 2 }
+                .take(10)
+
+            if (wordsToStudy.isEmpty()) {
+                // TODO Следующее повтороение тагдато / все слова изучегы
+            } else {
+                findNavController().navigate(
+                    R.id.action_wordsFragment_to_studyFragment,
+                    StudyFragment.createArgs(wordsToStudy)
                 )
-            )
+            }
         }
 
     }
 
     private fun renderContent(words: List<WordData>) {
-        adapter.words.clear()
-        adapter.words.addAll(words)
+        if (adapter.words != words) {
+            adapter.words.clear()
+            adapter.words.addAll(words)
+        }
         adapter.notifyDataSetChanged()
     }
 

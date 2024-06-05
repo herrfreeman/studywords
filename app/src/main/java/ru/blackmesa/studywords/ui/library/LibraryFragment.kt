@@ -72,6 +72,12 @@ class LibraryFragment : Fragment() {
         binding.signOutButton.setOnClickListener { viewModel.signOut() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadLibrary()
+        //binding.libraryRecyclerView.invalidate()
+    }
+
     private fun renderUpdateStatus(it: UpdateResult) {
         when (it) {
             is UpdateResult.Synchronized -> binding.statusIcon.setImageResource(R.drawable.ic_synchronized)
@@ -83,6 +89,7 @@ class LibraryFragment : Fragment() {
                 adapter.library.clear()
                 adapter.library.addAll(it.library)
                 adapter.notifyDataSetChanged()
+                //binding.libraryRecyclerView.invalidate()
                 binding.statusIcon.setImageResource(R.drawable.ic_bolt)
             }
             is UpdateResult.NoConnection -> binding.statusIcon.setImageResource(R.drawable.ic_flightmode)

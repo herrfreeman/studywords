@@ -7,7 +7,8 @@ data class ProgressEntity(
     val wordid: Int,
     val userid: Int,
     val status: Int,
-    val answerdate: Long,
+    val repeatdate: Long,
     val version: Long,
+    val touched: Boolean,
 )
 

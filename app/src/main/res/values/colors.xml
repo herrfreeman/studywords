@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="status_done">#4CAF50</color>
+    <color name="status_new">#00FFFFFF</color>
+    <color name="status_wait">#FFC107</color>
+    <color name="status_repeat">#FF5722</color>
 </resources>

@@ -5,4 +5,5 @@ data class LibraryVersions(
     val wordsVersion: Long,
     val wordsInDictVersion: Long,
     val wordTranslateVersion: Long,
+    val progressVersion: Long,
 )

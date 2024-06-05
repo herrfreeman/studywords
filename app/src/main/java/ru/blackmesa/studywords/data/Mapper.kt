@@ -174,25 +174,23 @@ fun WordTranslateDto.toWordTranslate() = WordTranslate(
 
 fun ProgressEntity.toProgressDto() = ProgressDto(
     wordid = wordid,
-    userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
 )
 
 fun ProgressEntity.toProgress() = Progress(
     wordid = wordid,
-//    userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
+    touched = touched,
 )
 
 fun Progress.toProgressDto(userid: Int) = ProgressDto(
     wordid = wordid,
-    userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
 )
 
@@ -200,22 +198,24 @@ fun Progress.toProgressEntity(userid: Int) = ProgressEntity(
     wordid = wordid,
     userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
+    touched = touched,
 )
 
-fun ProgressDto.toProgressEntity() = ProgressEntity(
+fun ProgressDto.toProgressEntity(userid: Int, touched: Boolean) = ProgressEntity(
     wordid = wordid,
     userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
+    touched = touched,
 )
 
-fun ProgressDto.toProgress() = Progress(
+fun ProgressDto.toProgress(touched: Boolean) = Progress(
     wordid = wordid,
-//    userid = userid,
     status = status,
-    answerdate = answerdate,
+    repeatdate = repeatdate,
     version = version,
+    touched = touched,
 )

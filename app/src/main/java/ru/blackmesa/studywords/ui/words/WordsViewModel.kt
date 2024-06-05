@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.domain.LibraryInteractor
 
@@ -30,6 +31,22 @@ class WordsViewModel(
 
     override fun onCleared() {
         super.onCleared()
+    }
+
+    fun clearProgress(words: List<WordData>) {
+        words.onEach { it.status = 0 }
+        viewModelScope.launch {
+            libInteractor.setProgress(words.map {
+                Progress(
+                    wordid = it.wordid,
+                    status = it.status,
+                    repeatdate = 0L,
+                    version = System.currentTimeMillis() / 1000,
+                    touched = true,
+                )
+            })
+        }
+        contentLiveData.postValue(words)
     }
 
 

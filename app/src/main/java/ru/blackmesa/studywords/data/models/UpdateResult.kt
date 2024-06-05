@@ -5,7 +5,7 @@ sealed interface UpdateResult {
     object Synchronized : UpdateResult
 
     data class  LibraryUpdated(
-        val library: List<Dictionary>
+        val library: List<DictData>
     ) : UpdateResult
 
     object NoConnection : UpdateResult

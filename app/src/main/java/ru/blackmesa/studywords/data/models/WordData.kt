@@ -1,10 +1,11 @@
 package ru.blackmesa.studywords.data.models
 
+import java.io.Serializable
+
 data class WordData(
     val wordid: Int,
     val word: String,
     val translate: String,
-    val baseprogress: Int,
-    var newprogress: Int,
-    var answerdate: Long,
-)
+    var status: Int,
+    var repeatdate: Long,
+) : Serializable

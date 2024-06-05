@@ -2,12 +2,13 @@ package ru.blackmesa.studywords.ui.library
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.Dictionary
 
 
 class LibraryRVAdapter(private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<LibraryViewHolder>() {
 
-    val library: MutableList<Dictionary> = emptyList<Dictionary>().toMutableList()
+    val library: MutableList<DictData> = emptyList<DictData>().toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LibraryViewHolder =
         LibraryViewHolder(parent, itemClickListener)
@@ -19,7 +20,7 @@ class LibraryRVAdapter(private val itemClickListener: ItemClickListener) : Recyc
     }
 
     fun interface ItemClickListener {
-        fun onItemClick(item: Dictionary)
+        fun onItemClick(item: DictData)
     }
 
 }

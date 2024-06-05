@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.blackmesa.studywords.data.models.Dictionary
+import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.domain.LibraryInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
@@ -22,8 +22,8 @@ class LibraryViewModel(
     private val updateStateLiveData = MutableLiveData<UpdateResult>()
     fun observeUpdateState(): LiveData<UpdateResult> = updateStateLiveData
 
-    private val dictionaryLiveData = MutableLiveData<List<Dictionary>>()
-    fun observeDictionary(): LiveData<List<Dictionary>> = dictionaryLiveData
+    private val dictionaryLiveData = MutableLiveData<List<DictData>>()
+    fun observeDictionary(): LiveData<List<DictData>> = dictionaryLiveData
 
     private var updateJob: Job? = null
 
@@ -32,9 +32,7 @@ class LibraryViewModel(
     }
 
     init {
-        viewModelScope.launch {
-            dictionaryLiveData.postValue(libInteractor.getDictionaries())
-        }
+        loadLibrary()
     }
 
     override fun onCleared() {
@@ -65,7 +63,9 @@ class LibraryViewModel(
     }
 
     fun loadLibrary() {
-
+        viewModelScope.launch {
+            dictionaryLiveData.postValue(libInteractor.getDictionariesWithProgress())
+        }
     }
 
 }

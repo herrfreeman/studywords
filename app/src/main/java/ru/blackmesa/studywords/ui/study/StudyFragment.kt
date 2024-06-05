@@ -23,6 +23,8 @@ class StudyFragment : Fragment() {
         const val WORDLIST_ARG = "DICTIONARY_ID_ARG"
         fun createArgs(wordList: List<WordData>): Bundle =
             bundleOf(WORDLIST_ARG to StudyList(wordList))
+
+        val STRIGHT_STAGE = listOf(0,1,4,5,8,9)
     }
 
     private var _binding: FragmentStudyBinding? = null
@@ -32,12 +34,6 @@ class StudyFragment : Fragment() {
             requireArguments().getSerializable(WORDLIST_ARG, StudyList::class.java)
                 ?.words ?: emptyList<WordData>()
         )
-
-//        val testList = listOf<WordWithTranslate>(
-//            WordWithTranslate(1, "first", "первый"),
-//            WordWithTranslate(2, "second", "второй")
-//        )
-//        parametersOf(testList)
     }
 
 
@@ -79,7 +75,7 @@ class StudyFragment : Fragment() {
         when (state) {
             is StudyState.Question -> {
 
-                binding.word.text = if (state.word.newprogress < 3) {
+                binding.word.text = if (state.word.status in STRIGHT_STAGE) {
                     state.word.word
                 } else {
                     state.word.translate
@@ -92,7 +88,7 @@ class StudyFragment : Fragment() {
             }
 
             is StudyState.Answer -> {
-                if (state.word.newprogress < 3) {
+                if (state.word.status in STRIGHT_STAGE) {
                     binding.word.text = state.word.word
                     binding.answer.text = state.word.translate
                 } else {
@@ -106,7 +102,6 @@ class StudyFragment : Fragment() {
 
             StudyState.Finish -> findNavController().popBackStack()
         }
-
 
     }
 

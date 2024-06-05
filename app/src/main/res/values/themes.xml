@@ -9,8 +9,14 @@
         <item name="colorSecondary">#E1F7F5</item>
         <item name="colorOnSecondary">#1E0342</item>
 
+        <item name="actionOverflowButtonStyle">@style/CustomButtonOverflow</item>
 <!--        #0E46A3 9AC8CD-->
 
+    </style>
+
+    <style name="CustomButtonOverflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/ic_menu</item>
+        <item name="android:tint">#FFFFFF</item>
     </style>
 
     <style name="Theme.Studywords" parent="Base.Theme.Studywords" />
