@@ -116,6 +116,16 @@ class LibraryRepositoryImpl(
         }
     }
 
+    override suspend fun wipeAllLocalData() {
+        return withContext(Dispatchers.IO) {
+            database.libraryDao().deleteDicts()
+            database.libraryDao().deleteWords()
+            database.libraryDao().deleteWordInDict()
+            database.libraryDao().deleteTranslate()
+            database.libraryDao().deleteProgress()
+        }
+    }
+
     private suspend fun updateLocalData(
         updateRequest: UpdateRequest,
         updateResponse: UpdateResponse

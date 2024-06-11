@@ -24,7 +24,7 @@ class StudyFragment : Fragment() {
         fun createArgs(wordList: List<WordData>): Bundle =
             bundleOf(WORDLIST_ARG to StudyList(wordList))
 
-        val STRIGHT_STAGE = listOf(0,1,4,5,8,9)
+        val STRIGHT_STAGE = listOf(0, 1, 4, 5, 8, 9)
     }
 
     private var _binding: FragmentStudyBinding? = null
@@ -67,6 +67,10 @@ class StudyFragment : Fragment() {
         }
         binding.okButton.setOnClickListener { viewModel.showAnswer() }
         binding.yesButton.setOnClickListener { viewModel.gotResult(true) }
+        binding.yesButton.setOnLongClickListener {
+            viewModel.setFullyStudied()
+            true
+        }
         binding.noButton.setOnClickListener { viewModel.gotResult(false) }
 
     }

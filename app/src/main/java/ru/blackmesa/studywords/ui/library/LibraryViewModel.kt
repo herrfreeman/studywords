@@ -44,8 +44,8 @@ class LibraryViewModel(
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
             //while (true) {
-                updateStateLiveData.postValue(libInteractor.updateAllData())
-                delay(UPDATE_DELAY)
+            updateStateLiveData.postValue(libInteractor.updateAllData())
+            delay(UPDATE_DELAY)
             //}
         }
     }
@@ -65,6 +65,13 @@ class LibraryViewModel(
     fun loadLibrary() {
         viewModelScope.launch {
             dictionaryLiveData.postValue(libInteractor.getDictionariesWithProgress())
+        }
+    }
+
+    fun wipeAllLocalData() {
+        viewModelScope.launch {
+            libInteractor.wipeAllLocalData()
+            dictionaryLiveData.postValue(emptyList())
         }
     }
 

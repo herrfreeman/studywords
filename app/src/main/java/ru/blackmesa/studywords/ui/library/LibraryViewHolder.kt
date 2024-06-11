@@ -16,13 +16,9 @@ class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: Li
 ) {
 
     private val itemCaption: TextView = itemView.findViewById(R.id.libItemCaption)
-    private val statusText: TextView = itemView.findViewById(R.id.statusText)
-
-
-    private val statusDone: View = itemView.findViewById(R.id.statusDone)
-    private val statusRepeat: View = itemView.findViewById(R.id.statusRepeat)
-    private val statusWait: View = itemView.findViewById(R.id.statusWait)
-    private val statusNew: View = itemView.findViewById(R.id.statusNew)
+    private val wordsCount: TextView = itemView.findViewById(R.id.wordsCount)
+    private val repeatCount: TextView = itemView.findViewById(R.id.repeatCount)
+    private val statusView: View = itemView.findViewById(R.id.statusView)
 
     fun bind(model: DictData) {
 
@@ -31,16 +27,12 @@ class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: Li
             itemClickListener.onItemClick(model)
         }
 
-        val total: Float = model.total.toFloat()
-        var rest = total - model.done - model.repeat - model.wait
-
-        statusText.text = "${model.total} / ${model.done} / ${model.repeat} / ${model.wait}"
-
-
-        (statusDone.getLayoutParams() as LinearLayout.LayoutParams).weight = model.done / total
-        (statusRepeat.getLayoutParams() as LinearLayout.LayoutParams).weight = model.repeat / total
-        (statusWait.getLayoutParams() as LinearLayout.LayoutParams).weight = model.wait / total
-        (statusNew.getLayoutParams() as LinearLayout.LayoutParams).weight = rest / total
+        //wordsCount.text = "${model.total} / ${model.done} / ${model.repeat} / ${model.wait}"
+        wordsCount.text = "${model.total}"
+        if (model.repeat > 0) {
+            repeatCount.text = " | ${model.repeat}"
+        }
+        statusView.background = StatusBarDrawable(model.total, model.done, model.repeat, model.wait)
 
     }
 

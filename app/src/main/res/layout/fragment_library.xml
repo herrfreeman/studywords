@@ -8,57 +8,76 @@
     android:layout_height="match_parent"
     tools:context=".ui.library.LibraryFragment">
 
-    <LinearLayout
+
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/upBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="?attr/colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/statusIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:contentDescription="menu_icon"
-            android:src="@drawable/ic_updateholder"
-            app:tint="?attr/colorOnPrimary" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
 
-        <TextView
-            android:id="@+id/loginCaption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:lines="1"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="20sp" />
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/library_menu"
+            app:navigationIcon="@drawable/ic_updateholder"
+            app:navigationIconTint="?attr/colorOnPrimary" />
 
-        <Button
-            android:id="@+id/signOutButton"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:backgroundTint="?attr/colorSecondary"
-            android:text="Sign out"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:contentDescription="menu_icon"
-            android:src="@drawable/ic_menu"
-            app:tint="?attr/colorOnPrimary" />
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/upBar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="60dp"-->
+    <!--        android:background="?attr/colorPrimary"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent">-->
 
-    </LinearLayout>
+    <!--        <ImageView-->
+    <!--            android:id="@+id/statusIcon"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginHorizontal="16dp"-->
+    <!--            android:contentDescription="menu_icon"-->
+    <!--            android:src="@drawable/ic_updateholder"-->
+    <!--            app:tint="?attr/colorOnPrimary" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/loginCaption"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="16dp"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:gravity="end"-->
+    <!--            android:lines="1"-->
+    <!--            android:textColor="?attr/colorOnPrimary"-->
+    <!--            android:textSize="20sp" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/signOutButton"-->
+    <!--            style="@style/Widget.MaterialComponents.Button"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginHorizontal="16dp"-->
+    <!--            android:backgroundTint="?attr/colorSecondary"-->
+    <!--            android:text="Sign out"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="16sp" />-->
+
+    <!--        <ImageView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginEnd="16dp"-->
+    <!--            android:contentDescription="menu_icon"-->
+    <!--            android:src="@drawable/ic_menu"-->
+    <!--            app:tint="?attr/colorOnPrimary" />-->
+
+    <!--    </LinearLayout>-->
 
 
     <androidx.recyclerview.widget.RecyclerView

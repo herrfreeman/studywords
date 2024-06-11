@@ -41,6 +41,21 @@ interface LibraryDao {
     @Query("SELECT version FROM progress_table WHERE userid = :userid AND touched = false ORDER BY version DESC LIMIT 1;")
     fun getProgressVersion(userid: Int): List<Long>
 
+    @Query("DELETE FROM dict_table;")
+    fun deleteDicts()
+
+    @Query("DELETE FROM words_table;")
+    fun deleteWords()
+
+    @Query("DELETE FROM wordindict_table;")
+    fun deleteWordInDict()
+
+    @Query("DELETE FROM wordtranslate_table;")
+    fun deleteTranslate()
+
+    @Query("DELETE FROM progress_table;")
+    fun deleteProgress()
+
     @Query("SELECT * FROM progress_table WHERE userid = :userid AND touched = true;")
     fun getLocalProgress(userid: Int): List<ProgressEntity>
 
@@ -83,9 +98,11 @@ interface LibraryDao {
         JOIN words_table ON words_table.id = wordindict_table.wordid
         JOIN wordtranslate_table ON words_table.id = wordtranslate_table.wordid
         LEFT JOIN progress_table ON progress_table.wordid = wordindict_table.wordid AND progress_table.userid = :userId
-        WHERE dictid = :dictId"""
+        WHERE dictid = :dictId ORDER BY word"""
     )
     fun getWords(dictId: Int, userId: Int): List<WordData>
+
+
 
 }
 

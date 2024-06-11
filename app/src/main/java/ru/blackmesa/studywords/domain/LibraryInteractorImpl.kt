@@ -22,5 +22,6 @@ class LibraryInteractorImpl(
     override suspend fun getWords(dictId: Int) = reposytory.getWords(dictId)
     override suspend fun setProgress(progress: List<Progress>) = reposytory.setProgress(progress)
     override suspend fun getDictionariesWithProgress(): List<DictData> = reposytory.getDictionariesWithProgress()
+    override suspend fun wipeAllLocalData() = reposytory.wipeAllLocalData()
 
 }

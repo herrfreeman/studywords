@@ -32,7 +32,7 @@ class WordsFragment : Fragment() {
         parametersOf(requireArguments().getInt(DICTIONARY_ID_ARG))
     }
     private val adapter = WordsRVAdapter {
-        Toast.makeText(requireContext(), "${it.word} - ${it.translate} : ${it.status}", Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), "${it.word} - ${it.translate} : ${it.status}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

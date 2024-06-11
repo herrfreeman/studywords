@@ -65,11 +65,25 @@ class LibraryFragment : Fragment() {
 
         binding.libraryRecyclerView.adapter = adapter
 
-        binding.statusIcon.setOnClickListener {
-            binding.statusIcon.setImageResource(R.drawable.ic_updateholder)
+        binding.topAppBar.setNavigationOnClickListener {
+            binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
             viewModel.startUpdate()
+            true
         }
-        binding.signOutButton.setOnClickListener { viewModel.signOut() }
+
+        binding.topAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.wipeData -> {
+                    viewModel.wipeAllLocalData()
+                    true
+                }
+                R.id.signOut -> {
+                    viewModel.signOut()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onResume() {
@@ -80,7 +94,7 @@ class LibraryFragment : Fragment() {
 
     private fun renderUpdateStatus(it: UpdateResult) {
         when (it) {
-            is UpdateResult.Synchronized -> binding.statusIcon.setImageResource(R.drawable.ic_synchronized)
+            is UpdateResult.Synchronized -> binding.topAppBar.setNavigationIcon(R.drawable.ic_synchronized)
             is UpdateResult.Error -> {
                 findNavController().navigate(R.id.action_libraryFragment_to_authenticationFragment,
                     AuthenticationFragment.createArgs(it.message))
@@ -90,9 +104,9 @@ class LibraryFragment : Fragment() {
                 adapter.library.addAll(it.library)
                 adapter.notifyDataSetChanged()
                 //binding.libraryRecyclerView.invalidate()
-                binding.statusIcon.setImageResource(R.drawable.ic_bolt)
+                binding.topAppBar.setNavigationIcon(R.drawable.ic_bolt)
             }
-            is UpdateResult.NoConnection -> binding.statusIcon.setImageResource(R.drawable.ic_flightmode)
+            is UpdateResult.NoConnection -> binding.topAppBar.setNavigationIcon(R.drawable.ic_flightmode)
             is UpdateResult.NotSignedIn -> findNavController().navigate(R.id.action_libraryFragment_to_authenticationFragment)
         }
 

@@ -53,8 +53,8 @@ class RetrofitNetworkClient(
                 is UpdateRequest -> {
                     try {
                         webService.update(dto).apply { resultCode = 200 }
-                    } catch (e: Throwable) {
-                        Response().apply { resultCode = 500 }
+                    } catch (e: HttpException) {
+                        Response().apply { resultCode = e.code()  }
                     }
                 }
                 else -> Response().apply { resultCode = 400 }
