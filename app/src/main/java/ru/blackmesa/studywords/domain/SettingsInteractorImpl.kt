@@ -10,7 +10,7 @@ class SettingsInteractorImpl(private val repository: SettingsRepository) : Setti
     override var userId = repository.userId
     override var nightMode = repository.nightMode
 
-    override fun getCredentials() = repository.getCredentials()
-    override fun setCredentials(credentials: Credentials) = repository.setCredentials(credentials)
+    override fun loadCredentials() = repository.loadCredentials()
+    override fun saveCredentials(credentials: Credentials) = repository.saveCredentials(credentials)
 
 }

@@ -16,4 +16,11 @@ val domainModule = module {
             reposytory = get(),
         )
     }
+
+    single<AuthInteractor> {
+        AuthInteractorImpl(
+            context = get(),
+            reposytory = get(),
+        )
+    }
 }

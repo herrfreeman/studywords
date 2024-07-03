@@ -7,13 +7,9 @@ import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.data.models.WordData
 
-interface LibraryInteractor {
+interface AuthInteractor {
 
-    suspend fun updateAllData(): UpdateResult
-    suspend fun getDictionaries(): List<Dictionary>
-    suspend fun getWords(dictId: Int): List<WordData>
-    suspend fun setProgress(progress: List<Progress>)
-    suspend fun getDictionariesWithProgress(): List<DictData>
-    suspend fun wipeAllLocalData()
+    suspend fun singIn(userName: String, password: String): AuthResult
+    suspend fun createUser(userName: String): CreateUserResult
 
 }

@@ -2,13 +2,13 @@ package ru.blackmesa.studywords.ui.library
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.blackmesa.studywords.BuildConfig
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.databinding.FragmentLibraryBinding
@@ -52,6 +52,8 @@ class LibraryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.topAppBar.title = BuildConfig.BUILD_NAME
 
         viewModel.observeUpdateState().observe(viewLifecycleOwner) {
             renderUpdateStatus(it)

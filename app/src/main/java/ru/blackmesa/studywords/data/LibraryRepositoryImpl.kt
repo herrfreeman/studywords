@@ -62,35 +62,6 @@ class LibraryRepositoryImpl(
         }
     }
 
-    override suspend fun signIn(userName: String, password: String): AuthState {
-
-        if (userName.isEmpty()) {
-            return AuthState.Error("Login is empty")
-        }
-        if (password.isEmpty()) {
-            return AuthState.Error("Password is empty")
-        }
-
-        val response = networkClient.doRequest(AuthRequest(userName, password))
-        return when (response.resultCode) {
-            -1 -> AuthState.NoConnection
-            200 -> {
-                settings.userKey = (response as AuthResponse).userkey
-                settings.userId = (response as AuthResponse).userid
-                delay(1500)
-                AuthState.Success((response as AuthResponse).message)
-            }
-
-            401 -> {
-                settings.userKey = ""
-                settings.userId = 0
-                AuthState.Error("Auth error")
-            }
-
-            else -> AuthState.Error("Other error: ${response.resultCode}")
-        }
-    }
-
     override suspend fun getDictionaries(): List<Dictionary> {
         return withContext(Dispatchers.IO) {
             database.libraryDao().getDict().map { it.toDictionary() }

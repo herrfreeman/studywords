@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.databinding.FragmentAuthenticationBinding
 
@@ -53,8 +52,6 @@ class AuthenticationFragment : Fragment() {
         binding.errorMessage.text = arguments?.getString(ERROR_MESSAGE).orEmpty()
 
         binding.connectButton.setOnClickListener {
-            //Hide keyboard when clear button clicked
-
             hideKeyboard(binding.userText)
             hideKeyboard(binding.passwordText)
 
@@ -64,22 +61,16 @@ class AuthenticationFragment : Fragment() {
             )
         }
 
-        viewModel.observeCredentials().observe(viewLifecycleOwner) {
-            binding.userText.setText(it.userName)
-            binding.passwordText.setText(it.password)
+        binding.createButton.setOnClickListener {
+            hideKeyboard(binding.userText)
+            hideKeyboard(binding.passwordText)
+
+            viewModel.createUser(
+                binding.userText.text.toString()
+            )
         }
 
-        viewModel.observeAuthState().observe(viewLifecycleOwner) {
-            binding.connectButton.text = "CONNECT"
-            binding.errorMessage.text = ""
-            when (it) {
-                is AuthState.Success -> findNavController().navigate(
-                    R.id.action_authenticationFragment_to_libraryFragment)
-                is AuthState.Connecting -> binding.connectButton.text = "CONNECTING..."
-                is AuthState.Error -> binding.errorMessage.text = it.errorMessage
-                is AuthState.NoConnection -> binding.errorMessage.text = "No internet connection"
-            }
-        }
+        viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
 
     }
@@ -88,5 +79,63 @@ class AuthenticationFragment : Fragment() {
         val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         view.clearFocus()
+    }
+
+    private fun renderState(state: AuthState) {
+        binding.errorMessage.text = ""
+        binding.userText.setText(state.credentials.userName)
+        binding.passwordText.setText(state.credentials.password)
+
+        binding.progressBar.isVisible = false
+        binding.confirmErrorMessage.isVisible = false
+        binding.confirmLayout.isVisible = false
+        binding.confirmButton.isVisible = false
+        binding.errorMessage.isVisible = false
+        binding.restoreButton.isVisible = false
+
+        when (state) {
+            is AuthState.NoInternet -> {
+                binding.errorMessage.text = "No internet connection"
+                binding.errorMessage.isVisible = true
+            }
+            is AuthState.NotConnected -> {
+                Log.d("STUDY_WORDS_DEBUG", "NotConnected")
+            }
+            is AuthState.NotConnectedLoading -> {
+                binding.progressBar.isVisible = true
+            }
+            is AuthState.OtherError -> {
+                binding.errorMessage.isVisible = true
+                binding.errorMessage.text = state.errorMessage
+            }
+            is AuthState.PasswordError -> {
+                binding.errorMessage.isVisible = true
+                binding.errorMessage.text = "Wrong password"
+            }
+            is AuthState.PasswordErrorLoading -> {
+                binding.progressBar.isVisible = true
+                binding.errorMessage.text = "Wrong password"
+            }
+            is AuthState.Success -> Log.d("STUDY_WORDS_DEBUG", "Success")
+            is AuthState.Confirmation -> {
+                val confirmError = state.errorMessage
+                if (confirmError.isNotEmpty()) {
+                    binding.confirmErrorMessage.isVisible = true
+                    binding.confirmErrorMessage.setText(confirmError)
+                }
+                binding.confirmLayout.isVisible = true
+                binding.confirmButton.isVisible = true
+            }
+            is AuthState.ConfirmationLoading -> {
+                binding.progressBar.isVisible = true
+                val confirmError = state.errorMessage
+                if (confirmError.isNotEmpty()) {
+                    binding.confirmErrorMessage.isVisible = true
+                    binding.confirmErrorMessage.setText(confirmError)
+                }
+                binding.confirmLayout.isVisible = true
+                binding.confirmButton.isVisible = true
+            }
+        }
     }
 }

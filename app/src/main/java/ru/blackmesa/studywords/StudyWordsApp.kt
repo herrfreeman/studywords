@@ -2,6 +2,7 @@ package ru.blackmesa.studywords
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.firebase.analytics.FirebaseAnalytics
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -18,6 +19,9 @@ class StudyWordsApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        val analytics = FirebaseAnalytics.getInstance(this)
+        analytics.logEvent("app_started", null) 
 
         startKoin {
             androidContext(this@StudyWordsApp)

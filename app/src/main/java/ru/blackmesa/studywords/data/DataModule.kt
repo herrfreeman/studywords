@@ -38,6 +38,15 @@ val dataModule = module {
         )
     }
 
+    single<AuthRepository> {
+        AuthRepositoryImpl(
+            context = get(),
+            settings = get(),
+            networkClient = get(),
+            database = get(),
+        )
+    }
+
     single {
         Room.databaseBuilder(
             //context = androidContext(),

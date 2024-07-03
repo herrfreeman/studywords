@@ -14,7 +14,7 @@ val uiModule2 = module {
         AuthenticationViewModel(
             application = get(),
             settingsInteractor = get(),
-            libraryInteractor = get(),
+            authInteractor = get(),
         )
     }
 

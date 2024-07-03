@@ -8,11 +8,17 @@ import retrofit2.http.POST
 
 interface StudyWordsApi {
 
-    @POST("/auth")
+    @POST("/authenticate")
     @Headers("Content-Type: application/json")
     suspend fun authenticate(
         @Body request: AuthRequest,
     ): AuthResponse
+
+    @POST("/createuser")
+    @Headers("Content-Type: application/json")
+    suspend fun createuser(
+        @Body request: CreateUserRequest,
+    ): CreateUserResponse
 
     @POST("/update")
     @Headers("Content-Type: application/json")

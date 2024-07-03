@@ -28,7 +28,7 @@ class SettingsRepositoryImpl(private val localStorage: LocalSettingsStorage) : S
             localStorage.setSettings(settings)
         }
 
-    override fun getCredentials(): Credentials = localStorage.getCredentials()
-    override fun setCredentials(credentials: Credentials) = localStorage.setCredentials(credentials)
+    override fun loadCredentials(): Credentials = localStorage.getCredentials()
+    override fun saveCredentials(credentials: Credentials) = localStorage.setCredentials(credentials)
 
 }

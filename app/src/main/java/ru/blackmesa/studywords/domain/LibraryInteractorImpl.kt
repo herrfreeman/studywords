@@ -17,7 +17,6 @@ class LibraryInteractorImpl(
 ) : LibraryInteractor {
 
     override suspend fun updateAllData() = reposytory.updateAllData()
-    override suspend fun singIn(userName: String, password: String) = reposytory.signIn(userName, password)
     override suspend fun getDictionaries() = reposytory.getDictionaries()
     override suspend fun getWords(dictId: Int) = reposytory.getWords(dictId)
     override suspend fun setProgress(progress: List<Progress>) = reposytory.setProgress(progress)
