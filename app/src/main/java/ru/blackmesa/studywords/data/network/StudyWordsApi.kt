@@ -20,6 +20,12 @@ interface StudyWordsApi {
         @Body request: CreateUserRequest,
     ): CreateUserResponse
 
+    @POST("/createuserconfirm")
+    @Headers("Content-Type: application/json")
+    suspend fun confirm(
+        @Body request: ConfirmRequest,
+    ): AuthResponse
+
     @POST("/update")
     @Headers("Content-Type: application/json")
     suspend fun update(

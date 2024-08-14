@@ -67,8 +67,6 @@ class RetrofitNetworkClient(
                     try {
                         webService.createuser(dto).apply { resultCode = 200 }
                     } catch (e: HttpException) {
-                        //val errorMessage = e.response()?.errorBody()?.string() ?: ""
-                        //Log.d("STUDY_WORDS_DEBUG", "HTTP error: ${e.code()} message: ${errorMessage}")
                         Response().apply {
                             resultCode = e.code()
                             val errorBody = e.response()?.errorBody()?.string() ?: ""
@@ -80,6 +78,23 @@ class RetrofitNetworkClient(
                     }
 
                 }
+
+                is ConfirmRequest -> {
+                    try {
+                        webService.confirm(dto).apply { resultCode = 200 }
+                    } catch (e: HttpException) {
+                        Response().apply {
+                            resultCode = e.code()
+                            val errorBody = e.response()?.errorBody()?.string() ?: ""
+                            errorCode = errorBody.substringBefore("#").trim()
+                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                        }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+
+                }
+
 
                 else -> Response().apply { resultCode = 400 }
             }

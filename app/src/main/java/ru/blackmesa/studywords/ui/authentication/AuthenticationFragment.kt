@@ -49,24 +49,25 @@ class AuthenticationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.errorMessage.text = arguments?.getString(ERROR_MESSAGE).orEmpty()
+        //binding.errorMessage.text = arguments?.getString(ERROR_MESSAGE).orEmpty()
 
-        binding.connectButton.setOnClickListener {
-            hideKeyboard(binding.userText)
-            hideKeyboard(binding.passwordText)
+        binding.loginButton.setOnClickListener {
+            hideKeyboard(binding.userName)
+            hideKeyboard(binding.password)
 
-            viewModel.singIn(
-                binding.userText.text.toString(),
-                binding.passwordText.text.toString()
+            viewModel.login(
+                binding.userName.text.toString(),
+                binding.password.text.toString()
             )
         }
 
         binding.createButton.setOnClickListener {
-            hideKeyboard(binding.userText)
-            hideKeyboard(binding.passwordText)
+            hideKeyboard(binding.userName)
+            hideKeyboard(binding.password)
 
-            viewModel.createUser(
-                binding.userText.text.toString()
+            viewModel.createAccount(
+                binding.userName.text.toString(),
+                binding.password.text.toString()
             )
         }
 
@@ -82,60 +83,33 @@ class AuthenticationFragment : Fragment() {
     }
 
     private fun renderState(state: AuthState) {
-        binding.errorMessage.text = ""
-        binding.userText.setText(state.credentials.userName)
-        binding.passwordText.setText(state.credentials.password)
-
-        binding.progressBar.isVisible = false
-        binding.confirmErrorMessage.isVisible = false
-        binding.confirmLayout.isVisible = false
-        binding.confirmButton.isVisible = false
-        binding.errorMessage.isVisible = false
-        binding.restoreButton.isVisible = false
+        binding.userName.setText(state.credentials.userName)
+        binding.password.setText(state.credentials.password)
+        binding.errorMessage.text = state.errorMessage
 
         when (state) {
-            is AuthState.NoInternet -> {
-                binding.errorMessage.text = "No internet connection"
-                binding.errorMessage.isVisible = true
+            is AuthState.Default -> {
+                binding.progressBar.isVisible = false
+                binding.confirmCodeLayout.isVisible = false
             }
-            is AuthState.NotConnected -> {
-                Log.d("STUDY_WORDS_DEBUG", "NotConnected")
-            }
-            is AuthState.NotConnectedLoading -> {
+            is AuthState.DefaultLoading -> {
                 binding.progressBar.isVisible = true
+                binding.confirmCodeLayout.isVisible = false
             }
-            is AuthState.OtherError -> {
-                binding.errorMessage.isVisible = true
-                binding.errorMessage.text = state.errorMessage
+            is AuthState.CreateConfirmation -> {
+                binding.progressBar.isVisible = false
+                binding.confirmCodeLayout.isVisible = true
+                binding.confirmErrorMessage.text = state.confirmErrorMessage
+                binding.confirmCode.setText(state.confirmCode)
             }
-            is AuthState.PasswordError -> {
-                binding.errorMessage.isVisible = true
-                binding.errorMessage.text = "Wrong password"
-            }
-            is AuthState.PasswordErrorLoading -> {
+            is AuthState.CreateConfirmationLoading -> {
                 binding.progressBar.isVisible = true
-                binding.errorMessage.text = "Wrong password"
+                binding.confirmCodeLayout.isVisible = true
+                binding.confirmErrorMessage.text = state.confirmErrorMessage
+                binding.confirmCode.setText(state.confirmCode)
             }
             is AuthState.Success -> Log.d("STUDY_WORDS_DEBUG", "Success")
-            is AuthState.Confirmation -> {
-                val confirmError = state.errorMessage
-                if (confirmError.isNotEmpty()) {
-                    binding.confirmErrorMessage.isVisible = true
-                    binding.confirmErrorMessage.setText(confirmError)
-                }
-                binding.confirmLayout.isVisible = true
-                binding.confirmButton.isVisible = true
-            }
-            is AuthState.ConfirmationLoading -> {
-                binding.progressBar.isVisible = true
-                val confirmError = state.errorMessage
-                if (confirmError.isNotEmpty()) {
-                    binding.confirmErrorMessage.isVisible = true
-                    binding.confirmErrorMessage.setText(confirmError)
-                }
-                binding.confirmLayout.isVisible = true
-                binding.confirmButton.isVisible = true
-            }
+
         }
     }
 }

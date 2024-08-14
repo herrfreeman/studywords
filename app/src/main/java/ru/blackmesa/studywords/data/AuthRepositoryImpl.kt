@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import ru.blackmesa.studywords.data.db.AppDatabase
 import ru.blackmesa.studywords.data.network.AuthRequest
 import ru.blackmesa.studywords.data.network.AuthResponse
+import ru.blackmesa.studywords.data.network.ConfirmRequest
 import ru.blackmesa.studywords.data.network.CreateUserRequest
 import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.settings.SettingsRepository
@@ -68,6 +69,28 @@ class AuthRepositoryImpl(
                 CreateUserResult.Success()
             }
             else -> CreateUserResult.Error(response.resultCode.toString(), "[${response.errorCode}] ${response.errorMessage}")
+        }
+    }
+
+    override suspend fun confirmCreate(userName: String, password: String, code: String): AuthResult {
+
+        if (userName.isEmpty()) {
+            return AuthResult.Error("", "Login is empty")
+        }
+        if (password.isEmpty()) {
+            return AuthResult.Error("", "Password is empty")
+        }
+
+        val response = networkClient.doRequest(ConfirmRequest(userName, password, "create", code))
+        return when (response.resultCode) {
+            -1 -> AuthResult.NoConnection()
+            200 -> {
+                settings.userKey = (response as AuthResponse).userkey
+                settings.userId = (response as AuthResponse).userid
+                delay(1500)
+                AuthResult.Success()
+            }
+            else -> AuthResult.Error(response.resultCode.toString(), "[${response.errorCode}] ${response.errorMessage}")
         }
     }
 

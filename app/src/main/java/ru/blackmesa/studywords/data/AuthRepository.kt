@@ -14,4 +14,7 @@ interface AuthRepository {
 
     suspend fun signIn(userName: String, password: String): AuthResult
     suspend fun createUser(userName: String): CreateUserResult
+    suspend fun confirmCreate(userName: String, password: String, code: String): AuthResult
+
+
 }
