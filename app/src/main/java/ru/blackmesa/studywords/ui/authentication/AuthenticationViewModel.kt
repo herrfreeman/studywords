@@ -10,6 +10,7 @@ import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.data.models.Credentials
 import ru.blackmesa.studywords.domain.AuthInteractor
 import ru.blackmesa.studywords.domain.AuthResult
+import ru.blackmesa.studywords.domain.ConfirmResult
 import ru.blackmesa.studywords.domain.CreateUserResult
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
@@ -22,6 +23,7 @@ class AuthenticationViewModel(
     private var credentials = Credentials()
     private var errorMessage = ""
     private var confirmErrorMessage = ""
+    private var confirmMode = 0
 
     private val authLiveData = MutableLiveData<AuthState>()
     fun observeAuthState(): LiveData<AuthState> = authLiveData
@@ -84,12 +86,14 @@ class AuthenticationViewModel(
 
             val createResult = authInteractor.createUser(
                 userName = credentials.userName,
+                password = credentials.password
             )
 
             authLiveData.postValue(
                 when (createResult) {
                     is CreateUserResult.Success -> {
                         confirmErrorMessage = ""
+                        confirmMode = CREATE_CONFIRMATION
                         AuthState.CreateConfirmation(
                             credentials = credentials,
                             errorMessage = errorMessage,
@@ -97,51 +101,85 @@ class AuthenticationViewModel(
                             confirmErrorMessage = confirmErrorMessage
                         )
                     }
+
                     is CreateUserResult.Error -> {
                         errorMessage = createResult.errorMessage
                         AuthState.Default(credentials, errorMessage)
                     }
+
                     is CreateUserResult.NoConnection -> {
                         errorMessage = "No internet connection"
                         AuthState.Default(credentials, errorMessage)
                     }
                 }
             )
-
         }
     }
 
-//    fun confirmCreate(userName: String, password: String, code: String) {
-//        credentials = Credentials(userName, credentials.password)
-//        authLiveData.postValue(
-//            AuthState.ConfirmationLoading(credentials, AuthState.ConfirmMode.Create, "")
-//        )
-//
-//        settingsInteractor.userId = 0
-//        settingsInteractor.userKey = ""
-//
-//        viewModelScope.launch {
-//            settingsInteractor.saveCredentials(credentials)
-//
-//            val confirmResult = authInteractor.confirmCreate(
-//                userName = credentials.userName,
-//                password = credentials.password,
-//                code = code,
-//            )
-//
-//            authLiveData.postValue(
-//                when (confirmResult) {
-//                    is AuthResult.Success -> AuthState.Success(credentials)
-//                    is AuthResult.Error -> AuthState.OtherError(
-//                        credentials,
-//                        confirmResult.errorMessage
-//                    )
-//
-//                    is AuthResult.NoConnection -> AuthState.NoInternet(credentials)
-//                    is AuthResult.WrongPassword -> AuthState.PasswordError(credentials)
-//                }
-//            )
-//        }
-//    }
+
+    fun confirm(confirmCode: String) {
+        when (confirmMode) {
+            CREATE_CONFIRMATION -> createConfirmation(confirmCode)
+            RESTORE_CONFIRMATION -> {}
+            else -> {}
+        }
+    }
+
+    private fun createConfirmation(confirmCode: String) {
+        authLiveData.postValue(AuthState.CreateConfirmationLoading(
+            credentials = credentials,
+            errorMessage = errorMessage,
+            confirmCode = confirmCode,
+            confirmErrorMessage = confirmErrorMessage,
+        ))
+
+        viewModelScope.launch {
+
+            val confirmResult = authInteractor.confirmCreate(
+                userName = credentials.userName,
+                password = credentials.password,
+                code = confirmCode
+            )
+
+            authLiveData.postValue(
+                when (confirmResult) {
+                    is ConfirmResult.Success -> {
+                        confirmErrorMessage = ""
+                        AuthState.Success()
+                    }
+
+                    is ConfirmResult.TryAnotherCode -> {
+                        confirmErrorMessage = "Try another code"
+                        AuthState.CreateConfirmation(
+                            credentials = credentials,
+                            errorMessage = errorMessage,
+                            confirmCode = confirmCode,
+                            confirmErrorMessage = confirmErrorMessage,
+                        )
+                    }
+
+                    is ConfirmResult.Error -> {
+                        confirmErrorMessage = ""
+                        errorMessage = confirmResult.errorMessage
+                        AuthState.Default(
+                            credentials = credentials,
+                            errorMessage = errorMessage,
+                        )
+                    }
+
+                    is ConfirmResult.NoConnection -> {
+                        errorMessage = "No internet connection"
+                        AuthState.Default(credentials, errorMessage)
+                    }
+
+                }
+            )
+        }
+    }
+
+    companion object {
+        const val CREATE_CONFIRMATION = 1
+        const val RESTORE_CONFIRMATION = 2
+    }
 
 }

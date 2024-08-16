@@ -3,7 +3,6 @@ package ru.blackmesa.studywords.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,7 +11,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.blackmesa.studywords.data.dto.DictionaryDto
 
 
 class RetrofitNetworkClient(
@@ -65,7 +63,7 @@ class RetrofitNetworkClient(
 
                 is CreateUserRequest -> {
                     try {
-                        webService.createuser(dto).apply { resultCode = 200 }
+                        webService.createUser(dto).apply { resultCode = 200 }
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()

@@ -18,7 +18,7 @@ class AuthInteractorImpl(
 ) : AuthInteractor {
 
     override suspend fun singIn(userName: String, password: String) = reposytory.signIn(userName, password)
-    override suspend fun createUser(userName: String) = reposytory.createUser(userName)
+    override suspend fun createUser(userName: String, password: String) = reposytory.createUser(userName, password)
     override suspend fun confirmCreate(userName: String, password: String, code: String) = reposytory.confirmCreate(userName, password, code)
 
 }

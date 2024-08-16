@@ -1,7 +1,6 @@
 package ru.blackmesa.studywords.data.network
 
 
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -16,7 +15,7 @@ interface StudyWordsApi {
 
     @POST("/createuser")
     @Headers("Content-Type: application/json")
-    suspend fun createuser(
+    suspend fun createUser(
         @Body request: CreateUserRequest,
     ): CreateUserResponse
 
@@ -24,7 +23,7 @@ interface StudyWordsApi {
     @Headers("Content-Type: application/json")
     suspend fun confirm(
         @Body request: ConfirmRequest,
-    ): AuthResponse
+    ): ConfirmResponse
 
     @POST("/update")
     @Headers("Content-Type: application/json")

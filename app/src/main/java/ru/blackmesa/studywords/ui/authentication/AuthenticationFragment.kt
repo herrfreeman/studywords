@@ -71,6 +71,10 @@ class AuthenticationFragment : Fragment() {
             )
         }
 
+        binding.confirmButton.setOnClickListener {
+            viewModel.confirm(binding.confirmCode.text.toString())
+        }
+
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
 
@@ -90,26 +94,53 @@ class AuthenticationFragment : Fragment() {
         when (state) {
             is AuthState.Default -> {
                 binding.progressBar.isVisible = false
-                binding.confirmCodeLayout.isVisible = false
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(true)
             }
             is AuthState.DefaultLoading -> {
                 binding.progressBar.isVisible = true
-                binding.confirmCodeLayout.isVisible = false
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(false)
             }
             is AuthState.CreateConfirmation -> {
                 binding.progressBar.isVisible = false
-                binding.confirmCodeLayout.isVisible = true
+                binding.confirmationLayout.isVisible = true
+                makeMainViewEnabled(false)
+                makeConfirmViewEnabled(true)
                 binding.confirmErrorMessage.text = state.confirmErrorMessage
                 binding.confirmCode.setText(state.confirmCode)
             }
             is AuthState.CreateConfirmationLoading -> {
                 binding.progressBar.isVisible = true
-                binding.confirmCodeLayout.isVisible = true
+                binding.confirmationLayout.isVisible = true
+                makeMainViewEnabled(false)
+                makeConfirmViewEnabled(false)
                 binding.confirmErrorMessage.text = state.confirmErrorMessage
                 binding.confirmCode.setText(state.confirmCode)
             }
-            is AuthState.Success -> Log.d("STUDY_WORDS_DEBUG", "Success")
+            is AuthState.Success -> {
+                Log.d("STUDY_WORDS_DEBUG", "Success")
+                binding.progressBar.isVisible = false
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(false)
+            }
 
         }
+    }
+
+    private fun makeMainViewEnabled(isEnabled: Boolean) {
+        binding.mainLayout.isEnabled = isEnabled
+        binding.userName.isEnabled = isEnabled
+        binding.password.isEnabled = isEnabled
+
+        binding.loginButton.isEnabled = isEnabled
+        binding.createButton.isEnabled = isEnabled
+        binding.restoreButton.isEnabled = isEnabled
+    }
+
+    private fun makeConfirmViewEnabled(isEnabled: Boolean) {
+        binding.confirmationLayout.isEnabled = isEnabled
+        binding.confirmCode.isEnabled = isEnabled
+        binding.confirmButton.isEnabled = isEnabled
     }
 }
