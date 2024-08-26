@@ -29,15 +29,6 @@ interface LibraryDao {
     @Query("SELECT version FROM dict_table ORDER BY version DESC LIMIT 1;")
     fun getDictVersion(): List<Long>
 
-    @Query("SELECT version FROM words_table ORDER BY version DESC LIMIT 1;")
-    fun getWordsVersion(): List<Long>
-
-    @Query("SELECT version FROM wordindict_table ORDER BY version DESC LIMIT 1;")
-    fun getWordInDictVersion(): List<Long>
-
-    @Query("SELECT version FROM wordtranslate_table ORDER BY version DESC LIMIT 1;")
-    fun getTranslateVersion(): List<Long>
-
     @Query("SELECT version FROM progress_table WHERE userid = :userid AND touched = false ORDER BY version DESC LIMIT 1;")
     fun getProgressVersion(userid: Int): List<Long>
 

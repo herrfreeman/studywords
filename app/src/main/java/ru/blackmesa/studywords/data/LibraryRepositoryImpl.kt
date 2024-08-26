@@ -17,6 +17,7 @@ import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.data.network.AuthRequest
 import ru.blackmesa.studywords.data.network.AuthResponse
+import ru.blackmesa.studywords.data.network.LibraryRequest
 import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.UpdateRequest
 import ru.blackmesa.studywords.data.network.UpdateResponse
@@ -36,14 +37,10 @@ class LibraryRepositoryImpl(
         }
 
         val libraryVersions = getLibraryVersions()
-        val request = UpdateRequest(
+        val request = LibraryRequest(
+            username = settings.userName,
             userkey = settings.userKey,
-            dictversion = libraryVersions.dictsVersion,
-            wordsversion = libraryVersions.wordsVersion,
-            wordsindictsversion = libraryVersions.wordsInDictVersion,
-            wordtranslateversion = libraryVersions.wordTranslateVersion,
-            progressversion = libraryVersions.progressVersion,
-            localprogress = getLocalProgress(settings.userId)
+            version = libraryVersions.dictsVersion,
         )
 
         Log.d("STUDY_WORDS", Gson().toJson(request))
@@ -102,51 +99,45 @@ class LibraryRepositoryImpl(
         updateResponse: UpdateResponse
     ): UpdateResult {
 
-        return withContext(Dispatchers.IO) {
-
-            with(database.libraryDao()) {
-                insertWords(updateResponse.words.map { it.toWordEntity() })
-                insertWordInList(updateResponse.wordsindicts.map { it.toWordInDictEntity() })
-                insertTranslate(updateResponse.wordtranslate.map { it.toWordTranslateEntity() })
-                //At first update sent progress as untouched
-                insertProgress(updateRequest.localprogress.map {
-                    it.toProgressEntity(settings.userId, false)
-                })
-                //Then load external progress data
-                insertProgress(updateResponse.progress.map {
-                    it.toProgressEntity(settings.userId, false)
-                })
-
-                if (updateResponse.dictionaries.isEmpty()
-                    && updateResponse.words.isEmpty()
-                    && updateResponse.wordsindicts.isEmpty()
-                    && updateResponse.wordtranslate.isEmpty()
-                    && updateResponse.progress.isEmpty()
-                ) {
-                    UpdateResult.Synchronized
-                } else {
-                    insertDict(updateResponse.dictionaries.map { it.toDictEntity() })
-                    UpdateResult.LibraryUpdated(
-                        getDictionariesWithProgress()
-                    )
-                }
-            }
-        }
+//        return withContext(Dispatchers.IO) {
+//
+//            with(database.libraryDao()) {
+//                insertWords(updateResponse.words.map { it.toWordEntity() })
+//                insertWordInList(updateResponse.wordsindicts.map { it.toWordInDictEntity() })
+//                insertTranslate(updateResponse.wordtranslate.map { it.toWordTranslateEntity() })
+//                //At first update sent progress as untouched
+//                insertProgress(updateRequest.localprogress.map {
+//                    it.toProgressEntity(settings.userId, false)
+//                })
+//                //Then load external progress data
+//                insertProgress(updateResponse.progress.map {
+//                    it.toProgressEntity(settings.userId, false)
+//                })
+//
+//                if (updateResponse.dictionaries.isEmpty()
+//                    && updateResponse.words.isEmpty()
+//                    && updateResponse.wordsindicts.isEmpty()
+//                    && updateResponse.wordtranslate.isEmpty()
+//                    && updateResponse.progress.isEmpty()
+//                ) {
+//                    UpdateResult.Synchronized
+//                } else {
+//                    insertDict(updateResponse.dictionaries.map { it.toDictEntity() })
+//                    UpdateResult.LibraryUpdated(
+//                        getDictionariesWithProgress()
+//                    )
+//                }
+//            }
+//        }
     }
 
     private suspend fun getLibraryVersions(): LibraryVersions {
         return withContext(Dispatchers.IO) {
-            val dict = database.libraryDao().getDictVersion()
-            val words = database.libraryDao().getWordsVersion()
-            val wordindict = database.libraryDao().getWordInDictVersion()
-            val translate = database.libraryDao().getTranslateVersion()
+            val library = database.libraryDao().getDictVersion()
             val progress = database.libraryDao().getProgressVersion(settings.userId)
 
             LibraryVersions(
-                dictsVersion = if (dict.isEmpty()) 0L else dict.first(),
-                wordsVersion = if (words.isEmpty()) 0L else words.first(),
-                wordsInDictVersion = if (wordindict.isEmpty()) 0L else wordindict.first(),
-                wordTranslateVersion = if (translate.isEmpty()) 0L else translate.first(),
+                dictsVersion = if (library.isEmpty()) 0L else library.first(),
                 progressVersion = if (progress.isEmpty()) 0L else progress.first(),
             )
         }

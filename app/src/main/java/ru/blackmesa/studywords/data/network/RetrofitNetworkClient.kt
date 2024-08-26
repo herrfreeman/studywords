@@ -93,6 +93,35 @@ class RetrofitNetworkClient(
 
                 }
 
+                is LibraryRequest -> {
+                    try {
+                        webService.library(dto).apply { resultCode = 200 }
+                    } catch (e: HttpException) {
+                        Response().apply {
+                            resultCode = e.code()
+                            val errorBody = e.response()?.errorBody()?.string() ?: ""
+                            errorCode = errorBody.substringBefore("#").trim()
+                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                        }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
+
+                is DictionaryRequest -> {
+                    try {
+                        webService.dictionary(dto).apply { resultCode = 200 }
+                    } catch (e: HttpException) {
+                        Response().apply {
+                            resultCode = e.code()
+                            val errorBody = e.response()?.errorBody()?.string() ?: ""
+                            errorCode = errorBody.substringBefore("#").trim()
+                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                        }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
 
                 else -> Response().apply { resultCode = 400 }
             }

@@ -8,7 +8,7 @@ data class WordTranslateEntity(
     @PrimaryKey
     val id: Int,
     val wordid: Int,
+    val userid: Int,
     val translate: String,
-    val version: Long,
 )
 

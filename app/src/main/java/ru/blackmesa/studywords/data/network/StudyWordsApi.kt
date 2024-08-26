@@ -25,6 +25,18 @@ interface StudyWordsApi {
         @Body request: ConfirmRequest,
     ): ConfirmResponse
 
+    @POST("/library")
+    @Headers("Content-Type: application/json")
+    suspend fun library(
+        @Body request: LibraryRequest,
+    ): LibraryResponse
+
+    @POST("/dictionary")
+    @Headers("Content-Type: application/json")
+    suspend fun dictionary(
+        @Body request: DictionaryRequest,
+    ): DictionaryResponse
+
     @POST("/update")
     @Headers("Content-Type: application/json")
     suspend fun update(
