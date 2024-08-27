@@ -124,25 +124,4 @@ class LibraryFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-//    private fun renderUpdateStatus(it: UpdateResult) {
-//        when (it) {
-//            is UpdateResult.Synchronized -> binding.topAppBar.setNavigationIcon(R.drawable.ic_synchronized)
-//            is UpdateResult.Error -> {
-//                findNavController().navigate(R.id.action_libraryFragment_to_authenticationFragment,
-//                    AuthenticationFragment.createArgs(it.message))
-//            }
-//            is UpdateResult.LibraryUpdated -> {
-//                adapter.library.clear()
-//                adapter.library.addAll(it.library)
-//                adapter.notifyDataSetChanged()
-//                //binding.libraryRecyclerView.invalidate()
-//                binding.topAppBar.setNavigationIcon(R.drawable.ic_bolt)
-//            }
-//            is UpdateResult.NoConnection -> binding.topAppBar.setNavigationIcon(R.drawable.ic_flightmode)
-//            is UpdateResult.NotSignedIn -> findNavController().navigate(R.id.action_libraryFragment_to_authenticationFragment)
-//        }
-//
-//    }
-
-
 }

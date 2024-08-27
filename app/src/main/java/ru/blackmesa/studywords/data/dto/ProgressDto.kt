@@ -1,9 +1,10 @@
 package ru.blackmesa.studywords.data.dto
 
 data class ProgressDto(
-    val wordid: Int,
+    val wordId: Int,
+    val wordUserId: Int,
     val status: Int,
-    val repeatdate: Long,
     val version: Long,
+    val repeatDate: Long,
 )
 

@@ -53,14 +53,6 @@ class RetrofitNetworkClient(
 
                 }
 
-                is UpdateRequest -> {
-                    try {
-                        webService.update(dto).apply { resultCode = 200 }
-                    } catch (e: HttpException) {
-                        Response().apply { resultCode = e.code()  }
-                    }
-                }
-
                 is CreateUserRequest -> {
                     try {
                         webService.createUser(dto).apply { resultCode = 200 }
@@ -111,6 +103,21 @@ class RetrofitNetworkClient(
                 is DictionaryRequest -> {
                     try {
                         webService.dictionary(dto).apply { resultCode = 200 }
+                    } catch (e: HttpException) {
+                        Response().apply {
+                            resultCode = e.code()
+                            val errorBody = e.response()?.errorBody()?.string() ?: ""
+                            errorCode = errorBody.substringBefore("#").trim()
+                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                        }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
+
+                is ProgressRequest -> {
+                    try {
+                        webService.progress(dto).apply { resultCode = 200 }
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()

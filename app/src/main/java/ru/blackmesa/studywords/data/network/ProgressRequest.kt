@@ -2,9 +2,9 @@ package ru.blackmesa.studywords.data.network
 
 import ru.blackmesa.studywords.data.dto.ProgressDto
 
-data class UpdateRequest(
+data class ProgressRequest(
+    val userid: Int,
     val userkey: String,
-    val dictversion: Long,
-    val progressversion: Long,
-    val localprogress: List<ProgressDto>
+    val version: Long,
+    val progress: List<ProgressDto>
 )

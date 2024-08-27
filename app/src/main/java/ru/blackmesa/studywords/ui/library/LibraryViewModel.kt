@@ -1,7 +1,6 @@
 package ru.blackmesa.studywords.ui.library
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
-import ru.blackmesa.studywords.data.models.LibraryUpdateResult
 import ru.blackmesa.studywords.domain.LibraryInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
@@ -48,31 +47,28 @@ class LibraryViewModel(
     fun updateLibrary() {
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
+            delay(UPDATE_DELAY)
             val updateResult = libInteractor.updateAllData()
             when (updateResult) {
-                is LibraryUpdateResult.Error -> {
-                    Log.d("STUDY_WORDS", updateResult.message)
+                is DataUpdateResult.Error ->
                     libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
-                }
 
-                is LibraryUpdateResult.LibraryUpdated -> {
+                is DataUpdateResult.DataUpdated -> {
                     libraryData = libInteractor.getDictionariesWithProgress()
                     libraryState.postValue(LibraryState.LibraryUpdated(libraryData))
                 }
 
-                is LibraryUpdateResult.NoConnection -> {
+                is DataUpdateResult.NoConnection -> {
                     libraryData = libInteractor.getDictionariesWithProgress()
                     libraryState.postValue(LibraryState.NoConnection(libraryData))
                 }
 
-                is LibraryUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
-                is LibraryUpdateResult.Synchronized -> {
-                    Log.d("STUDY_WORDS", "Synchronized")
+                is DataUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
+                is DataUpdateResult.Synchronized -> {
                     libraryData = libInteractor.getDictionariesWithProgress()
                     libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
                 }
             }
-            delay(UPDATE_DELAY)
         }
     }
 

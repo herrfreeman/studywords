@@ -5,6 +5,7 @@ import ru.blackmesa.studywords.data.db.ProgressEntity
 import ru.blackmesa.studywords.data.db.WordEntity
 import ru.blackmesa.studywords.data.db.WordTranslateEntity
 import ru.blackmesa.studywords.data.dto.DictionaryDto
+import ru.blackmesa.studywords.data.dto.ProgressDto
 import ru.blackmesa.studywords.data.dto.WordDto
 import ru.blackmesa.studywords.data.dto.WordTranslateDto
 import ru.blackmesa.studywords.data.models.Dictionary
@@ -95,174 +96,31 @@ fun WordTranslateDto.toEntity() = WordTranslateEntity(
     translate = translate,
 )
 
-fun Progress.toEntity(userid: Int) = ProgressEntity(
+fun Progress.toEntity(userId: Int) = ProgressEntity(
     wordId = wordId,
     wordUserId = 0,
-    userId = userid,
+    userId = userId,
     status = status,
     repeatDate = repeatDate,
     version = version,
     touched = touched,
 )
 
-//fun WordEntity.toWordDto() = WordDto(
-//    id = id,
-//    userId = userId,
-//    word = word,
-//)
-//
-//fun WordEntity.toWord() = Word(
-//    id = id,
-//    userId = userId,
-//    word = word,
-//)
-//
-//fun WordDto.toWordEntity() = WordEntity(
-//    id = id,
-//    userId = userId,
-//    word = word,
-//)
-//
-//fun WordDto.toWord() = Word(
-//    id = id,
-//    userId = userId,
-//    word = word,
-//)
-//
-//fun Word.toWordEntity() = WordEntity(
-//    id = id,
-//    userId = userId,
-//    word = word,
-//)
-//
-//fun Word.toWordDto() = WordDto(
-//    id = id,
-//    word = word,
-//    version = version,
-//)
-//
-//fun WordInDictEntity.toWordInDictDto() = WordInDictDto(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordInDictEntity.toWordInDict() = WordInDict(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordInDict.toWordInDictDto() = WordInDictDto(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordInDict.toWordInDictEntity() = WordInDictEntity(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordInDictDto.toWordInDictEntity() = WordInDictEntity(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordInDictDto.toWordInDict() = WordInDict(
-//    wordid = wordid,
-//    dictid = dictid,
-//    version = version,
-//)
-//
-//fun WordTranslateEntity.toWordTranslateDto() = WordTranslateDto(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun WordTranslateEntity.toWordTranslate() = WordTranslate(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun WordTranslate.toWordTranslateDto() = WordTranslateDto(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun WordTranslate.toWordTranslateEntity() = WordTranslateEntity(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun WordTranslateDto.toWordTranslateEntity() = WordTranslateEntity(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun WordTranslateDto.toWordTranslate() = WordTranslate(
-//    id = id,
-//    wordid = wordid,
-//    translate = translate,
-//    version = version,
-//)
-//
-//fun ProgressEntity.toProgressDto() = ProgressDto(
-//    wordid = wordid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//)
-//
-//fun ProgressEntity.toProgress() = Progress(
-//    wordid = wordid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//    touched = touched,
-//)
-//
-//fun Progress.toProgressDto(userid: Int) = ProgressDto(
-//    wordid = wordid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//)
-//
-//fun Progress.toProgressEntity(userid: Int) = ProgressEntity(
-//    wordid = wordid,
-//    userid = userid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//    touched = touched,
-//)
-//
-//fun ProgressDto.toProgressEntity(userid: Int, touched: Boolean) = ProgressEntity(
-//    wordid = wordid,
-//    userid = userid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//    touched = touched,
-//)
-//
-//fun ProgressDto.toProgress(touched: Boolean) = Progress(
-//    wordid = wordid,
-//    status = status,
-//    repeatdate = repeatdate,
-//    version = version,
-//    touched = touched,
-//)
+fun ProgressEntity.toDto() = ProgressDto(
+    wordId = wordId,
+    wordUserId = 0,
+    status = status,
+    version = version,
+    repeatDate = repeatDate,
+)
+
+fun ProgressDto.toEntity(userId: Int) = ProgressEntity(
+    wordId = wordId,
+    wordUserId = 0,
+    userId = userId,
+    status = status,
+    repeatDate = repeatDate,
+    version = version,
+    touched = false,
+)
+

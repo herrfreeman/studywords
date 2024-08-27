@@ -37,9 +37,10 @@ interface StudyWordsApi {
         @Body request: DictionaryRequest,
     ): DictionaryResponse
 
-    @POST("/update")
+    @POST("/progress")
     @Headers("Content-Type: application/json")
-    suspend fun update(
-        @Body request: UpdateRequest,
-    ): UpdateResponse
+    suspend fun progress(
+        @Body request: ProgressRequest,
+    ): ProgressResponse
+
 }

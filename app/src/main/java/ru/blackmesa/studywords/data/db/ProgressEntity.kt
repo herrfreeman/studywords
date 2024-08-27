@@ -15,6 +15,6 @@ data class ProgressEntity(
     @ColumnInfo(name = "repeatdate")
     val repeatDate: Long,
     val version: Long,
-    val touched: Boolean,
+    var touched: Boolean,
 )
 
