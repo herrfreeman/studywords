@@ -5,10 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.domain.LibraryInteractor
@@ -84,9 +81,9 @@ class StudyViewModel(
             viewModelScope.launch {
                 libInteractor.setProgress(wordList.map {
                     Progress(
-                        wordid = it.wordid,
+                        wordId = it.wordid,
                         status = it.status,
-                        repeatdate = it.repeatdate,
+                        repeatDate = it.repeatdate,
                         version = System.currentTimeMillis() / 1000,
                         touched = true,
                     )

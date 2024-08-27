@@ -3,12 +3,10 @@ package ru.blackmesa.studywords.ui.library
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.DictData
-import ru.blackmesa.studywords.data.models.Dictionary
 
 class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: LibraryRVAdapter.ItemClickListener) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
@@ -28,11 +26,11 @@ class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: Li
         }
 
         //wordsCount.text = "${model.total} / ${model.done} / ${model.repeat} / ${model.wait}"
-        wordsCount.text = "${model.total}"
-        if (model.repeat > 0) {
-            repeatCount.text = " | ${model.repeat}"
+        wordsCount.text = "${model.totalCount}"
+        if (model.repeatCount > 0) {
+            repeatCount.text = " | ${model.repeatCount}"
         }
-        statusView.background = StatusBarDrawable(model.total, model.done, model.repeat, model.wait)
+        statusView.background = StatusBarDrawable(model.totalCount, model.doneCount, model.repeatCount, model.waitCount)
 
     }
 

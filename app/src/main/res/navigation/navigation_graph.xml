@@ -9,11 +9,7 @@
         android:id="@+id/authenticationFragment"
         android:name="ru.blackmesa.studywords.ui.authentication.AuthenticationFragment"
         android:label="fragment_authentication"
-        tools:layout="@layout/fragment_authentication" >
-        <action
-            android:id="@+id/action_authenticationFragment_to_libraryFragment"
-            app:destination="@id/libraryFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_authentication" />
     <fragment
         android:id="@+id/libraryFragment"
         android:name="ru.blackmesa.studywords.ui.library.LibraryFragment"

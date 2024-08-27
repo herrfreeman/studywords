@@ -1,6 +1,7 @@
 package ru.blackmesa.studywords.ui.library
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.blackmesa.studywords.data.models.DictData
-import ru.blackmesa.studywords.data.models.UpdateResult
+import ru.blackmesa.studywords.data.models.LibraryUpdateResult
 import ru.blackmesa.studywords.domain.LibraryInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
@@ -19,20 +20,20 @@ class LibraryViewModel(
     private val settingsInteractor: SettingsInteractor,
 ) : AndroidViewModel(application) {
 
-    private val updateStateLiveData = MutableLiveData<UpdateResult>()
-    fun observeUpdateState(): LiveData<UpdateResult> = updateStateLiveData
-
-    private val dictionaryLiveData = MutableLiveData<List<DictData>>()
-    fun observeDictionary(): LiveData<List<DictData>> = dictionaryLiveData
+    private val libraryState = MutableLiveData<LibraryState>()
+    fun observeLibraryState(): LiveData<LibraryState> = libraryState
 
     private var updateJob: Job? = null
+    private var libraryData: List<DictData> = emptyList()
 
     companion object {
         val UPDATE_DELAY = 1000L
     }
 
     init {
-        loadLibrary()
+        libraryState.postValue(LibraryState.Start)
+        loadLocalLibrary()
+        updateLibrary()
     }
 
     override fun onCleared() {
@@ -40,13 +41,38 @@ class LibraryViewModel(
         stopUpdate()
     }
 
-    fun startUpdate() {
+    fun setDefaultState() {
+        libraryState.postValue(LibraryState.Start)
+    }
+
+    fun updateLibrary() {
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
-            //while (true) {
-            updateStateLiveData.postValue(libInteractor.updateAllData())
+            val updateResult = libInteractor.updateAllData()
+            when (updateResult) {
+                is LibraryUpdateResult.Error -> {
+                    Log.d("STUDY_WORDS", updateResult.message)
+                    libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
+                }
+
+                is LibraryUpdateResult.LibraryUpdated -> {
+                    libraryData = libInteractor.getDictionariesWithProgress()
+                    libraryState.postValue(LibraryState.LibraryUpdated(libraryData))
+                }
+
+                is LibraryUpdateResult.NoConnection -> {
+                    libraryData = libInteractor.getDictionariesWithProgress()
+                    libraryState.postValue(LibraryState.NoConnection(libraryData))
+                }
+
+                is LibraryUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
+                is LibraryUpdateResult.Synchronized -> {
+                    Log.d("STUDY_WORDS", "Synchronized")
+                    libraryData = libInteractor.getDictionariesWithProgress()
+                    libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
+                }
+            }
             delay(UPDATE_DELAY)
-            //}
         }
     }
 
@@ -58,20 +84,22 @@ class LibraryViewModel(
         viewModelScope.launch {
             settingsInteractor.userId = 0
             settingsInteractor.userKey = ""
-            updateStateLiveData.postValue(UpdateResult.NotSignedIn)
+            libraryState.postValue(LibraryState.NotAuthorized)
         }
     }
 
-    fun loadLibrary() {
+    fun loadLocalLibrary() {
         viewModelScope.launch {
-            dictionaryLiveData.postValue(libInteractor.getDictionariesWithProgress())
+            libraryData = libInteractor.getDictionariesWithProgress()
+            libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
         }
     }
 
     fun wipeAllLocalData() {
         viewModelScope.launch {
+            libraryState.postValue(LibraryState.Start)
             libInteractor.wipeAllLocalData()
-            dictionaryLiveData.postValue(emptyList())
+            updateLibrary()
         }
     }
 

@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.databinding.FragmentAuthenticationBinding
@@ -123,6 +124,7 @@ class AuthenticationFragment : Fragment() {
                 binding.progressBar.isVisible = false
                 binding.confirmationLayout.isVisible = false
                 makeMainViewEnabled(false)
+                findNavController().popBackStack()
             }
 
         }

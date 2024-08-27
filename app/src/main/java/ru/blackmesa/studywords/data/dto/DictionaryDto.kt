@@ -2,12 +2,12 @@ package ru.blackmesa.studywords.data.dto
 
 data class DictionaryDto(
     val id: Int,
-    val userid: Int,
+    val userId: Int,
     val name: String,
-    val orderfield: Int,
+    val orderField: Int,
     val version: Long,
-    val isfolder: Boolean,
-    val parentid: Int,
-    val parentuserid: Int,
-    val isdefault: Boolean,
+    val parentId: Int,
+    val parentUserId: Int,
+    val isFolder: Boolean,
+    val isDefault: Boolean,
 )

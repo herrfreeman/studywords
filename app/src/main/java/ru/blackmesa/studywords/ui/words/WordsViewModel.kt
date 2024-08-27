@@ -38,9 +38,9 @@ class WordsViewModel(
         viewModelScope.launch {
             libInteractor.setProgress(words.map {
                 Progress(
-                    wordid = it.wordid,
+                    wordId = it.wordid,
                     status = it.status,
-                    repeatdate = 0L,
+                    repeatDate = 0L,
                     version = System.currentTimeMillis() / 1000,
                     touched = true,
                 )

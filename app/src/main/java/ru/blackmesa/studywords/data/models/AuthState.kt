@@ -7,7 +7,6 @@ sealed class AuthState(val credentials: Credentials, val errorMessage: String = 
         object Restore : ConfirmMode
     }
 
-
     class Default(credentials: Credentials, errorMessage: String = "") :
         AuthState(credentials, errorMessage)
 
@@ -28,7 +27,7 @@ sealed class AuthState(val credentials: Credentials, val errorMessage: String = 
         val confirmErrorMessage: String = ""
     ) : AuthState(credentials, errorMessage)
 
-    class Success : AuthState(Credentials())
+    class Success(credentials: Credentials) : AuthState(credentials)
 
 //    class NotConnected(credentials: Credentials) : AuthState(credentials)
 //

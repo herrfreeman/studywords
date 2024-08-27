@@ -26,12 +26,12 @@ class AuthRepositoryImpl(
 
     override suspend fun signIn(userName: String, password: String): AuthResult {
 
-        if (userName.isEmpty()) {
-            return AuthResult.Error("", "Login is empty")
-        }
-        if (password.isEmpty()) {
-            return AuthResult.Error("", "Password is empty")
-        }
+//        if (userName.isEmpty()) {
+//            return AuthResult.Error("", "Login is empty")
+//        }
+//        if (password.isEmpty()) {
+//            return AuthResult.Error("", "Password is empty")
+//        }
 
         val response = networkClient.doRequest(AuthRequest(userName, password))
         return when (response.resultCode) {

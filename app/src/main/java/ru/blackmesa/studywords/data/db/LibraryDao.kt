@@ -56,14 +56,15 @@ interface LibraryDao {
     @Query("SELECT * FROM wordindict_table WHERE dictid = :dictId")
     fun getWordsInDict(dictId: Int): List<WordInDictEntity>
 
+    //TODO добавить worduserid
     @Query(
         """
         select dict_table.id as id, 
         dict_table.name as name, 
-        dict_progress.total as total,
-        dict_progress.repeat as repeat,
-        dict_progress.wait as wait,
-        dict_progress.done as done  
+        dict_progress.total as totalCount,
+        dict_progress.repeat as repeatCount,
+        dict_progress.wait as waitCount,
+        dict_progress.done as doneCount  
         from dict_table
         left join (
         select wordindict_table.dictid,  

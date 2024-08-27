@@ -41,9 +41,6 @@ class AuthenticationViewModel(
         credentials = Credentials(userName, password)
         authLiveData.postValue(AuthState.DefaultLoading(credentials, errorMessage))
 
-        settingsInteractor.userId = 0
-        settingsInteractor.userKey = ""
-
         viewModelScope.launch {
             settingsInteractor.saveCredentials(credentials)
 
@@ -54,7 +51,9 @@ class AuthenticationViewModel(
 
             authLiveData.postValue(
                 when (authResult) {
-                    is AuthResult.Success -> AuthState.Success()
+                    is AuthResult.Success -> {
+                        AuthState.Success(credentials)
+                    }
                     is AuthResult.Error -> {
                         errorMessage = authResult.errorMessage
                         AuthState.Default(credentials, errorMessage)
@@ -77,9 +76,6 @@ class AuthenticationViewModel(
     fun createAccount(userName: String, password: String) {
         credentials = Credentials(userName, password)
         authLiveData.postValue(AuthState.DefaultLoading(credentials, errorMessage))
-
-        settingsInteractor.userId = 0
-        settingsInteractor.userKey = ""
 
         viewModelScope.launch {
             settingsInteractor.saveCredentials(credentials)
@@ -145,7 +141,7 @@ class AuthenticationViewModel(
                 when (confirmResult) {
                     is ConfirmResult.Success -> {
                         confirmErrorMessage = ""
-                        AuthState.Success()
+                        AuthState.Success(credentials)
                     }
 
                     is ConfirmResult.TryAnotherCode -> {
