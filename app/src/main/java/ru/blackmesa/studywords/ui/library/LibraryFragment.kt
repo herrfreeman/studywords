@@ -82,6 +82,7 @@ class LibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
         viewModel.loadLocalLibrary()
         viewModel.updateLibrary()
 

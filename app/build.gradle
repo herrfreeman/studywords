@@ -13,22 +13,22 @@ android {
         applicationId "ru.blackmesa.studywords"
         minSdk 33
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String", "BUILD_NAME", "\"RE-LEASE\"")
+            signingConfig signingConfigs.debug
         }
 
         debug {
             minifyEnabled false
-            applicationIdSuffix = ".debug"
             buildConfigField("String", "BUILD_NAME", "\"DE-BUG\"")
         }
     }

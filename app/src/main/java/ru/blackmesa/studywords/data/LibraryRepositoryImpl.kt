@@ -31,7 +31,7 @@ class LibraryRepositoryImpl(
         return withContext(Dispatchers.IO) {
 
             if (settings.userKey.isEmpty() || settings.userId == 0) {
-                DataUpdateResult.NotSignedIn
+                return@withContext DataUpdateResult.NotSignedIn
             }
 
             val lastLibrary = database.libraryDao().getDictVersion()
