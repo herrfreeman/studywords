@@ -111,13 +111,15 @@ class LibraryRepositoryImpl(
             return DataUpdateResult.Synchronized
         } else {
             dictionaries.forEach {
-                val dictUpdateResult = updateDictionary(it.id)
-                when (dictUpdateResult) {
-                    is DataUpdateResult.Error,
-                    is DataUpdateResult.NoConnection,
-                    is DataUpdateResult.NotSignedIn -> return dictUpdateResult
+                if (it.isDefault) {
+                    val dictUpdateResult = updateDictionary(it.id)
+                    when (dictUpdateResult) {
+                        is DataUpdateResult.Error,
+                        is DataUpdateResult.NoConnection,
+                        is DataUpdateResult.NotSignedIn -> return dictUpdateResult
 
-                    else -> Unit
+                        else -> Unit
+                    }
                 }
             }
             database.libraryDao().insertDict(dictionaries.map { it.toEntity() })
@@ -125,40 +127,45 @@ class LibraryRepositoryImpl(
         }
     }
 
-    private suspend fun updateDictionary(dictId: Int): DataUpdateResult {
-        val request = DictionaryRequest(
-            userid = settings.userId,
-            userkey = settings.userKey,
-            dictid = dictId
-        )
+    override suspend fun updateDictionary(dictId: Int): DataUpdateResult {
+        return withContext(Dispatchers.IO) {
 
-        val response = networkClient.doRequest(request)
-        return when (response.resultCode) {
-            -1 -> DataUpdateResult.NoConnection
-            200 -> {
-                database.libraryDao()
-                    .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
-                database.libraryDao()
-                    .insertTranslate((response as DictionaryResponse).translate.map { it.toEntity() })
-                database.libraryDao().insertWordInList(
-                    (response as DictionaryResponse).words.map {
-                        WordInDictEntity(
-                            wordId = it.id,
-                            userId = it.userId,
-                            dictId = dictId,
-                        )
+            val request = DictionaryRequest(
+                userid = settings.userId,
+                userkey = settings.userKey,
+                dictid = dictId
+            )
+
+            val response = networkClient.doRequest(request)
+            when (response.resultCode) {
+                -1 -> DataUpdateResult.NoConnection
+                200 -> {
+                    database.libraryDao()
+                        .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
+                    (response as DictionaryResponse).translate.forEach {
+                        val x = it
                     }
-                )
-                DataUpdateResult.DataUpdated
-            }
+//                    database.libraryDao()
+//                        .insertTranslate((response as DictionaryResponse).translate.map { it.toEntity() })
+                    database.libraryDao().insertWordInList(
+                        (response as DictionaryResponse).words.map {
+                            WordInDictEntity(
+                                wordId = it.id,
+                                dictId = dictId,
+                            )
+                        }
+                    )
+                    DataUpdateResult.DataUpdated
+                }
 
-            401 -> {
-                settings.userKey = ""
-                settings.userId = 0
-                DataUpdateResult.Error("Auth error from library")
-            }
+                401 -> {
+                    settings.userKey = ""
+                    settings.userId = 0
+                    DataUpdateResult.Error("Auth error from library")
+                }
 
-            else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+                else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+            }
         }
     }
 
@@ -182,7 +189,8 @@ class LibraryRepositoryImpl(
         return when (response.resultCode) {
             -1 -> DataUpdateResult.NoConnection
             200 -> {
-                database.libraryDao().insertProgress(localProgress.map { it.apply { touched = false } })
+                database.libraryDao()
+                    .insertProgress(localProgress.map { it.apply { touched = false } })
                 database.libraryDao().insertProgress((response as ProgressResponse)
                     .progress.map { it.toEntity(settings.userId) })
                 DataUpdateResult.Synchronized

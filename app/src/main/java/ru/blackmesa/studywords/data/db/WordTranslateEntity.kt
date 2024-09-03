@@ -10,8 +10,6 @@ data class WordTranslateEntity(
     val id: Int,
     @ColumnInfo(name = "wordid")
     val wordId: Int,
-    @ColumnInfo(name = "userid")
-    val userId: Int,
     val translate: String,
 )
 

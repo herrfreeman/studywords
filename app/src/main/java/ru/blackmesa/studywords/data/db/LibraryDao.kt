@@ -56,7 +56,6 @@ interface LibraryDao {
     @Query("SELECT * FROM wordindict_table WHERE dictid = :dictId")
     fun getWordsInDict(dictId: Int): List<WordInDictEntity>
 
-    //TODO добавить worduserid
     @Query(
         """
         select dict_table.id as id, 

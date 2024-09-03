@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".ui.library.LibraryFragment">
 
 
@@ -27,58 +28,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!--    <LinearLayout-->
-    <!--        android:id="@+id/upBar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="60dp"-->
-    <!--        android:background="?attr/colorPrimary"-->
-    <!--        android:gravity="center_vertical"-->
-    <!--        android:orientation="horizontal"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--        <ImageView-->
-    <!--            android:id="@+id/statusIcon"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginHorizontal="16dp"-->
-    <!--            android:contentDescription="menu_icon"-->
-    <!--            android:src="@drawable/ic_updateholder"-->
-    <!--            app:tint="?attr/colorOnPrimary" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/loginCaption"-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="16dp"-->
-    <!--            android:layout_weight="1"-->
-    <!--            android:gravity="end"-->
-    <!--            android:lines="1"-->
-    <!--            android:textColor="?attr/colorOnPrimary"-->
-    <!--            android:textSize="20sp" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/signOutButton"-->
-    <!--            style="@style/Widget.MaterialComponents.Button"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginHorizontal="16dp"-->
-    <!--            android:backgroundTint="?attr/colorSecondary"-->
-    <!--            android:text="Sign out"-->
-    <!--            android:textColor="@color/black"-->
-    <!--            android:textSize="16sp" />-->
-
-    <!--        <ImageView-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="16dp"-->
-    <!--            android:contentDescription="menu_icon"-->
-    <!--            android:src="@drawable/ic_menu"-->
-    <!--            app:tint="?attr/colorOnPrimary" />-->
-
-    <!--    </LinearLayout>-->
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/libraryRecyclerView"
@@ -92,5 +41,31 @@
         app:layout_constraintTop_toBottomOf="@id/upBar"
         tools:itemCount="5"
         tools:listitem="@layout/library_item" />
+
+    <View
+        android:id="@+id/hide_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="0dp"
+        android:layout_marginTop="150dp"
+        android:indeterminateTint="#0040FF"
+        android:visibility="visible"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

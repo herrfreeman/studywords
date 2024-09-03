@@ -4,7 +4,7 @@ import ru.blackmesa.studywords.data.models.DictData
 
 sealed interface LibraryState {
 
-    object Start : LibraryState
+    object Loading : LibraryState
 
     object NotAuthorized : LibraryState
 

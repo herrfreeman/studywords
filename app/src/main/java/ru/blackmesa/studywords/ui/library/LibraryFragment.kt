@@ -24,10 +24,20 @@ class LibraryFragment : Fragment() {
     private var _binding: FragmentLibraryBinding? = null
     private val binding: FragmentLibraryBinding get() = _binding!!
     private val viewModel: LibraryViewModel by viewModel()
-    private val adapter = LibraryRVAdapter {
-        findNavController().navigate(R.id.action_libraryFragment_to_wordsFragment,
-            WordsFragment.createArgs(it.id))
-    }
+    private val adapter = LibraryRVAdapter(
+        object : LibraryRVAdapter.ItemClickListener {
+            override fun onItemClick(item: DictData) {
+                findNavController().navigate(
+                    R.id.action_libraryFragment_to_wordsFragment,
+                    WordsFragment.createArgs(item.id)
+                )
+            }
+
+            override fun onDownloadClick(item: DictData) {
+                viewModel.downloadDictionary(item)
+            }
+        }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,10 +81,12 @@ class LibraryFragment : Fragment() {
                     viewModel.wipeAllLocalData()
                     true
                 }
+
                 R.id.signOut -> {
                     viewModel.signOut()
                     true
                 }
+
                 else -> false
             }
         }
@@ -82,36 +94,49 @@ class LibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
-        viewModel.loadLocalLibrary()
+//        binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
+//        viewModel.loadLocalLibrary()
         viewModel.updateLibrary()
-
+//
         //binding.libraryRecyclerView.invalidate()
     }
 
     private fun renderLibraryState(libraryState: LibraryState) {
         when (libraryState) {
-            is LibraryState.Start -> {
-                binding.libraryRecyclerView.isVisible = false
+            is LibraryState.Loading -> {
+                binding.progressBar.isVisible = true
+                binding.hideLayout.isVisible = true
+                binding.libraryRecyclerView.isVisible = true
                 binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
             }
 
             is LibraryState.LibraryCurrent -> {
+                binding.progressBar.isVisible = false
+                binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
                 binding.topAppBar.setNavigationIcon(R.drawable.ic_synchronized)
                 showLibrary(libraryState.library)
             }
+
             is LibraryState.LibraryUpdated -> {
+                binding.progressBar.isVisible = false
+                binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
                 binding.topAppBar.setNavigationIcon(R.drawable.ic_bolt)
                 showLibrary(libraryState.library)
             }
+
             is LibraryState.NotAuthorized -> {
-                viewModel.setDefaultState()
+                binding.progressBar.isVisible = false
+                binding.hideLayout.isVisible = true
+                binding.libraryRecyclerView.isVisible = false
+                viewModel.setLoadingState()
                 findNavController().navigate(R.id.action_libraryFragment_to_authenticationFragment)
             }
 
             is LibraryState.NoConnection -> {
+                binding.progressBar.isVisible = false
+                binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
                 showLibrary(libraryState.library)
                 binding.topAppBar.setNavigationIcon(R.drawable.ic_flightmode)

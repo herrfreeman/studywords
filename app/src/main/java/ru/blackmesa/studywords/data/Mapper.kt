@@ -13,92 +13,77 @@ import ru.blackmesa.studywords.data.models.Progress
 
 fun DictEntity.toDto() = DictionaryDto(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun DictEntity.toDictionary() = Dictionary(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun DictionaryDto.toEntity() = DictEntity(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun DictionaryDto.toDictionary() = Dictionary(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun Dictionary.toDto() = DictionaryDto(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun Dictionary.toEntity() = DictEntity(
     id = id,
-    userId = userId,
     name = name,
     orderField = orderField,
     version = version,
     parentId = parentId,
-    parentUserId = parentUserId,
     isFolder = isFolder,
     isDefault = isDefault,
 )
 
 fun WordDto.toEntity() = WordEntity(
     id = id,
-    userId = userId,
     word = word,
 )
 
 fun WordTranslateDto.toEntity() = WordTranslateEntity(
     id = id,
     wordId = wordId,
-    userId = userId,
     translate = translate,
 )
 
 fun Progress.toEntity(userId: Int) = ProgressEntity(
     wordId = wordId,
-    wordUserId = 0,
     userId = userId,
     status = status,
     repeatDate = repeatDate,
@@ -108,7 +93,6 @@ fun Progress.toEntity(userId: Int) = ProgressEntity(
 
 fun ProgressEntity.toDto() = ProgressDto(
     wordId = wordId,
-    wordUserId = 0,
     status = status,
     version = version,
     repeatDate = repeatDate,
@@ -116,7 +100,6 @@ fun ProgressEntity.toDto() = ProgressDto(
 
 fun ProgressDto.toEntity(userId: Int) = ProgressEntity(
     wordId = wordId,
-    wordUserId = 0,
     userId = userId,
     status = status,
     repeatDate = repeatDate,

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.domain.LibraryInteractor
@@ -26,11 +27,11 @@ class LibraryViewModel(
     private var libraryData: List<DictData> = emptyList()
 
     companion object {
-        val UPDATE_DELAY = 1000L
+        val UPDATE_DELAY = 300L
     }
 
     init {
-        libraryState.postValue(LibraryState.Start)
+        libraryState.postValue(LibraryState.Loading)
         loadLocalLibrary()
         updateLibrary()
     }
@@ -40,51 +41,64 @@ class LibraryViewModel(
         stopUpdate()
     }
 
-    fun setDefaultState() {
-        libraryState.postValue(LibraryState.Start)
-    }
-
     fun updateLibrary() {
+        libraryState.postValue(LibraryState.Loading)
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
             delay(UPDATE_DELAY)
-            val updateResult = libInteractor.updateAllData()
-            when (updateResult) {
-                is DataUpdateResult.Error ->
-                    libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
+            processUpdateResult(libInteractor.updateAllData())
+        }
+    }
 
-                is DataUpdateResult.DataUpdated -> {
-                    libraryData = libInteractor.getDictionariesWithProgress()
-                    libraryState.postValue(LibraryState.LibraryUpdated(libraryData))
-                }
+    fun downloadDictionary(dictionary: DictData) {
+        libraryState.postValue(LibraryState.Loading)
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
+            delay(UPDATE_DELAY)
+            processUpdateResult(libInteractor.updateDictionary(dictionary.id))
+        }
+    }
 
-                is DataUpdateResult.NoConnection -> {
-                    libraryData = libInteractor.getDictionariesWithProgress()
-                    libraryState.postValue(LibraryState.NoConnection(libraryData))
-                }
+    private suspend fun processUpdateResult(updateResult: DataUpdateResult) {
+        when (updateResult) {
+            is DataUpdateResult.Error ->
+                libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
 
-                is DataUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
-                is DataUpdateResult.Synchronized -> {
-                    libraryData = libInteractor.getDictionariesWithProgress()
-                    libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
-                }
+            is DataUpdateResult.DataUpdated -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.LibraryUpdated(libraryData))
+            }
+
+            is DataUpdateResult.NoConnection -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.NoConnection(libraryData))
+            }
+
+            is DataUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
+            is DataUpdateResult.Synchronized -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
             }
         }
+
     }
 
     fun stopUpdate() {
         updateJob?.cancel()
     }
 
+    fun setLoadingState() {
+        libraryState.postValue(LibraryState.Loading)
+    }
+
     fun signOut() {
-        viewModelScope.launch {
-            settingsInteractor.userId = 0
-            settingsInteractor.userKey = ""
-            libraryState.postValue(LibraryState.NotAuthorized)
-        }
+        settingsInteractor.userId = 0
+        settingsInteractor.userKey = ""
+        libraryState.postValue(LibraryState.NotAuthorized)
     }
 
     fun loadLocalLibrary() {
+        libraryState.postValue(LibraryState.Loading)
         viewModelScope.launch {
             libraryData = libInteractor.getDictionariesWithProgress()
             libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
@@ -92,8 +106,9 @@ class LibraryViewModel(
     }
 
     fun wipeAllLocalData() {
+        libraryState.postValue(LibraryState.Loading)
         viewModelScope.launch {
-            libraryState.postValue(LibraryState.Start)
+            libraryState.postValue(LibraryState.Loading)
             libInteractor.wipeAllLocalData()
             updateLibrary()
         }

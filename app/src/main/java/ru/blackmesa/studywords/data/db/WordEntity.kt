@@ -4,11 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "words_table", primaryKeys = ["id", "userid"])
+@Entity(tableName = "words_table")
 data class WordEntity(
+    @PrimaryKey
     val id: Int,
-    @ColumnInfo(name = "userid")
-    val userId: Int,
     val word: String,
 )
 
