@@ -5,8 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ru.blackmesa.studywords.data.models.DictData
-import ru.blackmesa.studywords.data.models.WordData
-import java.sql.Timestamp
+import ru.blackmesa.studywords.data.models.DraftWordData
+import ru.blackmesa.studywords.data.models.TranslateData
 
 @Dao
 interface LibraryDao {
@@ -22,6 +22,9 @@ interface LibraryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTranslate(entities: List<WordTranslateEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertPriorityTranslate(entities: List<PriorityTranslateEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProgress(entities: List<ProgressEntity>)
@@ -82,17 +85,27 @@ interface LibraryDao {
     @Query(
         """SELECT wordindict_table.wordid AS wordid,
         words_table.word AS word,
-        wordtranslate_table.translate AS translate,
         IFNULL(progress_table.repeatdate,0) AS repeatdate,
         IFNULL(progress_table.status, 0)  AS status
         FROM wordindict_table
         JOIN words_table ON words_table.id = wordindict_table.wordid
-        JOIN wordtranslate_table ON words_table.id = wordtranslate_table.wordid
         LEFT JOIN progress_table ON progress_table.wordid = wordindict_table.wordid AND progress_table.userid = :userId
         WHERE dictid = :dictId ORDER BY word"""
     )
-    fun getWords(dictId: Int, userId: Int): List<WordData>
+    fun getWords(dictId: Int, userId: Int): List<DraftWordData>
 
+    @Query(
+        """
+    SELECT wordindict.wordid wordid, wordtranslate.id id, wordtranslate.translate translate, COALESCE(prioritytranslate.count, 0) priority 
+    FROM wordindict_table wordindict
+    INNER JOIN wordtranslate_table wordtranslate ON wordtranslate.wordid = wordindict.wordid 
+    LEFT JOIN priority_translate_table prioritytranslate 
+    ON wordtranslate.id = prioritytranslate.translateid 
+    AND prioritytranslate.dictid = :dictId
+    WHERE wordindict.dictid = :dictId
+    """
+    )
+    fun getTranslates(dictId: Int): List<TranslateData>
 
 
 }

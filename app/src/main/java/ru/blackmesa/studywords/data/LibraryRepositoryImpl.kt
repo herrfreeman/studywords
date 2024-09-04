@@ -4,7 +4,9 @@ import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
+import ru.blackmesa.studywords.data.db.PriorityTranslateEntity
 import ru.blackmesa.studywords.data.db.WordInDictEntity
+import ru.blackmesa.studywords.data.db.WordTranslateEntity
 import ru.blackmesa.studywords.data.dto.DictionaryDto
 import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
@@ -19,6 +21,8 @@ import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.ProgressRequest
 import ru.blackmesa.studywords.data.network.ProgressResponse
 import ru.blackmesa.studywords.data.settings.SettingsRepository
+import kotlin.math.max
+import kotlin.math.min
 
 class LibraryRepositoryImpl(
     private val context: Context,
@@ -76,7 +80,38 @@ class LibraryRepositoryImpl(
 
     override suspend fun getWords(dictId: Int): List<WordData> {
         return withContext(Dispatchers.IO) {
-            database.libraryDao().getWords(dictId, settings.userId)
+            val translates = database.libraryDao().getTranslates(dictId)
+
+            database.libraryDao().getWords(dictId, settings.userId).map { draftWord ->
+                var maxPriority = 0
+                var priorityTranslate = ""
+                val filtered = translates
+                    .filter { translate ->
+                        translate.wordid == draftWord.wordid
+                    }
+                    .sortedBy { draftWord.wordid }
+
+                filtered.forEach {
+                    if (it.priority > maxPriority) {
+                        maxPriority = it.priority
+                        priorityTranslate = it.translate
+                    }
+                }
+
+                WordData(
+                    wordid = draftWord.wordid,
+                    word = draftWord.word,
+                    status = draftWord.status,
+                    repeatdate = draftWord.repeatdate,
+                    translate = if (priorityTranslate.isEmpty()) {
+                        filtered.map { it.translate }
+                            .slice(0..<min(2,filtered.size))
+                            .joinToString()
+                    } else {
+                        priorityTranslate
+                    },
+                )
+            }
         }
     }
 
@@ -142,11 +177,23 @@ class LibraryRepositoryImpl(
                 200 -> {
                     database.libraryDao()
                         .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
-                    (response as DictionaryResponse).translate.forEach {
-                        val x = it
-                    }
-//                    database.libraryDao()
-//                        .insertTranslate((response as DictionaryResponse).translate.map { it.toEntity() })
+                    database.libraryDao()
+                        .insertTranslate((response as DictionaryResponse).translate.map {
+                            WordTranslateEntity(
+                                id = it.id,
+                                wordId = it.wordId,
+                                translate = it.translate,
+                            )
+                        })
+                    database.libraryDao()
+                        .insertPriorityTranslate((response as DictionaryResponse).translate.map {
+                            PriorityTranslateEntity(
+                                dictId = dictId,
+                                wordId = it.wordId,
+                                translateId = it.id,
+                                count = it.priority,
+                            )
+                        })
                     database.libraryDao().insertWordInList(
                         (response as DictionaryResponse).words.map {
                             WordInDictEntity(

@@ -1,9 +1,9 @@
 package ru.blackmesa.studywords.data
 
+import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.Progress
-import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.WordData
 
 interface LibraryRepository {
