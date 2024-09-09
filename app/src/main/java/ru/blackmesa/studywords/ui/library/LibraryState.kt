@@ -14,4 +14,5 @@ sealed interface LibraryState {
 
     data class LibraryUpdated(val library: List<DictData>) : LibraryState
 
+    data class UpdateError(val library: List<DictData>, val error: String) : LibraryState
 }

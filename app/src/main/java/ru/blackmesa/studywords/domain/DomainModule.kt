@@ -23,4 +23,11 @@ val domainModule = module {
             reposytory = get(),
         )
     }
+
+    single<AnaliticsInteractor> {
+        AnaliticsInteractorImpl(
+            context = get(),
+        )
+    }
+
 }

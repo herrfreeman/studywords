@@ -88,9 +88,10 @@ interface LibraryDao {
         IFNULL(progress_table.repeatdate,0) AS repeatdate,
         IFNULL(progress_table.status, 0)  AS status
         FROM wordindict_table
-        JOIN words_table ON words_table.id = wordindict_table.wordid
+        JOIN words_table ON words_table.id = wordindict_table.wordid AND NOT words_table.deleted
         LEFT JOIN progress_table ON progress_table.wordid = wordindict_table.wordid AND progress_table.userid = :userId
-        WHERE dictid = :dictId ORDER BY word"""
+        WHERE dictid = :dictId
+        ORDER BY word"""
     )
     fun getWords(dictId: Int, userId: Int): List<DraftWordData>
 

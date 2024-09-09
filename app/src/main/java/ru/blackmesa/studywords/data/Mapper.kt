@@ -74,6 +74,7 @@ fun Dictionary.toEntity() = DictEntity(
 fun WordDto.toEntity() = WordEntity(
     id = id,
     word = word,
+    deleted = deleted,
 )
 
 fun WordTranslateDto.toEntity() = WordTranslateEntity(

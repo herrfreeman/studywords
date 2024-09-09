@@ -1,16 +1,18 @@
 package ru.blackmesa.studywords.ui.library
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
+import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.LibraryInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
@@ -18,6 +20,7 @@ class LibraryViewModel(
     application: Application,
     private val libInteractor: LibraryInteractor,
     private val settingsInteractor: SettingsInteractor,
+    private val analitics: AnaliticsInteractor,
 ) : AndroidViewModel(application) {
 
     private val libraryState = MutableLiveData<LibraryState>()
@@ -31,9 +34,10 @@ class LibraryViewModel(
     }
 
     init {
-        libraryState.postValue(LibraryState.Loading)
-        loadLocalLibrary()
-        updateLibrary()
+        Log.d("STUDY_WORDS", "Init view model")
+//        libraryState.postValue(LibraryState.Loading)
+//        loadLocalLibrary()
+//        updateLibrary()
     }
 
     override fun onCleared() {
@@ -55,14 +59,18 @@ class LibraryViewModel(
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
             delay(UPDATE_DELAY)
+            analitics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, "Load dict: ${dictionary.name}")
             processUpdateResult(libInteractor.updateDictionary(dictionary.id))
         }
     }
 
     private suspend fun processUpdateResult(updateResult: DataUpdateResult) {
         when (updateResult) {
-            is DataUpdateResult.Error ->
-                libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
+            is DataUpdateResult.Error -> {
+                analitics.logError("Update error: $updateResult.message")
+                libraryState.postValue(LibraryState.UpdateError(libraryData, updateResult.message))
+                Log.d("STUDY_WORDS", "Update error: ${updateResult.message}")
+            }
 
             is DataUpdateResult.DataUpdated -> {
                 libraryData = libInteractor.getDictionariesWithProgress()

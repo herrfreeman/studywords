@@ -66,7 +66,7 @@ class LibraryRepositoryImpl(
                     DataUpdateResult.Error("Auth error from library")
                 }
 
-                else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+                else -> DataUpdateResult.Error("Update error: [${response.errorCode}] ${response.errorMessage}")
             }
         }
     }

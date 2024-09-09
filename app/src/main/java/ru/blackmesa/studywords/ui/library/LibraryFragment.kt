@@ -2,9 +2,11 @@ package ru.blackmesa.studywords.ui.library
 
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -63,11 +65,12 @@ class LibraryFragment : Fragment() {
 
         binding.topAppBar.title = BuildConfig.BUILD_NAME
 
+        binding.libraryRecyclerView.adapter = adapter
+
         viewModel.observeLibraryState().observe(viewLifecycleOwner) {
             renderLibraryState(it)
         }
-
-        binding.libraryRecyclerView.adapter = adapter
+        Log.d("STUDY_WORDS", "Set observer")
 
         binding.topAppBar.setNavigationOnClickListener {
             binding.topAppBar.setNavigationIcon(R.drawable.ic_syncing)
@@ -96,6 +99,7 @@ class LibraryFragment : Fragment() {
         super.onResume()
 //        binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
 //        viewModel.loadLocalLibrary()
+        Log.d("STUDY_WORDS", "On resume update")
         viewModel.updateLibrary()
 //
         //binding.libraryRecyclerView.invalidate()
@@ -104,6 +108,7 @@ class LibraryFragment : Fragment() {
     private fun renderLibraryState(libraryState: LibraryState) {
         when (libraryState) {
             is LibraryState.Loading -> {
+                Log.d("STUDY_WORDS", "Render Loading state")
                 binding.progressBar.isVisible = true
                 binding.hideLayout.isVisible = true
                 binding.libraryRecyclerView.isVisible = true
@@ -111,6 +116,7 @@ class LibraryFragment : Fragment() {
             }
 
             is LibraryState.LibraryCurrent -> {
+                Log.d("STUDY_WORDS", "Render LibraryCurrent state")
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -119,6 +125,7 @@ class LibraryFragment : Fragment() {
             }
 
             is LibraryState.LibraryUpdated -> {
+                Log.d("STUDY_WORDS", "Render LibraryUpdated state")
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -127,6 +134,7 @@ class LibraryFragment : Fragment() {
             }
 
             is LibraryState.NotAuthorized -> {
+                Log.d("STUDY_WORDS", "Render NotAuthorized state")
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = true
                 binding.libraryRecyclerView.isVisible = false
@@ -135,16 +143,28 @@ class LibraryFragment : Fragment() {
             }
 
             is LibraryState.NoConnection -> {
+                Log.d("STUDY_WORDS", "Render NoConnection state")
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
                 showLibrary(libraryState.library)
                 binding.topAppBar.setNavigationIcon(R.drawable.ic_flightmode)
             }
+
+            is LibraryState.UpdateError -> {
+                Log.d("STUDY_WORDS", "Render UpdateError state")
+                Toast.makeText(requireContext(), libraryState.error, Toast.LENGTH_LONG).show()
+                binding.progressBar.isVisible = false
+                binding.hideLayout.isVisible = false
+                binding.libraryRecyclerView.isVisible = true
+                binding.topAppBar.setNavigationIcon(R.drawable.ic_synchronized)
+                showLibrary(libraryState.library)
+            }
         }
     }
 
     private fun showLibrary(dictData: List<DictData>) {
+        Log.d("STUDY_WORDS", "Show lobrary couint: ${dictData.size}" )
         adapter.library.clear()
         adapter.library.addAll(dictData)
         adapter.notifyDataSetChanged()

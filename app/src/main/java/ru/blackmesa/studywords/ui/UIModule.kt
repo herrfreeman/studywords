@@ -15,6 +15,7 @@ val uiModule2 = module {
             application = get(),
             settingsInteractor = get(),
             authInteractor = get(),
+            analitics = get(),
         )
     }
 
@@ -23,6 +24,7 @@ val uiModule2 = module {
             application = get(),
             libInteractor = get(),
             settingsInteractor = get(),
+            analitics = get(),
         )
     }
 

@@ -9,5 +9,6 @@ data class WordEntity(
     @PrimaryKey
     val id: Int,
     val word: String,
+    val deleted: Boolean,
 )
 

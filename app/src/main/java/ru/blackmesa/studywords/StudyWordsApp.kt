@@ -7,7 +7,7 @@ import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.blackmesa.studywords.data.dataModule
-import ru.blackmesa.studywords.data.models.AppSettings
+import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 import ru.blackmesa.studywords.domain.domainModule
 import ru.blackmesa.studywords.ui.uiModule2
@@ -16,12 +16,14 @@ class StudyWordsApp : Application() {
 
     //lateinit var appSettings: AppSettings
     val settings: SettingsInteractor by inject()
+    val analitics: AnaliticsInteractor by inject()
 
     override fun onCreate() {
         super.onCreate()
 
-        val analytics = FirebaseAnalytics.getInstance(this)
-        analytics.logEvent("app_started", null) 
+//        val firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+//        firebaseAnalytics.logEvent("app_started", null)
+//        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SIGN_UP, bundle)
 
         startKoin {
             androidContext(this@StudyWordsApp)
@@ -32,6 +34,7 @@ class StudyWordsApp : Application() {
             )
         }
 
+        analitics.logEvent(FirebaseAnalytics.Event.APP_OPEN)
         //appSettings = settingsInteractor
         updateTheme()
     }

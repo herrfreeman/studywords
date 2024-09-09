@@ -56,7 +56,7 @@ class AuthRepositoryImpl(
 
             else -> AuthResult.Error(
                 response.resultCode.toString(),
-                "[${response.errorCode}] ${response.errorMessage}"
+                "Authentication error: [${response.errorCode}] ${response.errorMessage}"
             )
         }
     }
@@ -73,7 +73,7 @@ class AuthRepositoryImpl(
             200 -> CreateUserResult.Success()
             else -> CreateUserResult.Error(
                 response.resultCode.toString(),
-                "[${response.errorCode}] ${response.errorMessage}"
+                "Create user error: [${response.errorCode}] ${response.errorMessage}"
             )
         }
     }
@@ -98,7 +98,7 @@ class AuthRepositoryImpl(
                 } else {
                     ConfirmResult.Error(
                         response.resultCode.toString(),
-                        "[${response.errorCode}] ${response.errorMessage}"
+                        "Confirm error: [${response.errorCode}] ${response.errorMessage}"
                     )
                 }
             }

@@ -5,9 +5,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.launch
 import ru.blackmesa.studywords.data.models.AuthState
 import ru.blackmesa.studywords.data.models.Credentials
+import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.AuthInteractor
 import ru.blackmesa.studywords.domain.AuthResult
 import ru.blackmesa.studywords.domain.ConfirmResult
@@ -18,6 +20,7 @@ class AuthenticationViewModel(
     application: Application,
     private val settingsInteractor: SettingsInteractor,
     private val authInteractor: AuthInteractor,
+    private val analitics: AnaliticsInteractor,
 ) : AndroidViewModel(application) {
 
     private var credentials = Credentials()
@@ -52,10 +55,12 @@ class AuthenticationViewModel(
             authLiveData.postValue(
                 when (authResult) {
                     is AuthResult.Success -> {
+                        analitics.logEvent(FirebaseAnalytics.Event.LOGIN)
                         AuthState.Success(credentials)
                     }
                     is AuthResult.Error -> {
                         errorMessage = authResult.errorMessage
+                        analitics.logError("Login error: $errorMessage")
                         AuthState.Default(credentials, errorMessage)
                     }
 
@@ -100,6 +105,7 @@ class AuthenticationViewModel(
 
                     is CreateUserResult.Error -> {
                         errorMessage = createResult.errorMessage
+                        analitics.logError("Create error: $errorMessage")
                         AuthState.Default(credentials, errorMessage)
                     }
 
@@ -140,6 +146,7 @@ class AuthenticationViewModel(
             authLiveData.postValue(
                 when (confirmResult) {
                     is ConfirmResult.Success -> {
+                        analitics.logEvent(FirebaseAnalytics.Event.SIGN_UP)
                         confirmErrorMessage = ""
                         AuthState.Success(credentials)
                     }
@@ -157,6 +164,7 @@ class AuthenticationViewModel(
                     is ConfirmResult.Error -> {
                         confirmErrorMessage = ""
                         errorMessage = confirmResult.errorMessage
+                        analitics.logError("Confirm error: $errorMessage")
                         AuthState.Default(
                             credentials = credentials,
                             errorMessage = errorMessage,
