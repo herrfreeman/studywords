@@ -59,31 +59,30 @@ interface LibraryDao {
     @Query("SELECT * FROM wordindict_table WHERE dictid = :dictId")
     fun getWordsInDict(dictId: Int): List<WordInDictEntity>
 
-    @Query(
-        """
-        select dict_table.id as id, 
-        dict_table.name as name, 
-        dict_progress.total as totalCount,
-        dict_progress.repeat as repeatCount,
-        dict_progress.wait as waitCount,
-        dict_progress.done as doneCount  
-        from dict_table
-        left join (
-        select wordindict_table.dictid,  
-        SUM(case when progress_table.status  = 12 then 1 else 0 end) as done, 
-        SUM(case when ifnull(progress_table.status,0) > 0 and ifnull(progress_table.status,0) < 12 and progress_table.repeatdate <= :curTimestamp then 1 else 0 end) as repeat,
-        SUM(case when ifnull(progress_table.status,0) > 0 and ifnull(progress_table.status,0) < 12 and progress_table.repeatdate > :curTimestamp then 1 else 0 end) as wait,
-        COUNT(wordindict_table.wordid) as total
+    @Query("""
+        SELECT dict_table.id AS id, 
+        dict_table.name AS name, 
+        dict_progress.total AS totalCount,
+        dict_progress.repeat AS repeatCount,
+        dict_progress.wait AS waitCount,
+        dict_progress.done AS doneCount  
+        FROM dict_table
+        LEFT JOIN (
+        SELECT wordindict_table.dictid,  
+        SUM(CASE WHEN progress_table.status  = 12 THEN 1 ELSE 0 END) AS done, 
+        SUM(CASE WHEN ifnull(progress_table.status,0) > 0 AND ifnull(progress_table.status,0) < 12 AND progress_table.repeatdate <= :curTimestamp THEN 1 ELSE 0 END) AS repeat,
+        SUM(CASE WHEN ifnull(progress_table.status,0) > 0 AND ifnull(progress_table.status,0) < 12 AND progress_table.repeatdate > :curTimestamp THEN 1 ELSE 0 END) AS wait,
+        COUNT(wordindict_table.wordid) AS total
         from wordindict_table 
-        left join progress_table on progress_table.userid = :userId and progress_table.wordid = wordindict_table.wordid
-        group by wordindict_table.dictid
-        ) as dict_progress on dict_progress.dictid = dict_table.id
-        """
-    )
+        JOIN words_table ON words_table.id = wordindict_table.wordid AND NOT words_table.deleted
+        LEFT JOIN progress_table ON progress_table.userid = :userId AND progress_table.wordid = wordindict_table.wordid
+        GROUP BY wordindict_table.dictid
+        ) AS dict_progress ON dict_progress.dictid = dict_table.id
+        """)
     fun getDictData(userId: Int, curTimestamp: Long): List<DictData>
 
-    @Query(
-        """SELECT wordindict_table.wordid AS wordid,
+    @Query("""
+        SELECT wordindict_table.wordid AS wordid,
         words_table.word AS word,
         IFNULL(progress_table.repeatdate,0) AS repeatdate,
         IFNULL(progress_table.status, 0)  AS status
@@ -91,21 +90,19 @@ interface LibraryDao {
         JOIN words_table ON words_table.id = wordindict_table.wordid AND NOT words_table.deleted
         LEFT JOIN progress_table ON progress_table.wordid = wordindict_table.wordid AND progress_table.userid = :userId
         WHERE dictid = :dictId
-        ORDER BY word"""
-    )
+        ORDER BY word
+        """)
     fun getWords(dictId: Int, userId: Int): List<DraftWordData>
 
-    @Query(
-        """
-    SELECT wordindict.wordid wordid, wordtranslate.id id, wordtranslate.translate translate, COALESCE(prioritytranslate.count, 0) priority 
-    FROM wordindict_table wordindict
-    INNER JOIN wordtranslate_table wordtranslate ON wordtranslate.wordid = wordindict.wordid 
-    LEFT JOIN priority_translate_table prioritytranslate 
-    ON wordtranslate.id = prioritytranslate.translateid 
-    AND prioritytranslate.dictid = :dictId
-    WHERE wordindict.dictid = :dictId
-    """
-    )
+    @Query("""
+        SELECT wordindict.wordid wordid, wordtranslate.id id, wordtranslate.translate translate, COALESCE(prioritytranslate.count, 0) priority 
+        FROM wordindict_table wordindict
+        INNER JOIN wordtranslate_table wordtranslate ON wordtranslate.wordid = wordindict.wordid 
+        LEFT JOIN priority_translate_table prioritytranslate 
+        ON wordtranslate.id = prioritytranslate.translateid 
+        AND prioritytranslate.dictid = :dictId
+        WHERE wordindict.dictid = :dictId
+    """)
     fun getTranslates(dictId: Int): List<TranslateData>
 
 
