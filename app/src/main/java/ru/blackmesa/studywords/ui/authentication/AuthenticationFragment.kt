@@ -72,6 +72,16 @@ class AuthenticationFragment : Fragment() {
             )
         }
 
+        binding.restoreButton.setOnClickListener {
+            hideKeyboard(binding.userName)
+            hideKeyboard(binding.password)
+
+            viewModel.restorePassword(
+                binding.userName.text.toString(),
+                binding.password.text.toString()
+            )
+        }
+
         binding.confirmButton.setOnClickListener {
             viewModel.confirm(binding.confirmCode.text.toString())
         }
@@ -82,7 +92,8 @@ class AuthenticationFragment : Fragment() {
     }
 
     private fun hideKeyboard(view: View) {
-        val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        val inputMethodManager =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
         view.clearFocus()
     }
@@ -98,11 +109,13 @@ class AuthenticationFragment : Fragment() {
                 binding.confirmationLayout.isVisible = false
                 makeMainViewEnabled(true)
             }
+
             is AuthState.DefaultLoading -> {
                 binding.progressBar.isVisible = true
                 binding.confirmationLayout.isVisible = false
                 makeMainViewEnabled(false)
             }
+
             is AuthState.CreateConfirmation -> {
                 binding.progressBar.isVisible = false
                 binding.confirmationLayout.isVisible = true
@@ -111,6 +124,7 @@ class AuthenticationFragment : Fragment() {
                 binding.confirmErrorMessage.text = state.confirmErrorMessage
                 binding.confirmCode.setText(state.confirmCode)
             }
+
             is AuthState.CreateConfirmationLoading -> {
                 binding.progressBar.isVisible = true
                 binding.confirmationLayout.isVisible = true
@@ -119,8 +133,8 @@ class AuthenticationFragment : Fragment() {
                 binding.confirmErrorMessage.text = state.confirmErrorMessage
                 binding.confirmCode.setText(state.confirmCode)
             }
+
             is AuthState.Success -> {
-                Log.d("STUDY_WORDS_DEBUG", "Success")
                 binding.progressBar.isVisible = false
                 binding.confirmationLayout.isVisible = false
                 makeMainViewEnabled(false)

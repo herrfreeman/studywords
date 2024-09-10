@@ -53,7 +53,7 @@ class RetrofitNetworkClient(
 
                 }
 
-                is CreateUserRequest -> {
+                is CreateRestoreRequest -> {
                     try {
                         webService.createUser(dto).apply { resultCode = 200 }
                     } catch (e: HttpException) {

@@ -7,12 +7,12 @@ import ru.blackmesa.studywords.data.network.AuthRequest
 import ru.blackmesa.studywords.data.network.AuthResponse
 import ru.blackmesa.studywords.data.network.ConfirmRequest
 import ru.blackmesa.studywords.data.network.ConfirmResponse
-import ru.blackmesa.studywords.data.network.CreateUserRequest
+import ru.blackmesa.studywords.data.network.CreateRestoreRequest
 import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.settings.SettingsRepository
 import ru.blackmesa.studywords.domain.AuthResult
 import ru.blackmesa.studywords.domain.ConfirmResult
-import ru.blackmesa.studywords.domain.CreateUserResult
+import ru.blackmesa.studywords.domain.CreateRestoreResult
 import ru.blackmesa.studywords.getSecretKey
 import java.security.MessageDigest
 
@@ -25,13 +25,6 @@ class AuthRepositoryImpl(
 ) : AuthRepository {
 
     override suspend fun signIn(userName: String, password: String): AuthResult {
-
-//        if (userName.isEmpty()) {
-//            return AuthResult.Error("", "Login is empty")
-//        }
-//        if (password.isEmpty()) {
-//            return AuthResult.Error("", "Password is empty")
-//        }
 
         val response = networkClient.doRequest(AuthRequest(userName, password))
         return when (response.resultCode) {
@@ -61,19 +54,36 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun createUser(userName: String, password: String): CreateUserResult {
+    override suspend fun createUser(userName: String): CreateRestoreResult {
         val hashKey = MessageDigest.getInstance("SHA-256")
             .digest("$userName|${getSecretKey()}".toByteArray())
             .joinToString("") { "%02x".format(it) }
 
         delay(1500)
-        val response = networkClient.doRequest(CreateUserRequest(userName, "create", hashKey))
+        val response = networkClient.doRequest(CreateRestoreRequest(userName, "create", hashKey))
         return when (response.resultCode) {
-            -1 -> CreateUserResult.NoConnection()
-            200 -> CreateUserResult.Success()
-            else -> CreateUserResult.Error(
+            -1 -> CreateRestoreResult.NoConnection()
+            200 -> CreateRestoreResult.Success()
+            else -> CreateRestoreResult.Error(
                 response.resultCode.toString(),
                 "Create user error: [${response.errorCode}] ${response.errorMessage}"
+            )
+        }
+    }
+
+    override suspend fun restorePassword(userName: String): CreateRestoreResult {
+        val hashKey = MessageDigest.getInstance("SHA-256")
+            .digest("$userName|${getSecretKey()}".toByteArray())
+            .joinToString("") { "%02x".format(it) }
+
+        delay(1500)
+        val response = networkClient.doRequest(CreateRestoreRequest(userName, "restore", hashKey))
+        return when (response.resultCode) {
+            -1 -> CreateRestoreResult.NoConnection()
+            200 -> CreateRestoreResult.Success()
+            else -> CreateRestoreResult.Error(
+                response.resultCode.toString(),
+                "Restore password error: [${response.errorCode}] ${response.errorMessage}"
             )
         }
     }
@@ -89,7 +99,6 @@ class AuthRepositoryImpl(
             200 -> {
                 settings.userKey = (response as ConfirmResponse).userkey
                 settings.userId = (response as ConfirmResponse).userid
-                delay(1500)
                 ConfirmResult.Success()
             }
             else -> {
@@ -98,7 +107,33 @@ class AuthRepositoryImpl(
                 } else {
                     ConfirmResult.Error(
                         response.resultCode.toString(),
-                        "Confirm error: [${response.errorCode}] ${response.errorMessage}"
+                        "Confirm create error: [${response.errorCode}] ${response.errorMessage}"
+                    )
+                }
+            }
+        }
+    }
+
+    override suspend fun confirmRestore(
+        userName: String,
+        password: String,
+        code: String
+    ): ConfirmResult {
+        val response = networkClient.doRequest(ConfirmRequest(userName, password, "restore", code))
+        return when (response.resultCode) {
+            -1 -> ConfirmResult.NoConnection()
+            200 -> {
+                settings.userKey = (response as ConfirmResponse).userkey
+                settings.userId = (response as ConfirmResponse).userid
+                ConfirmResult.Success()
+            }
+            else -> {
+                if (ERRORCODE_TRYANOTHER.contains(response.errorCode)) {
+                    ConfirmResult.TryAnotherCode()
+                } else {
+                    ConfirmResult.Error(
+                        response.resultCode.toString(),
+                        "Confirm restore error: [${response.errorCode}] ${response.errorMessage}"
                     )
                 }
             }

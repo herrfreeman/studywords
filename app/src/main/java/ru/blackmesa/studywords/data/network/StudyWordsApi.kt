@@ -16,7 +16,7 @@ interface StudyWordsApi {
     @POST("/createuser")
     @Headers("Content-Type: application/json")
     suspend fun createUser(
-        @Body request: CreateUserRequest,
+        @Body request: CreateRestoreRequest,
     ): CreateUserResponse
 
     @POST("/createuserconfirm")

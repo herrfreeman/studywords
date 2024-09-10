@@ -13,7 +13,7 @@ import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.AuthInteractor
 import ru.blackmesa.studywords.domain.AuthResult
 import ru.blackmesa.studywords.domain.ConfirmResult
-import ru.blackmesa.studywords.domain.CreateUserResult
+import ru.blackmesa.studywords.domain.CreateRestoreResult
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
 class AuthenticationViewModel(
@@ -49,7 +49,7 @@ class AuthenticationViewModel(
 
             val authResult = authInteractor.singIn(
                 userName = credentials.userName,
-                password = credentials.password
+                password = credentials.password,
             )
 
             authLiveData.postValue(
@@ -87,12 +87,11 @@ class AuthenticationViewModel(
 
             val createResult = authInteractor.createUser(
                 userName = credentials.userName,
-                password = credentials.password
             )
 
             authLiveData.postValue(
                 when (createResult) {
-                    is CreateUserResult.Success -> {
+                    is CreateRestoreResult.Success -> {
                         confirmErrorMessage = ""
                         confirmMode = CREATE_CONFIRMATION
                         AuthState.CreateConfirmation(
@@ -103,13 +102,52 @@ class AuthenticationViewModel(
                         )
                     }
 
-                    is CreateUserResult.Error -> {
+                    is CreateRestoreResult.Error -> {
                         errorMessage = createResult.errorMessage
                         analitics.logError("Create error: $errorMessage")
                         AuthState.Default(credentials, errorMessage)
                     }
 
-                    is CreateUserResult.NoConnection -> {
+                    is CreateRestoreResult.NoConnection -> {
+                        errorMessage = "No internet connection"
+                        AuthState.Default(credentials, errorMessage)
+                    }
+                }
+            )
+        }
+    }
+
+    fun restorePassword(userName: String, password: String) {
+        credentials = Credentials(userName, password)
+        authLiveData.postValue(AuthState.DefaultLoading(credentials, errorMessage))
+
+        viewModelScope.launch {
+            settingsInteractor.saveCredentials(credentials)
+
+            val restoreResult = authInteractor.restorePassword(
+                userName = credentials.userName,
+            )
+
+            authLiveData.postValue(
+                when (restoreResult) {
+                    is CreateRestoreResult.Success -> {
+                        confirmErrorMessage = ""
+                        confirmMode = RESTORE_CONFIRMATION
+                        AuthState.CreateConfirmation(
+                            credentials = credentials,
+                            errorMessage = errorMessage,
+                            confirmCode = "",
+                            confirmErrorMessage = confirmErrorMessage
+                        )
+                    }
+
+                    is CreateRestoreResult.Error -> {
+                        errorMessage = restoreResult.errorMessage
+                        analitics.logError("Restore error: $errorMessage")
+                        AuthState.Default(credentials, errorMessage)
+                    }
+
+                    is CreateRestoreResult.NoConnection -> {
                         errorMessage = "No internet connection"
                         AuthState.Default(credentials, errorMessage)
                     }
@@ -122,7 +160,7 @@ class AuthenticationViewModel(
     fun confirm(confirmCode: String) {
         when (confirmMode) {
             CREATE_CONFIRMATION -> createConfirmation(confirmCode)
-            RESTORE_CONFIRMATION -> {}
+            RESTORE_CONFIRMATION -> restoreConfirmation(confirmCode)
             else -> {}
         }
     }
@@ -164,7 +202,61 @@ class AuthenticationViewModel(
                     is ConfirmResult.Error -> {
                         confirmErrorMessage = ""
                         errorMessage = confirmResult.errorMessage
-                        analitics.logError("Confirm error: $errorMessage")
+                        analitics.logError("Create confirm error: $errorMessage")
+                        AuthState.Default(
+                            credentials = credentials,
+                            errorMessage = errorMessage,
+                        )
+                    }
+
+                    is ConfirmResult.NoConnection -> {
+                        errorMessage = "No internet connection"
+                        AuthState.Default(credentials, errorMessage)
+                    }
+
+                }
+            )
+        }
+    }
+
+    private fun restoreConfirmation(confirmCode: String) {
+        authLiveData.postValue(AuthState.CreateConfirmationLoading(
+            credentials = credentials,
+            errorMessage = errorMessage,
+            confirmCode = confirmCode,
+            confirmErrorMessage = confirmErrorMessage,
+        ))
+
+        viewModelScope.launch {
+
+            val confirmResult = authInteractor.confirmRestore(
+                userName = credentials.userName,
+                password = credentials.password,
+                code = confirmCode
+            )
+
+            authLiveData.postValue(
+                when (confirmResult) {
+                    is ConfirmResult.Success -> {
+                        analitics.logEvent("RESTORE_PASSWORD")
+                        confirmErrorMessage = ""
+                        AuthState.Success(credentials)
+                    }
+
+                    is ConfirmResult.TryAnotherCode -> {
+                        confirmErrorMessage = "Try another code"
+                        AuthState.CreateConfirmation(
+                            credentials = credentials,
+                            errorMessage = errorMessage,
+                            confirmCode = confirmCode,
+                            confirmErrorMessage = confirmErrorMessage,
+                        )
+                    }
+
+                    is ConfirmResult.Error -> {
+                        confirmErrorMessage = ""
+                        errorMessage = confirmResult.errorMessage
+                        analitics.logError("Restore confirm error: $errorMessage")
                         AuthState.Default(
                             credentials = credentials,
                             errorMessage = errorMessage,
