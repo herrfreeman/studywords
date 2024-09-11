@@ -38,10 +38,11 @@ class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: Li
             itemClickListener.onDownloadClick(model)
         }
 
-        //wordsCount.text = "${model.total} / ${model.done} / ${model.repeat} / ${model.wait}"
         wordsCount.text = "${model.totalCount}"
         if (model.repeatCount > 0) {
             repeatCount.text = " | ${model.repeatCount}"
+        } else {
+            repeatCount.text = ""
         }
         statusView.background = StatusBarDrawable(model.totalCount, model.doneCount, model.repeatCount, model.waitCount)
 

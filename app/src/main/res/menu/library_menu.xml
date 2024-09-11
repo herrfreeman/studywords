@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/wipeData"
-        android:title="Wipe all data"
+        android:title="@string/wipe_all_data"
         android:contentDescription="content_description_more"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/signOut"
-        android:title="Sign out"
+        android:title="@string/sign_out"
         android:contentDescription="content_description_more"
         app:showAsAction="never" />
 </menu>

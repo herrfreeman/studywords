@@ -3,6 +3,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.StudyWords.Light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.authentication.AuthenticationFragment">
@@ -10,20 +11,21 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLayout"
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:visibility="visible">
 
 
         <TextView
             android:id="@+id/errorMessage"
+            style="@style/Widget.StudyWords.Light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
             android:textAlignment="center"
-            android:textColor="#B30000"
+            android:textColor="@color/error_color"
             android:textSize="20sp"
 
             app:layout_constraintBottom_toTopOf="@id/userNameLayout"
@@ -35,13 +37,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/userNameLayout"
-
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/Widget.StudyWords.Credentials"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
-            android:hint="Email"
+
+            android:hint="@string/email"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@id/passwordLayout"
             app:layout_constraintEnd_toEndOf="parent"
@@ -50,6 +52,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/userName"
+                style="@style/Widget.StudyWords.Credentials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="login" />
@@ -58,37 +61,36 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/Widget.StudyWords.Credentials"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="30dp"
-            android:hint="Password"
+            android:hint="@string/password"
             app:endIconMode="clear_text"
 
             app:layout_constraintBottom_toTopOf="@id/loginButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/userNameLayout"
-
-            >
+            app:layout_constraintTop_toBottomOf="@id/userNameLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password"
-                android:inputType="textPassword"
+                style="@style/Widget.StudyWords.Credentials"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 tools:text="password" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/loginButton"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.StudyWords.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Log in"
+            android:text="@string/log_in"
 
             app:layout_constraintBottom_toTopOf="@id/createButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -97,11 +99,11 @@
 
         <Button
             android:id="@+id/createButton"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.StudyWords.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Create account"
+            android:text="@string/create_account"
             app:layout_constraintBottom_toTopOf="@id/restoreButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,11 +112,11 @@
         <Button
 
             android:id="@+id/restoreButton"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.StudyWords.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Restore password"
+            android:text="@string/restore_password"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -125,54 +127,55 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/confirmationLayout"
+        style="@style/Widget.StudyWords.Dark"
+        android:background="@color/transparent_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC000000"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/confirmTitleMessage"
+            style="@style/Widget.StudyWords.Dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
+            android:text="@string/confirmation_title"
             android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
 
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/confirmErrorMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="We sent you the confirmation code on your email" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/confirmErrorMessage"
+            style="@style/Widget.StudyWords.Dark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
+
             android:textAlignment="center"
-            android:textColor="#FF5C5C"
+            android:textColor="@color/error_color_on_dark"
             android:textSize="20sp"
 
             app:layout_constraintBottom_toTopOf="@id/confirmCodeLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/confirmTitleMessage"
-
             tools:text="Got some error" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/confirmCodeLayout"
-
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            style="@style/Widget.StudyWords.Credentials"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
             android:layout_marginTop="20dp"
-            android:hint="Confirm code"
+            android:hint="@string/confirm_hint"
             app:endIconMode="clear_text"
             app:layout_constraintBottom_toTopOf="@id/confirmButton"
             app:layout_constraintEnd_toEndOf="parent"
@@ -189,15 +192,12 @@
 
 
         <Button
-
             android:id="@+id/confirmButton"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.StudyWords.Button.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:backgroundTint="#84BBE6"
-            android:text="Ok"
-            android:textColor="@color/black"
+            android:text="@string/confirm_ok"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -208,12 +208,13 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
         android:layout_margin="0dp"
         android:layout_marginTop="150dp"
-        android:indeterminateTint="#0040FF"
-        android:visibility="gone" />
+        android:background="@color/transparent"
+        android:visibility="visible" />
 
 </FrameLayout>

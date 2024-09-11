@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password">Пароль</string>
+    <string name="log_in">Вход</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="restore_password">Восстановить пароль</string>
+    <string name="confirmation_title">Мы отправили Вам код подтверждения на указанный email</string>
+    <string name="confirm_hint">Код подтверждения</string>
+    <string name="study">Учить</string>
+    <string name="wipe_all_data">Перезагрузить словари</string>
+    <string name="sign_out">Выйти</string>
+    <string name="clear_progress">Очистить прогресс</string>
+</resources>

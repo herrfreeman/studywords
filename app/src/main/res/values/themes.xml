@@ -4,20 +4,21 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 
-        <item name="colorPrimary">#1E0342</item>
-        <item name="colorOnPrimary">#E1F7F5</item>
-        <item name="colorSecondary">#E1F7F5</item>
-        <item name="colorOnSecondary">#1E0342</item>
+        <item name="colorPrimary">#006494</item>
+        <item name="colorOnPrimary">#F7F7F2</item>
+<!--        <item name="colorSecondary">#E1F7F5</item>-->
+<!--        <item name="colorOnSecondary">#1E0342</item>-->
 
-        <item name="actionOverflowButtonStyle">@style/CustomButtonOverflow</item>
+<!--        <item name="actionOverflowButtonStyle">@style/CustomButtonOverflow</item>-->
         <!--        #0E46A3 9AC8CD-->
 
     </style>
 
-    <style name="CustomButtonOverflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:src">@drawable/ic_menu</item>
-        <item name="android:tint">#FFFFFF</item>
-    </style>
+<!--    <style name="CustomButtonOverflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">-->
+<!--        <item name="android:src">@drawable/ic_menu</item>-->
+<!--        <item name="android:tint">#FFFFFF</item>-->
+<!--    </style>-->
 
     <style name="Theme.Studywords" parent="Base.Theme.Studywords" />
+
 </resources>

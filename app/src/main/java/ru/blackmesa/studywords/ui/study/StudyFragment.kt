@@ -61,8 +61,7 @@ class StudyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.observeState().observe(viewLifecycleOwner) { renderState(it) }
-
-        binding.backButton.setOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
         binding.okButton.setOnClickListener { viewModel.showAnswer() }
@@ -88,7 +87,7 @@ class StudyFragment : Fragment() {
                 binding.okButton.isVisible = true
                 binding.yesButton.isVisible = false
                 binding.noButton.isVisible = false
-                binding.statusCaption.text = state.wordsLeft.toString()
+                binding.topAppBar.title = state.wordsLeft.toString()
             }
 
             is StudyState.Answer -> {

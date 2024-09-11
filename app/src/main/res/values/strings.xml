@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Study words</string>
+    <string name="app_name" translatable="false">Show words</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="create_account">Create account</string>
+    <string name="restore_password">Restore password</string>
+    <string name="confirmation_title">We sent you the confirmation code on your email</string>
+    <string name="confirm_ok" translatable="false">Ok</string>
+    <string name="confirm_hint">Confirm code</string>
+    <string name="study">Study</string>
+    <string name="study_ok" translatable="false">OK</string>
+    <string name="study_yes" translatable="false">YES</string>
+    <string name="study_no" translatable="false">NO</string>
+    <string name="wipe_all_data">Wipe all data</string>
+    <string name="sign_out">Sign out</string>
+    <string name="clear_progress">Clear progress</string>
 </resources>
