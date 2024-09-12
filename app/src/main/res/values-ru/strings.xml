@@ -22,4 +22,6 @@
     <string name="clear_confirm">Вы уверенны, что хотите очистить прогресс данного словаря?</string>
     <string name="yes_button">Да</string>
     <string name="no_button">Нет</string>
+    <string name="nothing_study">Учить больше нечего</string>
+    <string name="next_repeat">"Следующий повтор: "</string>
 </resources>

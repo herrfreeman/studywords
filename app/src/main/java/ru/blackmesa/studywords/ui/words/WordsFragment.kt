@@ -2,6 +2,7 @@ package ru.blackmesa.studywords.ui.words
 
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.study.StudyFragment
+import java.util.Date
 
 class WordsFragment : Fragment() {
 
@@ -44,6 +46,7 @@ class WordsFragment : Fragment() {
         ).show()
     }
     private var confirmDialog: MaterialAlertDialogBuilder? = null
+    private var nothingStudyDialog: MaterialAlertDialogBuilder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,8 @@ class WordsFragment : Fragment() {
             }.setPositiveButton(context.getString(R.string.yes_button)) { dialog, which ->
                 viewModel.clearProgress(adapter.words)
             }
+        nothingStudyDialog = MaterialAlertDialogBuilder(context)
+            .setNeutralButton("ОК") { dialog, which -> }
     }
 
     override fun onCreateView(
@@ -104,7 +109,14 @@ class WordsFragment : Fragment() {
                 .take(10)
 
             if (wordsToStudy.isEmpty()) {
-                // TODO Следующее повтороение тагдато / все слова изучегы
+                val context = requireContext()
+                var message = context.getString(R.string.nothing_study)
+                val futureRepeat = adapter.words.filter { it.status < 12 }
+                if (futureRepeat.isNotEmpty()) {
+                    val nextDate = Date(futureRepeat.minBy { it.repeatdate }.repeatdate*1000)
+                    message += "\n" + context.getString(R.string.next_repeat) + DateFormat.format("dd.MM.yy HH:mm", nextDate)
+                }
+                nothingStudyDialog?.setMessage(message)?.show()
             } else {
                 findNavController().navigate(
                     R.id.action_wordsFragment_to_studyFragment,
