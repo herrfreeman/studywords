@@ -22,17 +22,25 @@ class WordsFragment : Fragment() {
         fun newInstance() = WordsFragment()
 
         const val DICTIONARY_ID_ARG = "DICTIONARY_ID_ARG"
-        fun createArgs(dictionaryId: Int): Bundle =
-            bundleOf(DICTIONARY_ID_ARG to dictionaryId)
+        const val DICTIONARY_NAME_ARG = "DICTIONARY_NAME_ARG"
+        fun createArgs(dictId: Int, dictName: String): Bundle =
+            bundleOf(DICTIONARY_ID_ARG to dictId, DICTIONARY_NAME_ARG to dictName)
     }
 
     private var _binding: FragmentWordsBinding? = null
     private val binding: FragmentWordsBinding get() = _binding!!
     private val viewModel: WordsViewModel by viewModel {
-        parametersOf(requireArguments().getInt(DICTIONARY_ID_ARG))
+        parametersOf(
+            requireArguments().getInt(DICTIONARY_ID_ARG),
+            requireArguments().getString(DICTIONARY_NAME_ARG),
+        )
     }
     private val adapter = WordsRVAdapter {
-        Toast.makeText(requireContext(), "${it.word} - ${it.translate} : ${it.status}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(
+            requireContext(),
+            "${it.word} - ${it.translate} : ${it.status}",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +66,7 @@ class WordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.topAppBar.title = viewModel.getDictName()
         binding.wordsRecyclerView.adapter = adapter
         viewModel.observeContent().observe(viewLifecycleOwner) {
             renderContent(it)

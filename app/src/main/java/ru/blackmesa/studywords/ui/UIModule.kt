@@ -3,8 +3,6 @@ package ru.blackmesa.studywords.ui
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import ru.blackmesa.studywords.data.models.WordData
-import ru.blackmesa.studywords.domain.AnaliticsInteractor
-import ru.blackmesa.studywords.domain.AnaliticsInteractorImpl
 import ru.blackmesa.studywords.ui.authentication.AuthenticationViewModel
 import ru.blackmesa.studywords.ui.library.LibraryViewModel
 import ru.blackmesa.studywords.ui.study.StudyViewModel
@@ -30,11 +28,12 @@ val uiModule2 = module {
         )
     }
 
-    viewModel {(dictionaryId: Int) ->
+    viewModel {(dictId: Int, dictName: String) ->
         WordsViewModel(
             application = get(),
             libInteractor = get(),
-            dictionaryId = dictionaryId,
+            dictId = dictId,
+            dictName = dictName,
         )
     }
 

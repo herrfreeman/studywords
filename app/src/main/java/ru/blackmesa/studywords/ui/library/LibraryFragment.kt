@@ -30,7 +30,10 @@ class LibraryFragment : Fragment() {
             override fun onItemClick(item: DictData) {
                 findNavController().navigate(
                     R.id.action_libraryFragment_to_wordsFragment,
-                    WordsFragment.createArgs(item.id)
+                    WordsFragment.createArgs(
+                        dictId = item.id,
+                        dictName = item.name,
+                    )
                 )
             }
 

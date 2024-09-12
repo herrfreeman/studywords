@@ -13,7 +13,8 @@ import ru.blackmesa.studywords.domain.LibraryInteractor
 class WordsViewModel(
     application: Application,
     private val libInteractor: LibraryInteractor,
-    private val dictionaryId: Int,
+    private val dictId: Int,
+    private val dictName: String,
 ) : AndroidViewModel(application) {
 
     private val contentLiveData = MutableLiveData<List<WordData>>()
@@ -25,9 +26,11 @@ class WordsViewModel(
 
     init {
         viewModelScope.launch {
-            contentLiveData.postValue(libInteractor.getWords(dictionaryId))
+            contentLiveData.postValue(libInteractor.getWords(dictId))
         }
     }
+
+    fun getDictName() = dictName
 
     override fun onCleared() {
         super.onCleared()
@@ -48,6 +51,7 @@ class WordsViewModel(
         }
         contentLiveData.postValue(words)
     }
+
 
 
 }
