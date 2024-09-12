@@ -2,6 +2,8 @@ package ru.blackmesa.studywords.ui.authentication
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +30,7 @@ class AuthenticationFragment : Fragment() {
     private var _binding: FragmentAuthenticationBinding? = null
     private val binding: FragmentAuthenticationBinding get() = _binding!!
     private val viewModel: AuthenticationViewModel by viewModel()
+    private var textWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +43,6 @@ class AuthenticationFragment : Fragment() {
     ): View {
         _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,7 +86,17 @@ class AuthenticationFragment : Fragment() {
 
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
-
+        textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun afterTextChanged(p0: Editable?) {
+                binding.loginButton.isEnabled = !binding.userName.text.isNullOrEmpty() && !binding.password.text.isNullOrEmpty()
+                binding.createButton.isEnabled = binding.loginButton.isEnabled
+                binding.restoreButton.isEnabled = binding.loginButton.isEnabled
+            }
+        }
+        binding.userName.addTextChangedListener(textWatcher)
+        binding.password.addTextChangedListener(textWatcher)
     }
 
     private fun hideKeyboard(view: View) {
@@ -159,4 +167,12 @@ class AuthenticationFragment : Fragment() {
         binding.confirmCode.isEnabled = isEnabled
         binding.confirmButton.isEnabled = isEnabled
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.userName.removeTextChangedListener(textWatcher)
+        binding.password.removeTextChangedListener(textWatcher)
+        _binding = null
+    }
+
 }
