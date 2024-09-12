@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.blackmesa.studywords.R
@@ -42,11 +43,18 @@ class WordsFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
     }
+    private var confirmDialog: MaterialAlertDialogBuilder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO: Use the ViewModel
+        val context = requireContext()
+        confirmDialog = MaterialAlertDialogBuilder(context)
+            .setTitle(context.getString(R.string.clear_confirm))
+            .setNegativeButton(context.getString(R.string.no_button)) { dialog, which ->
+            }.setPositiveButton(context.getString(R.string.yes_button)) { dialog, which ->
+                viewModel.clearProgress(adapter.words)
+            }
     }
 
     override fun onCreateView(
@@ -79,7 +87,7 @@ class WordsFragment : Fragment() {
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.clearProgress -> {
-                    viewModel.clearProgress(adapter.words)
+                    confirmDialog?.show()
                     true
                 }
 

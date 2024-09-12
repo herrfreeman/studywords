@@ -19,4 +19,7 @@
     <string name="take_part_in_internal_testing">Примите участие во внутреннем тестировании:</string>
     <string name="author_caption">Автор:</string>
     <string name="author_name">Кирилл Васильев</string>
+    <string name="clear_confirm">Вы уверенны, что хотите очистить прогресс данного словаря?</string>
+    <string name="yes_button">Да</string>
+    <string name="no_button">Нет</string>
 </resources>

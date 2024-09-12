@@ -27,4 +27,7 @@
     <string name="take_part_in_internal_testing">Take part in internal testing:</string>
     <string name="author_caption">Author:</string>
     <string name="author_name">Kirill Vasilev</string>
+    <string name="clear_confirm">Are you sure you to clean progress of this dictionary?</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
 </resources>
