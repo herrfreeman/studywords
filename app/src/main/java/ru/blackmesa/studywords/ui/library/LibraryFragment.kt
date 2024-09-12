@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -64,13 +63,14 @@ class LibraryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.topAppBar.title = BuildConfig.BUILD_NAME
-
         binding.libraryRecyclerView.adapter = adapter
+
+        binding.repatUpdate.setOnClickListener { viewModel.updateLibrary() }
+        binding.dontUpdate.setOnClickListener { viewModel.updateLibrary(true) }
 
         viewModel.observeLibraryState().observe(viewLifecycleOwner) {
             renderLibraryState(it)
         }
-        Log.d("STUDY_WORDS", "Set observer")
 
         binding.topAppBar.setNavigationOnClickListener {
             binding.topAppBar.setNavigationIcon(R.drawable.ic_syncing)
@@ -97,18 +97,15 @@ class LibraryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        binding.topAppBar.setNavigationIcon(R.drawable.ic_updateholder)
-//        viewModel.loadLocalLibrary()
         Log.d("STUDY_WORDS", "On resume update")
         viewModel.updateLibrary()
-//
-        //binding.libraryRecyclerView.invalidate()
     }
 
     private fun renderLibraryState(libraryState: LibraryState) {
         when (libraryState) {
             is LibraryState.Loading -> {
                 Log.d("STUDY_WORDS", "Render Loading state")
+                binding.errorLayout.isVisible = false
                 binding.progressBar.isVisible = true
                 binding.hideLayout.isVisible = true
                 binding.libraryRecyclerView.isVisible = true
@@ -117,6 +114,7 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.LibraryCurrent -> {
                 Log.d("STUDY_WORDS", "Render LibraryCurrent state")
+                binding.errorLayout.isVisible = false
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -126,6 +124,7 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.LibraryUpdated -> {
                 Log.d("STUDY_WORDS", "Render LibraryUpdated state")
+                binding.errorLayout.isVisible = false
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -135,6 +134,7 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.NotAuthorized -> {
                 Log.d("STUDY_WORDS", "Render NotAuthorized state")
+                binding.errorLayout.isVisible = false
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = true
                 binding.libraryRecyclerView.isVisible = false
@@ -144,6 +144,7 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.NoConnection -> {
                 Log.d("STUDY_WORDS", "Render NoConnection state")
+                binding.errorLayout.isVisible = false
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -153,7 +154,9 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.UpdateError -> {
                 Log.d("STUDY_WORDS", "Render UpdateError state")
-                Toast.makeText(requireContext(), libraryState.error, Toast.LENGTH_LONG).show()
+                binding.errorMessage.text = libraryState.error
+                //Toast.makeText(requireContext(), libraryState.error, Toast.LENGTH_LONG).show()
+                binding.errorLayout.isVisible = true
                 binding.progressBar.isVisible = false
                 binding.hideLayout.isVisible = false
                 binding.libraryRecyclerView.isVisible = true
@@ -164,7 +167,7 @@ class LibraryFragment : Fragment() {
     }
 
     private fun showLibrary(dictData: List<DictData>) {
-        Log.d("STUDY_WORDS", "Show lobrary couint: ${dictData.size}" )
+        Log.d("STUDY_WORDS", "Show lobrary couint: ${dictData.size}")
         adapter.library.clear()
         adapter.library.addAll(dictData)
         adapter.notifyDataSetChanged()

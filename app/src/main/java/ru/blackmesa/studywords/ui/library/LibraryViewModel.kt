@@ -33,24 +33,21 @@ class LibraryViewModel(
         val UPDATE_DELAY = 300L
     }
 
-    init {
-        Log.d("STUDY_WORDS", "Init view model")
-//        libraryState.postValue(LibraryState.Loading)
-//        loadLocalLibrary()
-//        updateLibrary()
-    }
-
     override fun onCleared() {
         super.onCleared()
         stopUpdate()
     }
 
-    fun updateLibrary() {
+    fun updateLibrary(onlyLocal: Boolean = false) {
         libraryState.postValue(LibraryState.Loading)
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
             delay(UPDATE_DELAY)
-            processUpdateResult(libInteractor.updateAllData())
+            if (onlyLocal) {
+                processUpdateResult(DataUpdateResult.NoConnection)
+            } else {
+                processUpdateResult(libInteractor.updateAllData())
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Show words</string>
+    <string name="app_name" translatable="false">Show Words</string>
     <string name="email" translatable="false">Email</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
@@ -15,4 +15,7 @@
     <string name="wipe_all_data">Wipe all data</string>
     <string name="sign_out">Sign out</string>
     <string name="clear_progress">Clear progress</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="repeat_button">Repeat</string>
+    <string name="dont_update_button">Don\'t update</string>
 </resources>

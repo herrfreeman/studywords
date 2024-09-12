@@ -10,4 +10,7 @@
     <string name="wipe_all_data">Перезагрузить словари</string>
     <string name="sign_out">Выйти</string>
     <string name="clear_progress">Очистить прогресс</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="repeat_button">Повторить</string>
+    <string name="dont_update_button">Не обновлять</string>
 </resources>

@@ -22,6 +22,7 @@
             style="@style/Widget.StudyWords.TopAppBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:title="10"
             app:navigationIcon="@drawable/ic_back"
             app:titleCentered="true" />
 

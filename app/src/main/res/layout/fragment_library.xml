@@ -22,6 +22,7 @@
             style="@style/Widget.StudyWords.TopAppBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            tools:title="test"
             app:menu="@menu/library_menu"
             app:navigationIcon="@drawable/ic_updateholder" />
 
@@ -53,6 +54,100 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/error_layout"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upBar">
+
+
+        <TextView
+            android:id="@+id/error_title"
+            style="@style/Widget.StudyWords.Light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            android:text="@string/something_went_wrong"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toTopOf="@id/error_card"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/error_card"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginVertical="20dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_title">
+
+            <ImageView
+                android:id="@+id/playlistImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/error_placeholder" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/error_message"
+            style="@style/Widget.StudyWords.Light"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_margin="20dp"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toTopOf="@id/dont_update"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_card"
+            tools:text="Error while updating content" />
+
+        <Button
+            android:id="@+id/repat_update"
+            style="@style/Widget.StudyWords.Button"
+            android:textSize="12sp"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/repeat_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dont_update"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dont_update" />
+
+        <Button
+            android:id="@+id/dont_update"
+            style="@style/Widget.StudyWords.Button"
+            android:textSize="12sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/dont_update_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/repat_update" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <ProgressBar
         android:id="@+id/progress_bar"
