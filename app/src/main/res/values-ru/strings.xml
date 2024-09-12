@@ -13,4 +13,10 @@
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="repeat_button">Повторить</string>
     <string name="dont_update_button">Не обновлять</string>
+    <string name="share_app_button">Поделиться</string>
+    <string name="write_to_support_button">Написать в поддержку</string>
+    <string name="about_app_menu">О приложении</string>
+    <string name="take_part_in_internal_testing">Примите участие во внутреннем тестировании:</string>
+    <string name="author_caption">Автор:</string>
+    <string name="author_name">Кирилл Васильев</string>
 </resources>

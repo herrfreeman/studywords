@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.StudyWords.Light"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.about.AboutFragment">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/upBar"
+        style="@style/Widget.StudyWords.TopAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.StudyWords.TopAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:navigationIcon="@drawable/ic_back"
+            app:title="About" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/appname"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upBar"
+        tools:text="Show Words v.1" />
+
+    <TextView
+        android:id="@+id/caption_test"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="@string/take_part_in_internal_testing"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appname" />
+
+    <ImageView
+        android:id="@+id/qrlink"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="20dp"
+        android:src="@drawable/internal_test_qrlink"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/caption_test" />
+
+    <Button
+        android:id="@+id/share_button"
+        style="@style/Widget.StudyWords.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/share_app_button"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/qrlink"
+        app:layout_constraintStart_toStartOf="@id/qrlink"
+        app:layout_constraintTop_toBottomOf="@id/qrlink" />
+
+    <Button
+        android:id="@+id/support_button"
+        style="@style/Widget.StudyWords.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/write_to_support_button"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/share_button"
+        app:layout_constraintStart_toStartOf="@id/share_button"
+        app:layout_constraintTop_toBottomOf="@id/share_button" />
+
+
+    <TextView
+        android:id="@+id/author_caption"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+
+        android:text="@string/author_caption"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/author_name"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/author_name"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/author_name"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/author_caption" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

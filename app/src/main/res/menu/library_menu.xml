@@ -12,4 +12,10 @@
         android:title="@string/sign_out"
         android:contentDescription="content_description_more"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/about_app_menu"
+        android:contentDescription="content_description_more"
+        app:showAsAction="never" />
 </menu>

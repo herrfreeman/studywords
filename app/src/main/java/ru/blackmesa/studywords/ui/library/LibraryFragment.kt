@@ -90,6 +90,10 @@ class LibraryFragment : Fragment() {
                     true
                 }
 
+                R.id.about -> {
+                    findNavController().navigate(R.id.action_libraryFragment_to_aboutFragment)
+                    true
+                }
                 else -> false
             }
         }
