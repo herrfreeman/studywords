@@ -3,7 +3,6 @@ package ru.blackmesa.studywords.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -11,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.Duration
 
 
 class RetrofitNetworkClient(
@@ -21,7 +21,7 @@ class RetrofitNetworkClient(
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
-        //.client(createDefaultOkHttpClient())
+        .client(createDefaultOkHttpClient())
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -137,10 +137,13 @@ class RetrofitNetworkClient(
     }
 
     private fun createDefaultOkHttpClient(): OkHttpClient {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        //val interceptor = HttpLoggingInterceptor()
+        //interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient().newBuilder()
-            .addInterceptor(interceptor)
+            .connectTimeout(Duration.ofSeconds(60))
+            .readTimeout(Duration.ofSeconds(60))
+            .writeTimeout(Duration.ofSeconds(60))
+            //.addInterceptor(interceptor)
             .build()
     }
 

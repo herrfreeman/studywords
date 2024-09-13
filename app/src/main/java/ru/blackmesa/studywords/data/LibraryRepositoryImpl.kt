@@ -1,6 +1,7 @@
 package ru.blackmesa.studywords.data
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
@@ -63,7 +64,8 @@ class LibraryRepositoryImpl(
                 401 -> {
                     settings.userKey = ""
                     settings.userId = 0
-                    DataUpdateResult.Error("Auth error from library")
+                    //DataUpdateResult.Error("Auth error from library")
+                    DataUpdateResult.NotSignedIn
                 }
 
                 else -> DataUpdateResult.Error("Update error: [${response.errorCode}] ${response.errorMessage}")
