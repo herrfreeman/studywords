@@ -17,7 +17,8 @@ class RetrofitNetworkClient(
     private val context: Context
 ) : NetworkClient {
 
-    private val baseUrl = "https://d5dj1kvquhb9ngfbcamr.apigw.yandexcloud.net"
+//    private val baseUrl = "https://d5dj1kvquhb9ngfbcamr.apigw.yandexcloud.net"
+    private val baseUrl = "https://herrfreeman.pythonanywhere.com"
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
@@ -43,9 +44,7 @@ class RetrofitNetworkClient(
                         //Log.d("STUDY_WORDS_DEBUG", "HTTP error: ${e.code()} message: ${errorMessage}")
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }
@@ -59,9 +58,7 @@ class RetrofitNetworkClient(
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }
@@ -75,9 +72,7 @@ class RetrofitNetworkClient(
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }
@@ -91,9 +86,7 @@ class RetrofitNetworkClient(
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }
@@ -106,9 +99,7 @@ class RetrofitNetworkClient(
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }
@@ -121,9 +112,7 @@ class RetrofitNetworkClient(
                     } catch (e: HttpException) {
                         Response().apply {
                             resultCode = e.code()
-                            val errorBody = e.response()?.errorBody()?.string() ?: ""
-                            errorCode = errorBody.substringBefore("#").trim()
-                            errorMessage = errorBody.substringAfter("#", errorBody).trim()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
                         }
                     } catch (e: Throwable) {
                         Response().apply { resultCode = 500 }

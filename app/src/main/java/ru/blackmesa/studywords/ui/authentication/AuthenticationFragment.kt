@@ -3,6 +3,7 @@ package ru.blackmesa.studywords.ui.authentication
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -87,10 +88,11 @@ class AuthenticationFragment : Fragment() {
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
         textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
-                binding.loginButton.isEnabled = !binding.userName.text.isNullOrEmpty() && !binding.password.text.isNullOrEmpty()
+                binding.loginButton.isEnabled =
+                    !binding.userName.text.isNullOrEmpty() && !binding.password.text.isNullOrEmpty()
                 binding.createButton.isEnabled = binding.loginButton.isEnabled
                 binding.restoreButton.isEnabled = binding.loginButton.isEnabled
             }
@@ -109,7 +111,7 @@ class AuthenticationFragment : Fragment() {
     private fun renderState(state: AuthState) {
         binding.userName.setText(state.credentials.userName)
         binding.password.setText(state.credentials.password)
-        binding.errorMessage.text = state.errorMessage
+        binding.errorMessage.text = Html.fromHtml(state.errorMessage, Html.FROM_HTML_MODE_LEGACY)
 
         when (state) {
             is AuthState.Default -> {
@@ -129,7 +131,8 @@ class AuthenticationFragment : Fragment() {
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)
                 makeConfirmViewEnabled(true)
-                binding.confirmErrorMessage.text = state.confirmErrorMessage
+                binding.confirmErrorMessage.text =
+                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
                 binding.confirmCode.setText(state.confirmCode)
             }
 
@@ -138,7 +141,8 @@ class AuthenticationFragment : Fragment() {
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)
                 makeConfirmViewEnabled(false)
-                binding.confirmErrorMessage.text = state.confirmErrorMessage
+                binding.confirmErrorMessage.text =
+                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
                 binding.confirmCode.setText(state.confirmCode)
             }
 

@@ -69,10 +69,6 @@ class AuthenticationViewModel(
                         AuthState.Default(credentials, errorMessage)
                     }
 
-                    is AuthResult.WrongPassword -> {
-                        errorMessage = "Wrong password"
-                        AuthState.Default(credentials, errorMessage)
-                    }
                 }
             )
         }

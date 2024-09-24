@@ -68,7 +68,7 @@ class LibraryRepositoryImpl(
                     DataUpdateResult.NotSignedIn
                 }
 
-                else -> DataUpdateResult.Error("Update error: [${response.errorCode}] ${response.errorMessage}")
+                else -> DataUpdateResult.Error(response.errorMessage)
             }
         }
     }

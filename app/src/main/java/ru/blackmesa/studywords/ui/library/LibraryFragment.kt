@@ -2,6 +2,7 @@ package ru.blackmesa.studywords.ui.library
 
 
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -161,7 +162,7 @@ class LibraryFragment : Fragment() {
 
             is LibraryState.UpdateError -> {
                 Log.d("STUDY_WORDS", "Render UpdateError state")
-                binding.errorMessage.text = libraryState.error
+                binding.errorMessage.text = Html.fromHtml(libraryState.error, Html.FROM_HTML_MODE_LEGACY)
                 //Toast.makeText(requireContext(), libraryState.error, Toast.LENGTH_LONG).show()
                 binding.errorLayout.isVisible = true
                 binding.progressBar.isVisible = false

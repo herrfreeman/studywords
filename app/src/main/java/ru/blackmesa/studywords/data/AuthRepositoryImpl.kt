@@ -39,18 +39,11 @@ class AuthRepositoryImpl(
             401 -> {
                 settings.userKey = ""
                 settings.userId = 0
-
-                if (ERRORCODE_WRONGPASSWORD.contains(response.errorCode)) {
-                    AuthResult.WrongPassword()
-                } else {
-                    AuthResult.Error(response.errorCode, response.errorMessage)
-                }
+                AuthResult.Error(response.resultCode.toString(), response.errorMessage)
             }
 
-            else -> AuthResult.Error(
-                response.resultCode.toString(),
-                "Authentication error: [${response.errorCode}] ${response.errorMessage}"
-            )
+            else -> AuthResult.Error(response.resultCode.toString(), response.errorMessage)
+
         }
     }
 
@@ -64,10 +57,7 @@ class AuthRepositoryImpl(
         return when (response.resultCode) {
             -1 -> CreateRestoreResult.NoConnection()
             200 -> CreateRestoreResult.Success()
-            else -> CreateRestoreResult.Error(
-                response.resultCode.toString(),
-                "Create user error: [${response.errorCode}] ${response.errorMessage}"
-            )
+            else -> CreateRestoreResult.Error(response.resultCode.toString(), response.errorMessage)
         }
     }
 
@@ -81,10 +71,7 @@ class AuthRepositoryImpl(
         return when (response.resultCode) {
             -1 -> CreateRestoreResult.NoConnection()
             200 -> CreateRestoreResult.Success()
-            else -> CreateRestoreResult.Error(
-                response.resultCode.toString(),
-                "Restore password error: [${response.errorCode}] ${response.errorMessage}"
-            )
+            else -> CreateRestoreResult.Error(response.resultCode.toString(), response.errorMessage)
         }
     }
 
@@ -101,17 +88,11 @@ class AuthRepositoryImpl(
                 settings.userId = (response as ConfirmResponse).userid
                 ConfirmResult.Success()
             }
-            else -> {
-                if (ERRORCODE_TRYANOTHER.contains(response.errorCode)) {
-                    ConfirmResult.TryAnotherCode()
-                } else {
-                    ConfirmResult.Error(
-                        response.resultCode.toString(),
-                        "Confirm create error: [${response.errorCode}] ${response.errorMessage}"
-                    )
-                }
-            }
+
+            417 -> ConfirmResult.TryAnotherCode()
+            else -> ConfirmResult.Error(response.resultCode.toString(), response.errorMessage)
         }
+
     }
 
     override suspend fun confirmRestore(
@@ -127,22 +108,10 @@ class AuthRepositoryImpl(
                 settings.userId = (response as ConfirmResponse).userid
                 ConfirmResult.Success()
             }
-            else -> {
-                if (ERRORCODE_TRYANOTHER.contains(response.errorCode)) {
-                    ConfirmResult.TryAnotherCode()
-                } else {
-                    ConfirmResult.Error(
-                        response.resultCode.toString(),
-                        "Confirm restore error: [${response.errorCode}] ${response.errorMessage}"
-                    )
-                }
-            }
-        }
-    }
 
-    companion object {
-        val ERRORCODE_TRYANOTHER = listOf("B0307")
-        val ERRORCODE_WRONGPASSWORD = listOf("B0105")
+            417 -> ConfirmResult.TryAnotherCode()
+            else -> ConfirmResult.Error(response.resultCode.toString(), response.errorMessage)
+        }
     }
 
 }
