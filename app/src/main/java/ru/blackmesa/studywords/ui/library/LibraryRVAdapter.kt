@@ -19,8 +19,9 @@ class LibraryRVAdapter(private val itemClickListener: ItemClickListener) : Recyc
         holder.bind(library[position])
     }
 
-    fun interface ItemClickListener {
+    interface ItemClickListener {
         fun onItemClick(item: DictData)
+        fun onDownloadClick(item: DictData)
     }
 
 }

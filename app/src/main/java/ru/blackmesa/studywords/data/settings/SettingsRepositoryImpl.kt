@@ -4,7 +4,6 @@ import ru.blackmesa.studywords.data.models.Credentials
 
 class SettingsRepositoryImpl(private val localStorage: LocalSettingsStorage) : SettingsRepository {
 
-
     private val settings = localStorage.getSettings()
 
     override var userKey: String
@@ -28,7 +27,7 @@ class SettingsRepositoryImpl(private val localStorage: LocalSettingsStorage) : S
             localStorage.setSettings(settings)
         }
 
-    override fun getCredentials(): Credentials = localStorage.getCredentials()
-    override fun setCredentials(credentials: Credentials) = localStorage.setCredentials(credentials)
+    override fun loadCredentials(): Credentials = localStorage.getCredentials()
+    override fun saveCredentials(credentials: Credentials) = localStorage.setCredentials(credentials)
 
 }

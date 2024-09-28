@@ -1,9 +1,8 @@
 package ru.blackmesa.studywords.data.models
 
-data class WordTranslate(
-    val id: Int,
+data class TranslateData(
     val wordid: Int,
+    val id: Int,
     val translate: String,
-    val version: Long,
+    var priority: Int,
 )
-

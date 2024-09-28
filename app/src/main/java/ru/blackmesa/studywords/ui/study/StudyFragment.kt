@@ -24,7 +24,7 @@ class StudyFragment : Fragment() {
         fun createArgs(wordList: List<WordData>): Bundle =
             bundleOf(WORDLIST_ARG to StudyList(wordList))
 
-        val STRIGHT_STAGE = listOf(0,1,4,5,8,9)
+        val STRIGHT_STAGE = listOf(0, 1, 4, 5, 8, 9)
     }
 
     private var _binding: FragmentStudyBinding? = null
@@ -61,12 +61,15 @@ class StudyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.observeState().observe(viewLifecycleOwner) { renderState(it) }
-
-        binding.backButton.setOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
         binding.okButton.setOnClickListener { viewModel.showAnswer() }
         binding.yesButton.setOnClickListener { viewModel.gotResult(true) }
+        binding.yesButton.setOnLongClickListener {
+            viewModel.setFullyStudied()
+            true
+        }
         binding.noButton.setOnClickListener { viewModel.gotResult(false) }
 
     }
@@ -84,7 +87,7 @@ class StudyFragment : Fragment() {
                 binding.okButton.isVisible = true
                 binding.yesButton.isVisible = false
                 binding.noButton.isVisible = false
-                binding.statusCaption.text = state.wordsLeft.toString()
+                binding.topAppBar.title = state.wordsLeft.toString()
             }
 
             is StudyState.Answer -> {

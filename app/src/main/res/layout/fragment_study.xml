@@ -4,62 +4,41 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.StudyWords.Light"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.study.StudyFragment">
 
-    <LinearLayout
+
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/upBar"
+        style="@style/Widget.StudyWords.TopAppBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="?attr/colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/backButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:contentDescription="menu_icon"
-            android:src="@drawable/ic_back"
-            app:tint="?attr/colorOnPrimary" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.StudyWords.TopAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:title="10"
+            app:navigationIcon="@drawable/ic_back"
+            app:titleCentered="true" />
 
-
-        <TextView
-            android:id="@+id/statusCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="viewEnd"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="20sp"
-            tools:text="10" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:contentDescription="menu_icon"
-            android:src="@drawable/ic_menu"
-            app:tint="?attr/colorOnPrimary" />
-
-    </LinearLayout>
-
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/word"
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:textAlignment="center"
-        android:textSize="30dp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@id/wordSeparator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/upBar"
         tools:text="Word" />
 
     <View
@@ -67,21 +46,20 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginHorizontal="20dp"
-        android:background="?attr/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@id/answer"
+        android:background="@color/dark_blue"
+        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/word" />
+        app:layout_constraintTop_toBottomOf="@id/upBar" />
 
     <TextView
         android:id="@+id/answer"
-
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:textAlignment="center"
         android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wordSeparator"
@@ -89,6 +67,7 @@
 
     <View
         android:id="@+id/buttonBox"
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -97,15 +76,13 @@
 
     <Button
         android:id="@+id/okButton"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.StudyWords.Button.Study"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="40dp"
         android:layout_marginBottom="40dp"
-        android:backgroundTint="#FFD3C7E3"
         android:padding="30dp"
-        android:text="OK"
-        android:textColor="#000"
+        android:text="@string/study_ok"
         android:textSize="26sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/buttonBox"
@@ -115,16 +92,14 @@
 
     <Button
         android:id="@+id/yesButton"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.StudyWords.Button.Study"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="40dp"
-        android:backgroundTint="#FFD3C7E3"
         android:padding="30dp"
-        android:text="YES"
-        android:textColor="#000"
+        android:text="@string/study_yes"
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="@id/buttonBox"
         app:layout_constraintEnd_toStartOf="@id/noButton"
@@ -133,16 +108,14 @@
 
     <Button
         android:id="@+id/noButton"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/Widget.StudyWords.Button.Study"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="40dp"
-        android:backgroundTint="#D3C7E3"
         android:padding="30dp"
-        android:text="NO"
-        android:textColor="#000"
+        android:text="@string/study_no"
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="@id/buttonBox"

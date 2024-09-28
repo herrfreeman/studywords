@@ -5,7 +5,7 @@ import java.io.Serializable
 data class WordData(
     val wordid: Int,
     val word: String,
-    val translate: String,
     var status: Int,
     var repeatdate: Long,
+    val translate: String,
 ) : Serializable

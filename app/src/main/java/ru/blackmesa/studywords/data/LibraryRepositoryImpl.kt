@@ -2,25 +2,28 @@ package ru.blackmesa.studywords.data
 
 import android.content.Context
 import android.util.Log
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
-import ru.blackmesa.studywords.data.db.LibraryVersions
-import ru.blackmesa.studywords.data.dto.ProgressDto
-import ru.blackmesa.studywords.data.models.AuthState
+import ru.blackmesa.studywords.data.db.PriorityTranslateEntity
+import ru.blackmesa.studywords.data.db.WordInDictEntity
+import ru.blackmesa.studywords.data.db.WordTranslateEntity
+import ru.blackmesa.studywords.data.dto.DictionaryDto
+import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.Progress
-import ru.blackmesa.studywords.data.models.UpdateResult
 import ru.blackmesa.studywords.data.models.WordData
-import ru.blackmesa.studywords.data.network.AuthRequest
-import ru.blackmesa.studywords.data.network.AuthResponse
+import ru.blackmesa.studywords.data.network.DictionaryRequest
+import ru.blackmesa.studywords.data.network.DictionaryResponse
+import ru.blackmesa.studywords.data.network.LibraryRequest
+import ru.blackmesa.studywords.data.network.LibraryResponse
 import ru.blackmesa.studywords.data.network.NetworkClient
-import ru.blackmesa.studywords.data.network.UpdateRequest
-import ru.blackmesa.studywords.data.network.UpdateResponse
+import ru.blackmesa.studywords.data.network.ProgressRequest
+import ru.blackmesa.studywords.data.network.ProgressResponse
 import ru.blackmesa.studywords.data.settings.SettingsRepository
+import kotlin.math.max
+import kotlin.math.min
 
 class LibraryRepositoryImpl(
     private val context: Context,
@@ -29,67 +32,47 @@ class LibraryRepositoryImpl(
     private val database: AppDatabase,
 ) : LibraryRepository {
 
-    override suspend fun updateAllData(): UpdateResult {
+    override suspend fun updateAllData(): DataUpdateResult {
+        return withContext(Dispatchers.IO) {
 
-        if (settings.userKey.isEmpty() || settings.userId == 0) {
-            return UpdateResult.NotSignedIn
-        }
-
-        val libraryVersions = getLibraryVersions()
-        val request = UpdateRequest(
-            userkey = settings.userKey,
-            dictversion = libraryVersions.dictsVersion,
-            wordsversion = libraryVersions.wordsVersion,
-            wordsindictsversion = libraryVersions.wordsInDictVersion,
-            wordtranslateversion = libraryVersions.wordTranslateVersion,
-            progressversion = libraryVersions.progressVersion,
-            localprogress = getLocalProgress(settings.userId)
-        )
-
-        Log.d("STUDY_WORDS", Gson().toJson(request))
-
-        val response = networkClient.doRequest(request)
-        return when (response.resultCode) {
-            -1 -> UpdateResult.NoConnection
-            200 -> updateLocalData(request, response as UpdateResponse)
-            401 -> {
-                settings.userKey = ""
-                settings.userId = 0
-                UpdateResult.Error("Auth error from library")
+            if (settings.userKey.isEmpty() || settings.userId == 0) {
+                return@withContext DataUpdateResult.NotSignedIn
             }
 
-            else -> UpdateResult.Error("Update error: ${response.resultCode}")
+            val lastLibrary = database.libraryDao().getDictVersion()
+            val libVersion = if (lastLibrary.isEmpty()) 0L else lastLibrary.first()
+
+            val request = LibraryRequest(
+                userid = settings.userId,
+                userkey = settings.userKey,
+                version = libVersion,
+            )
+
+            val response = networkClient.doRequest(request)
+            when (response.resultCode) {
+                -1 -> DataUpdateResult.NoConnection
+                200 -> {
+                    // At first load dictionaries with words and translates inside of it
+                    val updateResult = updateLibrary((response as LibraryResponse).dictionaries)
+                    when (updateResult) {
+                        is DataUpdateResult.DataUpdated,
+                        is DataUpdateResult.Synchronized -> syncProgress()// if ok - sync progress
+                        else -> updateResult
+                    }
+                }
+
+                401 -> {
+                    settings.userKey = ""
+                    settings.userId = 0
+                    //DataUpdateResult.Error("Auth error from library")
+                    DataUpdateResult.NotSignedIn
+                }
+
+                else -> DataUpdateResult.Error(response.errorMessage)
+            }
         }
     }
 
-    override suspend fun signIn(userName: String, password: String): AuthState {
-
-        if (userName.isEmpty()) {
-            return AuthState.Error("Login is empty")
-        }
-        if (password.isEmpty()) {
-            return AuthState.Error("Password is empty")
-        }
-
-        val response = networkClient.doRequest(AuthRequest(userName, password))
-        return when (response.resultCode) {
-            -1 -> AuthState.NoConnection
-            200 -> {
-                settings.userKey = (response as AuthResponse).userkey
-                settings.userId = (response as AuthResponse).userid
-                delay(1500)
-                AuthState.Success((response as AuthResponse).message)
-            }
-
-            401 -> {
-                settings.userKey = ""
-                settings.userId = 0
-                AuthState.Error("Auth error")
-            }
-
-            else -> AuthState.Error("Other error: ${response.resultCode}")
-        }
-    }
 
     override suspend fun getDictionaries(): List<Dictionary> {
         return withContext(Dispatchers.IO) {
@@ -99,14 +82,45 @@ class LibraryRepositoryImpl(
 
     override suspend fun getWords(dictId: Int): List<WordData> {
         return withContext(Dispatchers.IO) {
-            database.libraryDao().getWords(dictId, settings.userId)
+            val translates = database.libraryDao().getTranslates(dictId)
+
+            database.libraryDao().getWords(dictId, settings.userId).map { draftWord ->
+                var maxPriority = 0
+                var priorityTranslate = ""
+                val filtered = translates
+                    .filter { translate ->
+                        translate.wordid == draftWord.wordid
+                    }
+                    .sortedBy { draftWord.wordid }
+
+                filtered.forEach {
+                    if (it.priority > maxPriority) {
+                        maxPriority = it.priority
+                        priorityTranslate = it.translate
+                    }
+                }
+
+                WordData(
+                    wordid = draftWord.wordid,
+                    word = draftWord.word,
+                    status = draftWord.status,
+                    repeatdate = draftWord.repeatdate,
+                    translate = if (priorityTranslate.isEmpty()) {
+                        filtered.map { it.translate }
+                            .slice(0..<min(2,filtered.size))
+                            .joinToString()
+                    } else {
+                        priorityTranslate
+                    },
+                )
+            }
         }
     }
 
     override suspend fun setProgress(progress: List<Progress>) {
         withContext(Dispatchers.IO) {
             database.libraryDao()
-                .insertProgress(progress.map { it.toProgressEntity(settings.userId) })
+                .insertProgress(progress.map { it.toEntity(settings.userId) })
         }
     }
 
@@ -116,64 +130,128 @@ class LibraryRepositoryImpl(
         }
     }
 
-    private suspend fun updateLocalData(
-        updateRequest: UpdateRequest,
-        updateResponse: UpdateResponse
-    ): UpdateResult {
+    override suspend fun wipeAllLocalData() {
+        return withContext(Dispatchers.IO) {
+            database.libraryDao().deleteDicts()
+            database.libraryDao().deleteWords()
+            database.libraryDao().deleteWordInDict()
+            database.libraryDao().deleteTranslate()
+            database.libraryDao().deleteProgress()
+        }
+    }
 
+    private suspend fun updateLibrary(
+        dictionaries: List<DictionaryDto>
+    ): DataUpdateResult {
+        //TODO сделать обновление словарей в транзакции
+        return if (dictionaries.isEmpty()) {
+            return DataUpdateResult.Synchronized
+        } else {
+            dictionaries.forEach {
+                if (it.isDefault) {
+                    val dictUpdateResult = updateDictionary(it.id)
+                    when (dictUpdateResult) {
+                        is DataUpdateResult.Error,
+                        is DataUpdateResult.NoConnection,
+                        is DataUpdateResult.NotSignedIn -> return dictUpdateResult
+
+                        else -> Unit
+                    }
+                }
+            }
+            database.libraryDao().insertDict(dictionaries.map { it.toEntity() })
+            DataUpdateResult.DataUpdated
+        }
+    }
+
+    override suspend fun updateDictionary(dictId: Int): DataUpdateResult {
         return withContext(Dispatchers.IO) {
 
-            with(database.libraryDao()) {
-                insertWords(updateResponse.words.map { it.toWordEntity() })
-                insertWordInList(updateResponse.wordsindicts.map { it.toWordInDictEntity() })
-                insertTranslate(updateResponse.wordtranslate.map { it.toWordTranslateEntity() })
-                //At first update sent progress as untouched
-                insertProgress(updateRequest.localprogress.map {
-                    it.toProgressEntity(settings.userId, false)
-                })
-                //Then load external progress data
-                insertProgress(updateResponse.progress.map {
-                    it.toProgressEntity(settings.userId, false)
-                })
+            val request = DictionaryRequest(
+                userid = settings.userId,
+                userkey = settings.userKey,
+                dictid = dictId
+            )
 
-                if (updateResponse.dictionaries.isEmpty()
-                    && updateResponse.words.isEmpty()
-                    && updateResponse.wordsindicts.isEmpty()
-                    && updateResponse.wordtranslate.isEmpty()
-                    && updateResponse.progress.isEmpty()
-                ) {
-                    UpdateResult.Synchronized
-                } else {
-                    insertDict(updateResponse.dictionaries.map { it.toDictEntity() })
-                    UpdateResult.LibraryUpdated(
-                        getDictionariesWithProgress()
+            val response = networkClient.doRequest(request)
+            when (response.resultCode) {
+                -1 -> DataUpdateResult.NoConnection
+                200 -> {
+                    database.libraryDao()
+                        .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
+                    database.libraryDao()
+                        .insertTranslate((response as DictionaryResponse).translate.map {
+                            WordTranslateEntity(
+                                id = it.id,
+                                wordId = it.wordId,
+                                translate = it.translate,
+                            )
+                        })
+                    database.libraryDao()
+                        .insertPriorityTranslate((response as DictionaryResponse).translate.map {
+                            PriorityTranslateEntity(
+                                dictId = dictId,
+                                wordId = it.wordId,
+                                translateId = it.id,
+                                count = it.priority,
+                            )
+                        })
+                    database.libraryDao().insertWordInList(
+                        (response as DictionaryResponse).words.map {
+                            WordInDictEntity(
+                                wordId = it.id,
+                                dictId = dictId,
+                            )
+                        }
                     )
+                    DataUpdateResult.DataUpdated
                 }
+
+                401 -> {
+                    settings.userKey = ""
+                    settings.userId = 0
+                    DataUpdateResult.Error("Auth error from library")
+                }
+
+                else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
             }
         }
     }
 
-    private suspend fun getLibraryVersions(): LibraryVersions {
-        return withContext(Dispatchers.IO) {
-            val dict = database.libraryDao().getDictVersion()
-            val words = database.libraryDao().getWordsVersion()
-            val wordindict = database.libraryDao().getWordInDictVersion()
-            val translate = database.libraryDao().getTranslateVersion()
-            val progress = database.libraryDao().getProgressVersion(settings.userId)
-
-            LibraryVersions(
-                dictsVersion = if (dict.isEmpty()) 0L else dict.first(),
-                wordsVersion = if (words.isEmpty()) 0L else words.first(),
-                wordsInDictVersion = if (wordindict.isEmpty()) 0L else wordindict.first(),
-                wordTranslateVersion = if (translate.isEmpty()) 0L else translate.first(),
-                progressVersion = if (progress.isEmpty()) 0L else progress.first(),
-            )
+    suspend fun syncProgress(): DataUpdateResult {
+        if (settings.userKey.isEmpty() || settings.userId == 0) {
+            return DataUpdateResult.NotSignedIn
         }
-    }
 
-    private suspend fun getLocalProgress(userId: Int): List<ProgressDto> {
-        return withContext(Dispatchers.IO) {
-            database.libraryDao().getLocalProgress(userId).map { it.toProgressDto() }
+        val lastProgress = database.libraryDao().getProgressVersion(settings.userId)
+        val progressVersion = if (lastProgress.isEmpty()) 0L else lastProgress.first()
+        val localProgress = database.libraryDao().getLocalProgress(settings.userId)
+
+        val request = ProgressRequest(
+            userid = settings.userId,
+            userkey = settings.userKey,
+            version = progressVersion,
+            progress = localProgress.map { it.toDto() }
+        )
+
+        val response = networkClient.doRequest(request)
+        return when (response.resultCode) {
+            -1 -> DataUpdateResult.NoConnection
+            200 -> {
+                database.libraryDao()
+                    .insertProgress(localProgress.map { it.apply { touched = false } })
+                database.libraryDao().insertProgress((response as ProgressResponse)
+                    .progress.map { it.toEntity(settings.userId) })
+                DataUpdateResult.Synchronized
+            }
+
+            401 -> {
+                settings.userKey = ""
+                settings.userId = 0
+                DataUpdateResult.Error("Auth error from library")
+            }
+
+            else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
         }
     }
 

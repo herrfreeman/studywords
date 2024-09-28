@@ -2,6 +2,20 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="dark_blue">#1D3E5E</color>
+    <color name="blue">#006494</color>
+    <color name="almost_white">#F7F7F2</color>
+    <color name="almost_black">#1A1B22</color>
+    <color name="almost_gray">#E1CAB7</color>
+    <color name="error_color">#BC412B</color>
+
+    <color name="transparent_layout">#CC000000</color>
+    <color name="error_color_on_dark">#DD7B69</color>
+    <color name="light_blue">#1FB8FF</color>
+    <color name="very_light_blue">#ADE5FF</color>
+
 
     <color name="status_done">#4CAF50</color>
     <color name="status_new">#00FFFFFF</color>

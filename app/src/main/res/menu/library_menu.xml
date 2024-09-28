@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/wipeData"
+        android:title="@string/wipe_all_data"
+        android:contentDescription="content_description_more"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/signOut"
+        android:title="@string/sign_out"
+        android:contentDescription="content_description_more"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/about"
+        android:title="@string/about_app_menu"
+        android:contentDescription="content_description_more"
+        app:showAsAction="never" />
+</menu>

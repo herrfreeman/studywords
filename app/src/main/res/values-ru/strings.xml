@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password">Пароль</string>
+    <string name="log_in">Вход</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="restore_password">Восстановить пароль</string>
+    <string name="confirmation_title">Мы отправили Вам код подтверждения на указанный email</string>
+    <string name="confirm_hint">Код подтверждения</string>
+    <string name="study">Учить</string>
+    <string name="wipe_all_data">Перезагрузить словари</string>
+    <string name="sign_out">Выйти</string>
+    <string name="clear_progress">Очистить прогресс</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="repeat_button">Повторить</string>
+    <string name="dont_update_button">Не обновлять</string>
+    <string name="share_app_button">Поделиться</string>
+    <string name="write_to_support_button">Написать в поддержку</string>
+    <string name="about_app_menu">О приложении</string>
+    <string name="take_part_in_internal_testing">Примите участие во внутреннем тестировании:</string>
+    <string name="author_caption">Автор:</string>
+    <string name="author_name">Кирилл Васильев</string>
+    <string name="clear_confirm">Вы уверенны, что хотите очистить прогресс данного словаря?</string>
+    <string name="yes_button">Да</string>
+    <string name="no_button">Нет</string>
+    <string name="nothing_study">Все слова изучены</string>
+    <string name="next_repeat">"Следующий повтор: "</string>
+</resources>

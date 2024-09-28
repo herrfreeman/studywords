@@ -8,7 +8,7 @@ interface SettingsInteractor {
     var userId: Int
     var nightMode: Boolean
 
-    fun getCredentials(): Credentials
-    fun setCredentials(credentials: Credentials)
+    fun loadCredentials(): Credentials
+    fun saveCredentials(credentials: Credentials)
 
 }

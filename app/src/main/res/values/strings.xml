@@ -1,3 +1,36 @@
 <resources>
-    <string name="app_name">Study words</string>
+    <string name="app_name" translatable="false">Show Words</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="create_account">Create account</string>
+    <string name="restore_password">Restore password</string>
+    <string name="confirmation_title">We sent you the confirmation code on your email</string>
+    <string name="confirm_ok" translatable="false">Ok</string>
+    <string name="confirm_hint">Confirm code</string>
+    <string name="study">Study</string>
+    <string name="study_ok" translatable="false">OK</string>
+    <string name="study_yes" translatable="false">YES</string>
+    <string name="study_no" translatable="false">NO</string>
+    <string name="wipe_all_data">Wipe all data</string>
+    <string name="sign_out">Sign out</string>
+    <string name="clear_progress">Clear progress</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="repeat_button">Repeat</string>
+    <string name="dont_update_button">Don\'t update</string>
+    <string name="support_mail" translatable="false">support@blackmesa.ru</string>
+    <string name="support_subject" translatable="false">Show Words support request</string>
+    <string name="share_link" translatable="false">https://play.google.com/apps/internaltest/4701673493456768365</string>
+    <string name="share_app_button">Share app</string>
+    <string name="write_to_support_button">Write to support</string>
+    <string name="about_app_menu">About app</string>
+    <string name="take_part_in_internal_testing">Take part in internal testing:</string>
+    <string name="author_caption">Author:</string>
+    <string name="author_name">Kirill Vasilev</string>
+    <string name="clear_confirm">Are you sure you to clean progress of this dictionary?</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
+    <string name="nothing_study">There is nothing to study</string>
+    <string name="next_repeat">Next repeat: </string>
+
 </resources>

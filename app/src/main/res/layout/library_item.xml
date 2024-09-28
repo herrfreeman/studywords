@@ -2,76 +2,74 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.StudyWords.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/libItemCaption"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp"
-        android:layout_marginStart="20dp"
-        android:text="Top 100 words"
-        android:textSize="22sp"
+    <ImageView
+        android:id="@+id/download_button"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:paddingVertical="6dp"
+        android:paddingStart="6dp"
+        android:src="@drawable/id_download"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/statusText"
+        app:layout_constraintEnd_toStartOf="@id/lib_item_caption"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/statusText"
+        android:id="@+id/lib_item_caption"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:layout_marginStart="10dp"
+        tools:text="Top 100 words"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/wordsCount"
+        app:layout_constraintStart_toEndOf="@id/download_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/wordsCount"
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/repeatCount"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="123" />
 
-        android:text="0 / 0 / 0 / 0"
-        android:textSize="18sp"
+    <TextView
+        android:id="@+id/repeatCount"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
         android:layout_marginEnd="10dp"
+        android:textColor="@color/status_repeat"
+        android:textSize="14sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text=" | 45" />
 
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/libItemCaption"
-        android:layout_marginTop="6dp"
+    <View
+        android:id="@+id/statusView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <View
-            android:id="@+id/statusDone"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_weight="10"
-            android:background="#00FF00"
-            />
-
-        <View
-            android:id="@+id/statusRepeat"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_weight="20"
-            android:background="#FF4D4D"
-            />
-
-        <View
-            android:id="@+id/statusWait"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_weight="30"
-            android:background="#FFD147"
-            />
-
-        <View
-            android:id="@+id/statusNew"
-            android:layout_width="0dp"
-            android:layout_height="6dp"
-            android:layout_weight="40"
-            android:background="#FFFFFF"
-            />
-    </LinearLayout>
-
+        android:layout_height="8dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wordsCount" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

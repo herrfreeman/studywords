@@ -1,22 +1,46 @@
 package ru.blackmesa.studywords.data.network
 
 
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface StudyWordsApi {
 
-    @POST("/auth")
+    @POST("/authenticate")
     @Headers("Content-Type: application/json")
     suspend fun authenticate(
         @Body request: AuthRequest,
     ): AuthResponse
 
-    @POST("/update")
+    @POST("/createuser")
     @Headers("Content-Type: application/json")
-    suspend fun update(
-        @Body request: UpdateRequest,
-    ): UpdateResponse
+    suspend fun createUser(
+        @Body request: CreateRestoreRequest,
+    ): CreateUserResponse
+
+    @POST("/createuserconfirm")
+    @Headers("Content-Type: application/json")
+    suspend fun confirm(
+        @Body request: ConfirmRequest,
+    ): ConfirmResponse
+
+    @POST("/library")
+    @Headers("Content-Type: application/json")
+    suspend fun library(
+        @Body request: LibraryRequest,
+    ): LibraryResponse
+
+    @POST("/dictionary")
+    @Headers("Content-Type: application/json")
+    suspend fun dictionary(
+        @Body request: DictionaryRequest,
+    ): DictionaryResponse
+
+    @POST("/progress")
+    @Headers("Content-Type: application/json")
+    suspend fun progress(
+        @Body request: ProgressRequest,
+    ): ProgressResponse
+
 }

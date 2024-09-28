@@ -1,15 +1,18 @@
 package ru.blackmesa.studywords.ui.library
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.DictData
-import ru.blackmesa.studywords.data.models.UpdateResult
+import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.LibraryInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 
@@ -17,22 +20,17 @@ class LibraryViewModel(
     application: Application,
     private val libInteractor: LibraryInteractor,
     private val settingsInteractor: SettingsInteractor,
+    private val analitics: AnaliticsInteractor,
 ) : AndroidViewModel(application) {
 
-    private val updateStateLiveData = MutableLiveData<UpdateResult>()
-    fun observeUpdateState(): LiveData<UpdateResult> = updateStateLiveData
-
-    private val dictionaryLiveData = MutableLiveData<List<DictData>>()
-    fun observeDictionary(): LiveData<List<DictData>> = dictionaryLiveData
+    private val libraryState = MutableLiveData<LibraryState>()
+    fun observeLibraryState(): LiveData<LibraryState> = libraryState
 
     private var updateJob: Job? = null
+    private var libraryData: List<DictData> = emptyList()
 
     companion object {
-        val UPDATE_DELAY = 1000L
-    }
-
-    init {
-        loadLibrary()
+        val UPDATE_DELAY = 300L
     }
 
     override fun onCleared() {
@@ -40,31 +38,84 @@ class LibraryViewModel(
         stopUpdate()
     }
 
-    fun startUpdate() {
+    fun updateLibrary(onlyLocal: Boolean = false) {
+        libraryState.postValue(LibraryState.Loading)
         updateJob?.cancel()
         updateJob = viewModelScope.launch {
-            //while (true) {
-                updateStateLiveData.postValue(libInteractor.updateAllData())
-                delay(UPDATE_DELAY)
-            //}
+            delay(UPDATE_DELAY)
+            if (onlyLocal) {
+                processUpdateResult(DataUpdateResult.NoConnection)
+            } else {
+                processUpdateResult(libInteractor.updateAllData())
+            }
         }
+    }
+
+    fun downloadDictionary(dictionary: DictData) {
+        libraryState.postValue(LibraryState.Loading)
+        updateJob?.cancel()
+        updateJob = viewModelScope.launch {
+            delay(UPDATE_DELAY)
+            analitics.logEvent(FirebaseAnalytics.Event.LEVEL_UP, "Load dict: ${dictionary.name}")
+            processUpdateResult(libInteractor.updateDictionary(dictionary.id))
+        }
+    }
+
+    private suspend fun processUpdateResult(updateResult: DataUpdateResult) {
+        when (updateResult) {
+            is DataUpdateResult.Error -> {
+                analitics.logError("Update error: $updateResult.message")
+                libraryState.postValue(LibraryState.UpdateError(libraryData, updateResult.message))
+                Log.d("STUDY_WORDS", "Update error: ${updateResult.message}")
+            }
+
+            is DataUpdateResult.DataUpdated -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.LibraryUpdated(libraryData))
+            }
+
+            is DataUpdateResult.NoConnection -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.NoConnection(libraryData))
+            }
+
+            is DataUpdateResult.NotSignedIn -> libraryState.postValue(LibraryState.NotAuthorized)
+            is DataUpdateResult.Synchronized -> {
+                libraryData = libInteractor.getDictionariesWithProgress()
+                libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
+            }
+        }
+
     }
 
     fun stopUpdate() {
         updateJob?.cancel()
     }
 
+    fun setLoadingState() {
+        libraryState.postValue(LibraryState.Loading)
+    }
+
     fun signOut() {
+        settingsInteractor.userId = 0
+        settingsInteractor.userKey = ""
+        libraryState.postValue(LibraryState.NotAuthorized)
+    }
+
+    fun loadLocalLibrary() {
+        libraryState.postValue(LibraryState.Loading)
         viewModelScope.launch {
-            settingsInteractor.userId = 0
-            settingsInteractor.userKey = ""
-            updateStateLiveData.postValue(UpdateResult.NotSignedIn)
+            libraryData = libInteractor.getDictionariesWithProgress()
+            libraryState.postValue(LibraryState.LibraryCurrent(libraryData))
         }
     }
 
-    fun loadLibrary() {
+    fun wipeAllLocalData() {
+        libraryState.postValue(LibraryState.Loading)
         viewModelScope.launch {
-            dictionaryLiveData.postValue(libInteractor.getDictionariesWithProgress())
+            libraryState.postValue(LibraryState.Loading)
+            libInteractor.wipeAllLocalData()
+            updateLibrary()
         }
     }
 

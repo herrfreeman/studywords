@@ -1,5 +1,6 @@
 package ru.blackmesa.studywords.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,6 +9,6 @@ data class WordEntity(
     @PrimaryKey
     val id: Int,
     val word: String,
-    val version: Long,
+    val deleted: Boolean,
 )
 

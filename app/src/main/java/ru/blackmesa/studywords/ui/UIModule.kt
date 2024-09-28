@@ -14,7 +14,8 @@ val uiModule2 = module {
         AuthenticationViewModel(
             application = get(),
             settingsInteractor = get(),
-            libraryInteractor = get(),
+            authInteractor = get(),
+            analitics = get(),
         )
     }
 
@@ -23,14 +24,16 @@ val uiModule2 = module {
             application = get(),
             libInteractor = get(),
             settingsInteractor = get(),
+            analitics = get(),
         )
     }
 
-    viewModel {(dictionaryId: Int) ->
+    viewModel {(dictId: Int, dictName: String) ->
         WordsViewModel(
             application = get(),
             libInteractor = get(),
-            dictionaryId = dictionaryId,
+            dictId = dictId,
+            dictName = dictName,
         )
     }
 
@@ -39,6 +42,12 @@ val uiModule2 = module {
             application = get(),
             libInteractor = get(),
             wordList = wordList,
+        )
+    }
+
+    single {
+        StatusColorSet(
+            context = get(),
         )
     }
 }

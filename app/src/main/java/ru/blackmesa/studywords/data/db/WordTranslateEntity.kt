@@ -1,5 +1,6 @@
 package ru.blackmesa.studywords.data.db
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,8 +8,8 @@ import androidx.room.PrimaryKey
 data class WordTranslateEntity(
     @PrimaryKey
     val id: Int,
-    val wordid: Int,
+    @ColumnInfo(name = "wordid")
+    val wordId: Int,
     val translate: String,
-    val version: Long,
 )
 
