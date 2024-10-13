@@ -43,7 +43,7 @@ class StudyViewModel(
             currentWord.status++
             currentWord.repeatdate = when (currentWord.status) {
                 4 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 //Add 24H
-                8 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 * 8 //Add 1W
+                8 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 * 7 //Add 1W
                 else -> 0L
             }
         } else {

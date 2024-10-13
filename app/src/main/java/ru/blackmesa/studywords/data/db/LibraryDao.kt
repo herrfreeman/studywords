@@ -32,7 +32,7 @@ interface LibraryDao {
     @Query("SELECT version FROM dict_table ORDER BY version DESC LIMIT 1;")
     fun getDictVersion(): List<Long>
 
-    @Query("SELECT version FROM progress_table WHERE userid = :userid AND touched = false ORDER BY version DESC LIMIT 1;")
+    @Query("SELECT version FROM progress_table WHERE userid = :userid AND touched = 0 ORDER BY version DESC LIMIT 1;")
     fun getProgressVersion(userid: Int): List<Long>
 
     @Query("DELETE FROM dict_table;")
@@ -50,7 +50,7 @@ interface LibraryDao {
     @Query("DELETE FROM progress_table;")
     fun deleteProgress()
 
-    @Query("SELECT * FROM progress_table WHERE userid = :userid AND touched = true;")
+    @Query("SELECT * FROM progress_table WHERE userid = :userid AND touched = 1;")
     fun getLocalProgress(userid: Int): List<ProgressEntity>
 
     @Query("SELECT * FROM dict_table ORDER BY orderfield")
