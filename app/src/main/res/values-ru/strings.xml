@@ -24,4 +24,12 @@
     <string name="no_button">Нет</string>
     <string name="nothing_study">Все слова изучены</string>
     <string name="next_repeat">"Следующий повтор: "</string>
+    <string name="account_creation_caption">Создание нового аккаунта</string>
+    <string name="login_caption">Введите email в качестве логина</string>
+    <string name="password_caption">Придумайте новый пароль</string>
+    <string name="apply_new_password">Сохранить новый пароль</string>
+    <string name="welcome_caption">Добро пожаловать в Show Words!</string>
+    <string name="privacy_policy"><u>Политика конфиденциальности</u></string>
+    <string name="privacy_policy_link">https://herrfreeman.pythonanywhere.com/privacypolicy_ru</string>
+    <string name="restore_password_caprion">Восстановление пароля</string>
 </resources>
