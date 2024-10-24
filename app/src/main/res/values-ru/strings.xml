@@ -16,7 +16,6 @@
     <string name="share_app_button">Поделиться</string>
     <string name="write_to_support_button">Написать в поддержку</string>
     <string name="about_app_menu">О приложении</string>
-    <string name="take_part_in_internal_testing">Примите участие во внутреннем тестировании:</string>
     <string name="author_caption">Автор:</string>
     <string name="author_name">Кирилл Васильев</string>
     <string name="clear_confirm">Вы уверенны, что хотите очистить прогресс данного словаря?</string>
@@ -32,4 +31,5 @@
     <string name="privacy_policy"><u>Политика конфиденциальности</u></string>
     <string name="privacy_policy_link">https://herrfreeman.pythonanywhere.com/privacypolicy_ru</string>
     <string name="restore_password_caprion">Восстановление пароля</string>
+    <string name="app_link_caption">Google play:</string>
 </resources>

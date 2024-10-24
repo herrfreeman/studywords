@@ -20,11 +20,10 @@
     <string name="dont_update_button">Don\'t update</string>
     <string name="support_mail" translatable="false">support@blackmesa.ru</string>
     <string name="support_subject" translatable="false">Show Words support request</string>
-    <string name="share_link" translatable="false">https://play.google.com/apps/internaltest/4701673493456768365</string>
+    <string name="share_link" translatable="false">https://play.google.com/store/apps/details?id=ru.blackmesa.studywords</string>
     <string name="share_app_button">Share app</string>
     <string name="write_to_support_button">Write to support</string>
     <string name="about_app_menu">About app</string>
-    <string name="take_part_in_internal_testing">Take part in internal testing:</string>
     <string name="author_caption">Author:</string>
     <string name="author_name">Kirill Vasilev</string>
     <string name="clear_confirm">Are you sure you to clean progress of this dictionary?</string>
@@ -40,5 +39,6 @@
     <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="privacy_policy_link">https://herrfreeman.pythonanywhere.com/privacypolicy_en</string>
     <string name="restore_password_caprion">Restore password</string>
+    <string name="app_link_caption">Google Play:</string>
 
 </resources>
