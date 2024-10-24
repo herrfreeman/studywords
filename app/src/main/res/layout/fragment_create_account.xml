@@ -17,6 +17,23 @@
         android:visibility="visible">
 
 
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/upBar"
+            style="@style/Widget.StudyWords.TopAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                style="@style/Widget.StudyWords.TopAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navigationIcon="@drawable/ic_back"
+                app:title="@string/create_top_caption" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
         <TextView
             android:id="@+id/errorMessage"
             style="@style/Widget.StudyWords.Light"

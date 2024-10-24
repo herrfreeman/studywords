@@ -38,7 +38,10 @@
     <string name="welcome_caption">Welcome to Show Words!</string>
     <string name="privacy_policy"><u>Privacy Policy</u></string>
     <string name="privacy_policy_link">https://herrfreeman.pythonanywhere.com/privacypolicy_en</string>
-    <string name="restore_password_caprion">Restore password</string>
+    <string name="restore_password_caption">Restore password</string>
     <string name="app_link_caption">Google Play:</string>
+    <string name="restore_top_caption">Restore</string>
+    <string name="create_top_caption">Create</string>
+    <string name="about_top_caption">About</string>
 
 </resources>

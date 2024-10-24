@@ -64,29 +64,11 @@ class AuthenticationFragment : Fragment() {
         }
 
         binding.createButton.setOnClickListener {
-//            hideKeyboard(binding.userName)
-//            hideKeyboard(binding.password)
-//
-//            viewModel.createAccount(
-//                binding.userName.text.toString(),
-//                binding.password.text.toString()
-//            )
             findNavController().navigate(R.id.action_authenticationFragment_to_createAccountFragment)
         }
 
         binding.restoreButton.setOnClickListener {
-//            hideKeyboard(binding.userName)
-//            hideKeyboard(binding.password)
-//
-//            viewModel.restorePassword(
-//                binding.userName.text.toString(),
-//                binding.password.text.toString()
-//            )
             findNavController().navigate(R.id.action_authenticationFragment_to_restorePasswordFragment)
-        }
-
-        binding.confirmButton.setOnClickListener {
-            viewModel.confirm(binding.confirmCode.text.toString())
         }
 
         binding.policyLink.setOnClickListener {
@@ -131,61 +113,27 @@ class AuthenticationFragment : Fragment() {
         when (state) {
             is AuthState.Default -> {
                 binding.progressBar.isVisible = false
-                binding.confirmationLayout.isVisible = false
-                makeMainViewEnabled(true)
             }
 
             is AuthState.DefaultLoading -> {
                 binding.progressBar.isVisible = true
-                binding.confirmationLayout.isVisible = false
-                makeMainViewEnabled(false)
             }
 
-            is AuthState.CreateConfirmation -> {
-                binding.progressBar.isVisible = false
-                binding.confirmationLayout.isVisible = true
-                makeMainViewEnabled(false)
-                makeConfirmViewEnabled(true)
-                binding.confirmErrorMessage.text =
-                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
-                binding.confirmCode.setText(state.confirmCode)
+            is AuthState.ConfirmationRequest -> {
+                throw IllegalStateException("CreateConfirmation on auth frame")
             }
 
-            is AuthState.CreateConfirmationLoading -> {
-                binding.progressBar.isVisible = true
-                binding.confirmationLayout.isVisible = true
-                makeMainViewEnabled(false)
-                makeConfirmViewEnabled(false)
-                binding.confirmErrorMessage.text =
-                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
-                binding.confirmCode.setText(state.confirmCode)
+            is AuthState.ConfirmationLoading -> {
+                throw IllegalStateException("CreateConfirmationLoading on auth frame")
             }
 
             is AuthState.Success -> {
                 binding.progressBar.isVisible = false
-                binding.confirmationLayout.isVisible = false
-                makeMainViewEnabled(false)
                 findNavController().popBackStack()
             }
 
         }
         setButtonsEnable()
-    }
-
-    private fun makeMainViewEnabled(isEnabled: Boolean) {
-        binding.mainLayout.isEnabled = isEnabled
-        binding.userName.isEnabled = isEnabled
-        binding.password.isEnabled = isEnabled
-
-        binding.loginButton.isEnabled = isEnabled
-        binding.createButton.isEnabled = isEnabled
-        binding.restoreButton.isEnabled = isEnabled
-    }
-
-    private fun makeConfirmViewEnabled(isEnabled: Boolean) {
-        binding.confirmationLayout.isEnabled = isEnabled
-        binding.confirmCode.isEnabled = isEnabled
-        binding.confirmButton.isEnabled = isEnabled
     }
 
     override fun onDestroyView() {

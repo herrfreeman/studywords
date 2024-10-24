@@ -2,25 +2,20 @@ package ru.blackmesa.studywords.data.models
 
 sealed class AuthState(val credentials: Credentials, val errorMessage: String = "") {
 
-    sealed interface ConfirmMode {
-        object Create : ConfirmMode
-        object Restore : ConfirmMode
-    }
-
     class Default(credentials: Credentials, errorMessage: String = "") :
         AuthState(credentials, errorMessage)
 
     class DefaultLoading(credentials: Credentials, errorMessage: String = "") :
         AuthState(credentials, errorMessage)
 
-    class CreateConfirmation(
+    class ConfirmationRequest(
         credentials: Credentials,
         errorMessage: String,
         val confirmCode: String,
         val confirmErrorMessage: String = ""
     ) : AuthState(credentials, errorMessage)
 
-    class CreateConfirmationLoading(
+    class ConfirmationLoading(
         credentials: Credentials,
         errorMessage: String,
         val confirmCode: String,

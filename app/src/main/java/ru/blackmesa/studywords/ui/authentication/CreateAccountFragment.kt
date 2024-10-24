@@ -65,6 +65,10 @@ class CreateAccountFragment : Fragment() {
             viewModel.confirm(binding.confirmCode.text.toString())
         }
 
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
         textWatcher = object : TextWatcher {
@@ -107,7 +111,7 @@ class CreateAccountFragment : Fragment() {
                 makeMainViewEnabled(false)
             }
 
-            is AuthState.CreateConfirmation -> {
+            is AuthState.ConfirmationRequest -> {
                 binding.progressBar.isVisible = false
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)
@@ -117,7 +121,7 @@ class CreateAccountFragment : Fragment() {
                 binding.confirmCode.setText(state.confirmCode)
             }
 
-            is AuthState.CreateConfirmationLoading -> {
+            is AuthState.ConfirmationLoading -> {
                 binding.progressBar.isVisible = true
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)

@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.AuthState
-import ru.blackmesa.studywords.databinding.FragmentCreateAccountBinding
 import ru.blackmesa.studywords.databinding.FragmentRestorePasswordBinding
 
 class RestorePasswordFragment : Fragment() {
@@ -66,6 +65,10 @@ class RestorePasswordFragment : Fragment() {
             viewModel.confirm(binding.confirmCode.text.toString())
         }
 
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
 
         textWatcher = object : TextWatcher {
@@ -108,7 +111,7 @@ class RestorePasswordFragment : Fragment() {
                 makeMainViewEnabled(false)
             }
 
-            is AuthState.CreateConfirmation -> {
+            is AuthState.ConfirmationRequest -> {
                 binding.progressBar.isVisible = false
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)
@@ -118,7 +121,7 @@ class RestorePasswordFragment : Fragment() {
                 binding.confirmCode.setText(state.confirmCode)
             }
 
-            is AuthState.CreateConfirmationLoading -> {
+            is AuthState.ConfirmationLoading -> {
                 binding.progressBar.isVisible = true
                 binding.confirmationLayout.isVisible = true
                 makeMainViewEnabled(false)
