@@ -12,7 +12,7 @@ import ru.blackmesa.studywords.ui.study.StudyViewModel
 import ru.blackmesa.studywords.ui.words.WordsViewModel
 import java.util.Locale
 
-val uiModule2 = module {
+val uiModule = module {
 
     viewModel {
         AuthenticationViewModel(

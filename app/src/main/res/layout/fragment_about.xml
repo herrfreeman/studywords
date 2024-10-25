@@ -87,6 +87,21 @@
         app:layout_constraintStart_toStartOf="@id/share_button"
         app:layout_constraintTop_toBottomOf="@id/share_button" />
 
+    <TextView
+        android:id="@+id/manualLink"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/manual_caption"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="@color/blue"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/support_button" />
 
     <TextView
         android:id="@+id/policyLink"
@@ -102,7 +117,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/support_button" />
+        app:layout_constraintTop_toBottomOf="@id/manualLink" />
 
     <TextView
         android:id="@+id/author_caption"

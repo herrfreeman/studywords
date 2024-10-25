@@ -43,5 +43,7 @@
     <string name="restore_top_caption">Restore</string>
     <string name="create_top_caption">Create</string>
     <string name="about_top_caption">About</string>
+    <string name="manual_link">https://herrfreeman.pythonanywhere.com/manual_en</string>
+    <string name="manual_caption"><u>How to study</u></string>
 
 </resources>

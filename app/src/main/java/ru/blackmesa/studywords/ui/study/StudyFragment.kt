@@ -79,13 +79,6 @@ class StudyFragment : Fragment() {
         }
         binding.noButton.setOnClickListener { viewModel.gotResult(false) }
 
-        textToSpeech.speak(
-            " ",
-            TextToSpeech.QUEUE_FLUSH,
-            null,
-            this.hashCode().toString()
-        )
-
     }
 
     private fun setSpeakListener(source: View, text: CharSequence) {
