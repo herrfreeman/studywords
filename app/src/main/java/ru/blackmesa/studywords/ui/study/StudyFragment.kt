@@ -11,12 +11,12 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import ru.blackmesa.studywords.data.models.StudyList
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentStudyBinding
-import java.util.Locale
 
 
 class StudyFragment : Fragment() {
@@ -33,6 +33,7 @@ class StudyFragment : Fragment() {
 
     private var _binding: FragmentStudyBinding? = null
     private val binding: FragmentStudyBinding get() = _binding!!
+    private val textToSpeech: TextToSpeech by inject()
     private val viewModel: StudyViewModel by viewModel {
         val wordArg: StudyList? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getSerializable(WORDLIST_ARG, StudyList::class.java)
@@ -42,12 +43,11 @@ class StudyFragment : Fragment() {
         parametersOf(wordArg?.words ?: emptyList<WordData>())
     }
 
-    private var textToSpeech: TextToSpeech? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // TODO: Use the ViewModel
+
     }
 
     override fun onCreateView(
@@ -79,12 +79,12 @@ class StudyFragment : Fragment() {
         }
         binding.noButton.setOnClickListener { viewModel.gotResult(false) }
 
-        textToSpeech = TextToSpeech(requireContext()) {
-            if (it != TextToSpeech.ERROR) {
-                textToSpeech?.setLanguage(Locale.US)
-                textToSpeech?.setSpeechRate(0.7f);
-            }
-        }
+        textToSpeech.speak(
+            " ",
+            TextToSpeech.QUEUE_FLUSH,
+            null,
+            this.hashCode().toString()
+        )
 
     }
 
