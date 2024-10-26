@@ -22,9 +22,10 @@
             style="@style/Widget.StudyWords.TopAppBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:title="10"
+            app:navigationContentDescription="@string/descr_back_button"
             app:navigationIcon="@drawable/ic_back"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            tools:title="10" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,10 +37,10 @@
         android:layout_margin="20dp"
         android:gravity="center_horizontal|bottom"
         android:textSize="30sp"
-        app:layout_constraintTop_toBottomOf="@id/upBar"
         app:layout_constraintBottom_toTopOf="@id/wordSeparator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upBar"
         tools:text="Word" />
 
     <View
@@ -61,10 +62,10 @@
         android:layout_margin="20dp"
         android:gravity="center_horizontal|top"
         android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/wordSeparator"
-        app:layout_constraintBottom_toTopOf="@id/buttonBox"
         tools:text="Answer" />
 
     <View

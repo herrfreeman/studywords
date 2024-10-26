@@ -21,4 +21,5 @@
     <color name="status_new">#00FFFFFF</color>
     <color name="status_wait">#FFC107</color>
     <color name="status_repeat">#FF5722</color>
+    <color name="status_repeat_dark">#CC3000</color>
 </resources>

@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:navigationIcon="@drawable/ic_back"
+            app:navigationContentDescription="@string/descr_back_button"
             app:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -90,10 +91,10 @@
     <TextView
         android:id="@+id/manualLink"
         style="@style/Widget.StudyWords.Light"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="50dp"
-        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/manual_caption"
         android:textAlignment="center"
         android:textSize="18sp"
@@ -106,10 +107,10 @@
     <TextView
         android:id="@+id/policyLink"
         style="@style/Widget.StudyWords.Light"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="50dp"
-        android:layout_marginTop="20dp"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/privacy_policy"
         android:textAlignment="center"
         android:textSize="18sp"

@@ -30,6 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:navigationIcon="@drawable/ic_back"
+                app:navigationContentDescription="@string/descr_back_button"
                 app:title="@string/create_top_caption" />
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -156,7 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Create"
+            android:text="@string/create_button"
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

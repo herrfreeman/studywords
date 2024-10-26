@@ -37,4 +37,5 @@
     <string name="create_top_caption">Создание</string>
     <string name="about_top_caption">О приложении</string>
     <string name="manual_caption"><u>Как учить слова</u></string>
+    <string name="create_button">Создать аккаунт</string>
 </resources>
