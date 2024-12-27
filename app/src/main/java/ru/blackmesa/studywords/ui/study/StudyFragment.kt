@@ -25,10 +25,11 @@ class StudyFragment : Fragment() {
         fun newInstance() = StudyFragment()
 
         const val WORDLIST_ARG = "DICTIONARY_ID_ARG"
-        fun createArgs(wordList: List<WordData>): Bundle =
-            bundleOf(WORDLIST_ARG to StudyList(wordList))
+        const val STUDY_MODE = "STUDY_MODE"
 
-        val STRIGHT_STAGE = listOf(0, 1, 4, 5, 8, 9)
+        fun createArgs(wordList: List<WordData>, studyMode: Int): Bundle =
+            bundleOf(WORDLIST_ARG to StudyList(wordList), STUDY_MODE to studyMode)
+
     }
 
     private var _binding: FragmentStudyBinding? = null
@@ -40,7 +41,10 @@ class StudyFragment : Fragment() {
         } else {
             requireArguments().getSerializable(WORDLIST_ARG) as? StudyList
         }
-        parametersOf(wordArg?.words ?: emptyList<WordData>())
+        parametersOf(
+            wordArg?.words ?: emptyList<WordData>(),
+            requireArguments().getInt("STUDY_MODE")
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +100,7 @@ class StudyFragment : Fragment() {
         when (state) {
             is StudyState.Question -> {
                 binding.answer.setOnClickListener(null)
-                binding.word.text = if (state.word.status in STRIGHT_STAGE) {
+                binding.word.text = if (viewModel.wordInStraitStage(state.word)) {
                     setSpeakListener(binding.word, state.word.word)
                     state.word.word
                 } else {
@@ -111,7 +115,7 @@ class StudyFragment : Fragment() {
             }
 
             is StudyState.Answer -> {
-                if (state.word.status in STRIGHT_STAGE) {
+                if (viewModel.wordInStraitStage(state.word)) {
                     setSpeakListener(binding.word, state.word.word)
                     binding.answer.setOnClickListener(null)
                     binding.word.text = state.word.word

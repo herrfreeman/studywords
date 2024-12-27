@@ -2,7 +2,6 @@ package ru.blackmesa.studywords.ui.words
 
 
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.study.StudyFragment
-import java.util.Date
+import ru.blackmesa.studywords.ui.study.StudyMode
 
 class WordsFragment : Fragment() {
 
@@ -45,14 +44,14 @@ class WordsFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
     }
-    private var confirmDialog: MaterialAlertDialogBuilder? = null
+    private var clearConfirmDialog: MaterialAlertDialogBuilder? = null
     private var nothingStudyDialog: MaterialAlertDialogBuilder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val context = requireContext()
-        confirmDialog = MaterialAlertDialogBuilder(context)
+        clearConfirmDialog = MaterialAlertDialogBuilder(context)
             .setTitle(context.getString(R.string.clear_confirm))
             .setNegativeButton(context.getString(R.string.no_button)) { dialog, which ->
             }.setPositiveButton(context.getString(R.string.yes_button)) { dialog, which ->
@@ -91,36 +90,44 @@ class WordsFragment : Fragment() {
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.clearProgress -> {
-                    confirmDialog?.show()
+                R.id.checkAllDone -> {
+                    findNavController().navigate(
+                        R.id.action_wordsFragment_to_studyFragment,
+                        StudyFragment.createArgs(viewModel.getDoneWords(), StudyMode.CHECK_ONCE)
+                    )
                     true
                 }
-
+                R.id.clearProgress -> {
+                    clearConfirmDialog?.show()
+                    true
+                }
                 else -> false
             }
         }
 
         binding.studyButton.setOnClickListener {
             val currentTimestamp = System.currentTimeMillis() / 1000
-            val wordsToStudy = adapter.words
-                .filter { it.status < 12 && (it.repeatdate == 0L || it.repeatdate <= currentTimestamp) }
-                .shuffled()
-                .sortedBy { if (it.repeatdate > 0) 1 else 2 }
-                .take(10)
+            val wordsToStudy = viewModel.getWordsToStudy()
+            val secInHour = 60 * 60
+            val secInDay = secInHour * 24
 
             if (wordsToStudy.isEmpty()) {
                 val context = requireContext()
                 var message = context.getString(R.string.nothing_study)
-                val futureRepeat = adapter.words.filter { it.status < 12 }
-                if (futureRepeat.isNotEmpty()) {
-                    val nextDate = Date(futureRepeat.minBy { it.repeatdate }.repeatdate*1000)
-                    message += "\n" + context.getString(R.string.next_repeat) + DateFormat.format("dd.MM.yy HH:mm", nextDate)
+                viewModel.getNextRepeatTimestamp()?.let { nextRepeat ->
+                    message += "\n" + context.getString(R.string.next_repeat) + if (nextRepeat - currentTimestamp > secInDay) {
+                        ((nextRepeat - currentTimestamp) / secInDay).toInt()
+                            .toString() + context.getString(R.string.days)
+                    } else {
+                        ((nextRepeat - currentTimestamp) / secInHour).toInt()
+                            .toString() + context.getString(R.string.hours)
+                    }
                 }
                 nothingStudyDialog?.setMessage(message)?.show()
             } else {
                 findNavController().navigate(
                     R.id.action_wordsFragment_to_studyFragment,
-                    StudyFragment.createArgs(wordsToStudy)
+                    StudyFragment.createArgs(wordsToStudy, StudyMode.COMMON)
                 )
             }
         }

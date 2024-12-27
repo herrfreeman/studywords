@@ -14,6 +14,7 @@ class StudyViewModel(
     application: Application,
     private val libInteractor: LibraryInteractor,
     private val wordList: List<WordData>,
+    private val studyMode: Int,
 ) : AndroidViewModel(application) {
 
     private val stateLiveData = MutableLiveData<StudyState>()
@@ -24,13 +25,15 @@ class StudyViewModel(
 
     companion object {
         val UPDATE_DELAY = 1000L
+        val STRIGHT_STAGE = listOf(0, 1, 4, 5, 8, 9)
     }
 
     init {
         wordList.onEach { it.repeatdate = 0 }
+        if (studyMode == StudyMode.CHECK_ONCE) {
+            currentQueue.addAll(wordList)
+        }
         nextQuestion()
-        //currentQueue.addAll(wordList.onEach { it.repeatdate = 0 })
-
     }
 
     fun showAnswer() {
@@ -40,11 +43,13 @@ class StudyViewModel(
     fun gotResult(isCorrect: Boolean) {
 
         if (isCorrect) {
-            currentWord.status++
-            currentWord.repeatdate = when (currentWord.status) {
-                4 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 //Add 24H
-                8 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 * 7 //Add 1W
-                else -> 0L
+            if (studyMode == StudyMode.COMMON) {
+                currentWord.status++
+                currentWord.repeatdate = when (currentWord.status) {
+                    4 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 //Add 24H
+                    8 -> System.currentTimeMillis() / 1000 + 60 * 60 * 24 * 7 //Add 1W
+                    else -> 0L
+                }
             }
         } else {
             currentWord.repeatdate = 0L
@@ -63,7 +68,6 @@ class StudyViewModel(
     }
 
     private fun decreaseStatus(status: Int): Int {
-
         return when {
             status in intArrayOf(0, 4, 8) -> status
             else -> status - 1
@@ -71,10 +75,11 @@ class StudyViewModel(
     }
 
     fun nextQuestion() {
-
-        if (currentQueue.isEmpty()) {
-            currentQueue.addAll(wordList.filter { it.repeatdate == 0L && it.status < 12 })
-            currentQueue.shuffle()
+        if (studyMode == StudyMode.COMMON) { //Renew study queue
+            if (currentQueue.isEmpty()) {
+                currentQueue.addAll(wordList.filter { it.repeatdate == 0L && it.status < 12 })
+                currentQueue.shuffle()
+            }
         }
 
         if (currentQueue.isEmpty()) {
@@ -95,36 +100,21 @@ class StudyViewModel(
             stateLiveData.postValue(
                 StudyState.Question(
                     currentWord,
-                    wordList.filter { it.repeatdate == 0L && it.status < 12 }.size
+                    if (studyMode == StudyMode.COMMON) {
+                        wordList.filter { it.repeatdate == 0L && it.status < 12 }.size
+                    } else {
+                        currentQueue.size + 1
+                    }
                 )
             )
         }
 
+    }
 
-//        wordList
-//            .filter { it.repeatdate == 0L && it.status < 12 }
-//            .apply {
-//                if (isEmpty()) {
-//
-//                    viewModelScope.launch {
-//                        libInteractor.setProgress(wordList.map {
-//                            Progress(
-//                                wordid = it.wordid,
-//                                status = it.status,
-//                                repeatdate = it.repeatdate,
-//                                version = System.currentTimeMillis() / 1000,
-//                                touched = true,
-//                            )
-//                        })
-//                        stateLiveData.postValue(StudyState.Finish)
-//                    }
-//
-//                } else {
-//                    currentWord = random()
-//                    stateLiveData.postValue(StudyState.Question(currentWord, size))
-//                }
-//            }
-
+    fun wordInStraitStage(word: WordData): Boolean = if (studyMode == StudyMode.COMMON) {
+        word.status in STRIGHT_STAGE
+    } else {
+        true
     }
 
 }

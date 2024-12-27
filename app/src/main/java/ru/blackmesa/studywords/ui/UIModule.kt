@@ -59,11 +59,12 @@ val uiModule = module {
         )
     }
 
-    viewModel {(wordList: List<WordData>) ->
+    viewModel {(wordList: List<WordData>, studyMode: Int) ->
         StudyViewModel(
             application = get(),
             libInteractor = get(),
             wordList = wordList,
+            studyMode = studyMode,
         )
     }
 

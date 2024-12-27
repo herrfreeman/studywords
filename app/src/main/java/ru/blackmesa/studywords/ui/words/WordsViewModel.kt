@@ -18,6 +18,7 @@ class WordsViewModel(
 ) : AndroidViewModel(application) {
 
     private val contentLiveData = MutableLiveData<List<WordData>>()
+    private val words = emptyList<WordData>().toMutableList()
     fun observeContent(): LiveData<List<WordData>> = contentLiveData
 
     companion object {
@@ -26,7 +27,9 @@ class WordsViewModel(
 
     init {
         viewModelScope.launch {
-            contentLiveData.postValue(libInteractor.getWords(dictId))
+            words.clear()
+            words.addAll(libInteractor.getWords(dictId))
+            contentLiveData.postValue(words)
         }
     }
 
@@ -52,6 +55,26 @@ class WordsViewModel(
         contentLiveData.postValue(words)
     }
 
+    fun getWordsToStudy(): List<WordData> {
+        val currentTimestamp = System.currentTimeMillis() / 1000
+        return words
+            .filter { it.status < 12 && (it.repeatdate == 0L || it.repeatdate <= currentTimestamp) }
+            .shuffled()
+            .sortedBy { if (it.repeatdate > 0) 1 else 2 }
+            .take(10)
+    }
 
+    fun getNextRepeatTimestamp(): Long? {
+        val notDoneList = words.filter { it.status < 12 }
+        return if (notDoneList.isEmpty()) {
+            null
+        } else {
+            notDoneList.minBy { it.repeatdate }.repeatdate
+        }
+    }
+
+    fun getDoneWords(): List<WordData> = words
+        .filter { it.status == 12 }
+        .shuffled()
 
 }

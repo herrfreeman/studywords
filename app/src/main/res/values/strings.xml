@@ -30,7 +30,9 @@
     <string name="yes_button">Yes</string>
     <string name="no_button">No</string>
     <string name="nothing_study">There is nothing to study</string>
-    <string name="next_repeat">Next repeat: </string>
+    <string name="next_repeat">"Next repeat in "</string>
+    <string name="days">" days"</string>
+    <string name="hours">" hours"</string>
     <string name="account_creation_caption">New account creation</string>
     <string name="login_caption">Enter your email as login:</string>
     <string name="password_caption">Imagine new password:</string>
@@ -52,5 +54,6 @@
     <string name="descr_library_list" translatable="false">Library list</string>
     <string name="descr_back_button" translatable="false">Back button</string>
     <string name="descr_status_button" translatable="false">Status button</string>
+    <string name="check_all_studied">Check all studied</string>
 
 </resources>
