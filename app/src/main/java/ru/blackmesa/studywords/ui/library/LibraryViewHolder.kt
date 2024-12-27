@@ -3,6 +3,7 @@ package ru.blackmesa.studywords.ui.library
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -18,34 +19,37 @@ class LibraryViewHolder(parentView: ViewGroup, private val itemClickListener: Li
     private val wordsCount: TextView = itemView.findViewById(R.id.wordsCount)
     private val repeatCount: TextView = itemView.findViewById(R.id.repeatCount)
     private val statusView: View = itemView.findViewById(R.id.statusView)
-    private val downloadButton: View = itemView.findViewById(R.id.download_button)
+    private val downloadIcon: ImageView = itemView.findViewById(R.id.download_icon)
+    private val doneIcon: ImageView = itemView.findViewById(R.id.done_icon)
 
     fun bind(model: DictData) {
 
-        if (model.totalCount > 0) {
-            downloadButton.isVisible = false
-            itemView.isEnabled = true
-        } else {
-            downloadButton.isVisible = true
-            itemView.isEnabled = false
-        }
-
         itemCaption.text = model.name
-        itemView.setOnClickListener {
-            itemClickListener.onItemClick(model)
-        }
-        downloadButton.setOnClickListener {
-            itemClickListener.onDownloadClick(model)
-        }
-
         wordsCount.text = "${model.totalCount}"
-        if (model.repeatCount > 0) {
-            repeatCount.text = " | ${model.repeatCount}"
-        } else {
-            repeatCount.text = ""
-        }
-        statusView.background = StatusBarDrawable(model.totalCount, model.doneCount, model.repeatCount, model.waitCount)
 
+        if (model.downloaded) {
+            downloadIcon.isVisible = false
+            doneIcon.isVisible = (model.doneCount == model.totalCount)
+            statusView.isVisible = !doneIcon.isVisible
+
+            itemView.setOnClickListener {
+                itemClickListener.onItemClick(model)
+            }
+            if (model.repeatCount > 0) {
+                repeatCount.text = " | ${model.repeatCount}"
+            } else {
+                repeatCount.text = ""
+            }
+            statusView.background = StatusBarDrawable(model.totalCount, model.doneCount, model.repeatCount, model.waitCount)
+
+        } else {
+            downloadIcon.isVisible = true
+            doneIcon.isVisible = false
+            itemView.setOnClickListener {
+                itemClickListener.onDownloadClick(model)
+            }
+            statusView.isVisible = false
+        }
     }
 
 }

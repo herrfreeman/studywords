@@ -7,18 +7,34 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/download_button"
+        android:id="@+id/done_icon"
         style="@style/Widget.StudyWords.Light"
         android:layout_width="50dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/descr_download_icon"
         android:paddingVertical="6dp"
         android:paddingStart="6dp"
-        android:src="@drawable/id_download"
+        android:src="@drawable/ic_check"
         android:visibility="visible"
-        android:contentDescription="@string/descr_download_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/download_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/status_done" />
+
+    <ImageView
+        android:id="@+id/download_icon"
+        style="@style/Widget.StudyWords.Light"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/descr_download_icon"
+        android:paddingVertical="6dp"
+        android:paddingStart="6dp"
+        android:src="@drawable/ic_download"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/lib_item_caption"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/done_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -28,12 +44,12 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:layout_marginStart="10dp"
-        tools:text="Top 100 words"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/wordsCount"
-        app:layout_constraintStart_toEndOf="@id/download_button"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/download_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Top 100 words" />
 
     <TextView
         android:id="@+id/wordsCount"

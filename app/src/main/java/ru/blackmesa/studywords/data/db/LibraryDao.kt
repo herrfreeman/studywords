@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.DraftWordData
 import ru.blackmesa.studywords.data.models.TranslateData
@@ -13,6 +14,9 @@ interface LibraryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDict(entities: List<DictEntity>)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateDict(entities: List<DictEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertWords(entities: List<WordEntity>)
@@ -56,12 +60,16 @@ interface LibraryDao {
     @Query("SELECT * FROM dict_table ORDER BY orderfield")
     fun getDict(): List<DictEntity>
 
+    @Query("SELECT * FROM dict_table WHERE id = :dictId")
+    fun getDictById(dictId: Int): List<DictEntity>
+
     @Query("SELECT * FROM wordindict_table WHERE dictid = :dictId")
     fun getWordsInDict(dictId: Int): List<WordInDictEntity>
 
     @Query("""
         SELECT dict_table.id AS id, 
-        dict_table.name AS name, 
+        dict_table.name AS name,
+        dict_table.downloaded AS downloaded,
         dict_progress.total AS totalCount,
         dict_progress.repeat AS repeatCount,
         dict_progress.wait AS waitCount,
@@ -104,7 +112,6 @@ interface LibraryDao {
         WHERE wordindict.dictid = :dictId
     """)
     fun getTranslates(dictId: Int): List<TranslateData>
-
 
 }
 

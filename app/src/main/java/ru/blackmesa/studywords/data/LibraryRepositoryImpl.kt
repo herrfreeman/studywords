@@ -1,7 +1,6 @@
 package ru.blackmesa.studywords.data
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
@@ -22,7 +21,6 @@ import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.ProgressRequest
 import ru.blackmesa.studywords.data.network.ProgressResponse
 import ru.blackmesa.studywords.data.settings.SettingsRepository
-import kotlin.math.max
 import kotlin.math.min
 
 class LibraryRepositoryImpl(
@@ -147,8 +145,11 @@ class LibraryRepositoryImpl(
         return if (dictionaries.isEmpty()) {
             return DataUpdateResult.Synchronized
         } else {
-            dictionaries.forEach {
-                if (it.isDefault) {
+            database.libraryDao().insertDict(dictionaries.map { it.toEntity(downloaded = false) })
+
+            dictionaries
+                .filter { it.isDefault }
+                .forEach {
                     val dictUpdateResult = updateDictionary(it.id)
                     when (dictUpdateResult) {
                         is DataUpdateResult.Error,
@@ -158,8 +159,7 @@ class LibraryRepositoryImpl(
                         else -> Unit
                     }
                 }
-            }
-            database.libraryDao().insertDict(dictionaries.map { it.toEntity() })
+
             DataUpdateResult.DataUpdated
         }
     }
@@ -177,33 +177,34 @@ class LibraryRepositoryImpl(
             when (response.resultCode) {
                 -1 -> DataUpdateResult.NoConnection
                 200 -> {
-                    database.libraryDao()
-                        .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
-                    database.libraryDao()
-                        .insertTranslate((response as DictionaryResponse).translate.map {
-                            WordTranslateEntity(
-                                id = it.id,
-                                wordId = it.wordId,
-                                translate = it.translate,
-                            )
-                        })
-                    database.libraryDao()
-                        .insertPriorityTranslate((response as DictionaryResponse).translate.map {
-                            PriorityTranslateEntity(
-                                dictId = dictId,
-                                wordId = it.wordId,
-                                translateId = it.id,
-                                count = it.priority,
-                            )
-                        })
-                    database.libraryDao().insertWordInList(
-                        (response as DictionaryResponse).words.map {
-                            WordInDictEntity(
-                                wordId = it.id,
-                                dictId = dictId,
-                            )
-                        }
-                    )
+                    with(database.libraryDao()) {
+                        val dictionary = getDictById(dictId).first()
+                        updateDict(listOf(dictionary.copy(downloaded = true)))
+                        insertWords((response as DictionaryResponse).words.map { it.toEntity() })
+                        insertTranslate((response as DictionaryResponse).translate.map {
+                                WordTranslateEntity(
+                                    id = it.id,
+                                    wordId = it.wordId,
+                                    translate = it.translate,
+                                )
+                            })
+                        insertPriorityTranslate((response as DictionaryResponse).translate.map {
+                                PriorityTranslateEntity(
+                                    dictId = dictId,
+                                    wordId = it.wordId,
+                                    translateId = it.id,
+                                    count = it.priority,
+                                )
+                            })
+                        insertWordInList(
+                            (response as DictionaryResponse).words.map {
+                                WordInDictEntity(
+                                    wordId = it.id,
+                                    dictId = dictId,
+                                )
+                            }
+                        )
+                    }
                     DataUpdateResult.DataUpdated
                 }
 

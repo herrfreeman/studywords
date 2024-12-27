@@ -18,5 +18,7 @@ data class DictEntity(
     val isFolder: Boolean,
     @ColumnInfo(name = "isdefault")
     val isDefault: Boolean,
+    @ColumnInfo(name = "downloaded")
+    val downloaded: Boolean,
 )
 

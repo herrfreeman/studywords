@@ -129,9 +129,9 @@ class RetrofitNetworkClient(
         //val interceptor = HttpLoggingInterceptor()
         //interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient().newBuilder()
-            .connectTimeout(Duration.ofSeconds(60))
-            .readTimeout(Duration.ofSeconds(60))
-            .writeTimeout(Duration.ofSeconds(60))
+            .connectTimeout(Duration.ofSeconds(10))
+            .readTimeout(Duration.ofSeconds(10))
+            .writeTimeout(Duration.ofSeconds(10))
             //.addInterceptor(interceptor)
             .build()
     }

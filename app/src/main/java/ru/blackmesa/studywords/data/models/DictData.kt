@@ -7,4 +7,5 @@ data class DictData(
     val repeatCount: Int,
     val waitCount: Int,
     val doneCount: Int,
+    val downloaded: Boolean,
 )

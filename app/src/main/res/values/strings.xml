@@ -46,7 +46,8 @@
     <string name="manual_link">https://herrfreeman.pythonanywhere.com/manual_en</string>
     <string name="manual_caption"><u>How to study</u></string>
     <string name="create_button">Create</string>
-    <string name="descr_download_button" translatable="false">Dictionary download button</string>
+    <string name="descr_download_icon" translatable="false">Dictionary download icon</string>
+    <string name="descr_done_icon" translatable="false">Dictionary done icon</string>
     <string name="descr_hiding_layout" translatable="false">Hiding layout</string>
     <string name="descr_library_list" translatable="false">Library list</string>
     <string name="descr_back_button" translatable="false">Back button</string>
