@@ -27,6 +27,38 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchEditTextLayout"
+        style="@style/Widget.StudyWords.SearchWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="6dp"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toTopOf="@id/wordsRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upBar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
+            style="@style/Widget.StudyWords.SearchWidget.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_title"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:paddingVertical="10dp"
+            android:paddingStart="40dp"
+
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wordsRecyclerView"
         style="@style/Widget.StudyWords.Light"
@@ -38,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@id/studyButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/upBar"
+        app:layout_constraintTop_toBottomOf="@id/searchEditTextLayout"
         tools:itemCount="5"
         tools:listitem="@layout/words_item" />
 

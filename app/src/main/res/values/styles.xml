@@ -3,7 +3,6 @@
 
     <style name="Widget.StudyWords" parent="">
         <item name="android:fontFamily">@font/ubuntu_regular</item>
-        <item name="android:textFontWeight">400</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -18,19 +17,37 @@
     <style name="Widget.StudyWords.TopAppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
 
         <item name="android:fontFamily">@font/ubuntu_regular</item>
-        <item name="android:textFontWeight">400</item>
         <item name="android:textSize">16sp</item>
 
         <item name="android:textColor">@color/almost_white</item>
         <item name="backgroundColor">@color/blue</item>
         <item name="navigationIconTint">@color/almost_white</item>
-
-
-
-
 <!--        <item name="android:background">@color/almost_white</item>-->
     </style>
 
+
+    <style name="Widget.StudyWords.SearchWidget">
+        <item name="android:background">@color/blue</item>
+        <item name="boxBackgroundColor">?attr/search_background</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="hintEnabled">false</item>
+        <item name="startIconDrawable">@drawable/ic_search</item>
+        <item name="startIconTint">?attr/search_hint_color</item>
+<!--        <item name="endIconDrawable">@drawable/cancel</item>-->
+<!--        <item name="endIconTint">?attr/search_hint_color</item>-->
+        <item name="endIconMode">custom</item>
+    </style>
+
+    <style name="Widget.StudyWords.SearchWidget.Input">
+        <item name="android:textColor">?attr/search_text_color</item>
+        <item name="android:textColorHint">?attr/search_hint_color</item>
+        <item name="android:background"/>
+    </style>
 
     <style name="Widget.StudyWords.Dark">
         <item name="android:textColor">@color/almost_white</item>
@@ -41,7 +58,6 @@
 
     <style name="Widget.StudyWords.Credentials" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:fontFamily">@font/ubuntu_regular</item>
-        <item name="android:textFontWeight">400</item>
         <item name="android:textSize">16sp</item>
         <item name="boxBackgroundColor">@color/almost_gray</item>
 <!--        <item name="android:textColor">@color/almost_black</item>-->
@@ -52,7 +68,6 @@
 
     <style name="Widget.StudyWords.Button" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:fontFamily">@font/ubuntu_regular</item>
-        <item name="android:textFontWeight">400</item>
         <item name="android:textSize">16sp</item>
         <item name="backgroundTint">@color/blue</item>
     </style>

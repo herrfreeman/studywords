@@ -5,6 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
@@ -17,12 +19,14 @@ class WordsViewModel(
     private val dictName: String,
 ) : AndroidViewModel(application) {
 
-    private val contentLiveData = MutableLiveData<List<WordData>>()
     private val words = emptyList<WordData>().toMutableList()
+    private var latestSearchText: String? = null
+    var searchJob: Job? = null
+    private val contentLiveData = MutableLiveData<List<WordData>>()
     fun observeContent(): LiveData<List<WordData>> = contentLiveData
 
     companion object {
-        val UPDATE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 1000L
     }
 
     init {
@@ -77,4 +81,29 @@ class WordsViewModel(
         .filter { it.status == 12 }
         .shuffled()
 
+    fun search(
+        changedText: String,
+    ) {
+        latestSearchText = changedText
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            if (changedText.isNullOrEmpty()) {
+                contentLiveData.postValue(words)
+            } else {
+                postFilteredWords(changedText)
+            }
+        }
+    }
+
+    private fun postFilteredWords(filterString: String) {
+        contentLiveData.postValue(words.filter {
+            it.word.contains(filterString) || it.translate.contains(filterString)
+        })
+    }
+
+    fun searchImmediately(queryText: String) {
+        searchJob?.cancel()
+        postFilteredWords(queryText)
+    }
 }

@@ -55,5 +55,6 @@
     <string name="descr_back_button" translatable="false">Back button</string>
     <string name="descr_status_button" translatable="false">Status button</string>
     <string name="check_all_studied">Check all studied</string>
+    <string name="search_title">search</string>
 
 </resources>

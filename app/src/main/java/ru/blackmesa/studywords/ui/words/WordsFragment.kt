@@ -2,13 +2,17 @@ package ru.blackmesa.studywords.ui.words
 
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -17,6 +21,7 @@ import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.study.StudyFragment
 import ru.blackmesa.studywords.ui.study.StudyMode
+
 
 class WordsFragment : Fragment() {
 
@@ -46,6 +51,7 @@ class WordsFragment : Fragment() {
     }
     private var clearConfirmDialog: MaterialAlertDialogBuilder? = null
     private var nothingStudyDialog: MaterialAlertDialogBuilder? = null
+    private var searchTextWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,14 +138,50 @@ class WordsFragment : Fragment() {
             }
         }
 
+        searchTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.search(p0.toString())
+            }
+           override fun afterTextChanged(p0: Editable?) {}
+        }
+        binding.searchEditText.addTextChangedListener(searchTextWatcher)
+
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.searchImmediately(binding.searchEditText.text.toString())
+                binding.searchEditText.clearFocus()
+                true
+            } else false
+        }
     }
 
     private fun renderContent(words: List<WordData>) {
-        if (adapter.words != words) {
-            adapter.words.clear()
-            adapter.words.addAll(words)
+        val diffUtil = object : DiffUtil.Callback() {
+            var oldList: List<WordData> = emptyList()
+            var newList: List<WordData> = emptyList()
+
+            override fun getOldListSize() = oldList.size
+            override fun getNewListSize() = newList.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return oldList[oldItemPosition] == newList[newItemPosition]
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return (oldList[oldItemPosition].wordid == newList[newItemPosition].wordid
+                        && oldList[oldItemPosition].status == oldList[oldItemPosition].status
+                        && oldList[oldItemPosition].repeatdate == oldList[oldItemPosition].repeatdate)
+            }
         }
-        adapter.notifyDataSetChanged()
+
+        diffUtil.oldList = adapter.words
+        diffUtil.newList = words
+        val diffResult = DiffUtil.calculateDiff(diffUtil, false)
+        adapter.words.clear()
+        adapter.words.addAll(words)
+        diffResult.dispatchUpdatesTo(adapter)
+
     }
 
 
