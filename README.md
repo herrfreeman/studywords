@@ -22,11 +22,11 @@
 
 ### Google Play
 
-На данном этапе приложение проходит внутреннее тестирование, присоединиться к тестированию можно по ссылке: https://play.google.com/apps/internaltest/4701673493456768365 (для перехода по ссылке возможно потребуется VPN)
+Проект прошёл все стадии тестирования и опубликован в Google Play: https://play.google.com/store/apps/details?id=ru.blackmesa.studywords
 
 ### Стек технологий
 
-Kotlin, Room, Retrofit2, Kotlin Coroutines, viewBinding, MVVM, Single Activity, LiveData, Fragment Navigation, Koin, Drawable, Firebase Analytics, Firebase Crashlytics
+Kotlin, Room, Retrofit2, Kotlin Coroutines, viewBinding, MVVM, Single Activity, LiveData, DiffUtils, Fragment Navigation, Koin, Drawable, Firebase Analytics, Firebase Crashlytics
 
 ### О сервере
 
