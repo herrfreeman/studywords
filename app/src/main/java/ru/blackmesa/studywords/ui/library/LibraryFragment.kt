@@ -84,6 +84,18 @@ class LibraryFragment : Fragment() {
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
+                R.id.allWordsDictionary -> {
+                    findNavController().navigate(
+                        R.id.action_libraryFragment_to_wordsFragment,
+                        WordsFragment.createArgs(
+                            dictId = 0,
+                            dictName = requireContext().getString(R.string.all_words_list),
+                            dictIsTotal = true,
+                        )
+                    )
+                    true
+                }
+
                 R.id.wipeData -> {
                     viewModel.wipeAllLocalData()
                     true

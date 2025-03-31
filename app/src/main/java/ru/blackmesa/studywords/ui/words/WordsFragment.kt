@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -30,8 +31,13 @@ class WordsFragment : Fragment() {
 
         const val DICTIONARY_ID_ARG = "DICTIONARY_ID_ARG"
         const val DICTIONARY_NAME_ARG = "DICTIONARY_NAME_ARG"
-        fun createArgs(dictId: Int, dictName: String): Bundle =
-            bundleOf(DICTIONARY_ID_ARG to dictId, DICTIONARY_NAME_ARG to dictName)
+        const val DICTIONARY_IS_TOTAL_ARG = "DICTIONARY_IS_TOTAL_ARG"
+        fun createArgs(dictId: Int, dictName: String, dictIsTotal: Boolean = false): Bundle =
+            bundleOf(
+                DICTIONARY_ID_ARG to dictId,
+                DICTIONARY_NAME_ARG to dictName,
+                DICTIONARY_IS_TOTAL_ARG to dictIsTotal,
+            )
     }
 
     private var _binding: FragmentWordsBinding? = null
@@ -40,6 +46,7 @@ class WordsFragment : Fragment() {
         parametersOf(
             requireArguments().getInt(DICTIONARY_ID_ARG),
             requireArguments().getString(DICTIONARY_NAME_ARG),
+            requireArguments().getBoolean(DICTIONARY_IS_TOTAL_ARG),
         )
     }
     private val adapter = WordsRVAdapter {
@@ -52,6 +59,7 @@ class WordsFragment : Fragment() {
     private var clearConfirmDialog: MaterialAlertDialogBuilder? = null
     private var nothingStudyDialog: MaterialAlertDialogBuilder? = null
     private var searchTextWatcher: TextWatcher? = null
+    private val diffCallBack = WordsDiffCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +92,7 @@ class WordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.studyButton.isVisible = !viewModel.getDictIsTotal()
         binding.topAppBar.title = viewModel.getDictName()
         binding.wordsRecyclerView.adapter = adapter
         viewModel.observeContent().observe(viewLifecycleOwner) {
@@ -157,30 +166,11 @@ class WordsFragment : Fragment() {
     }
 
     private fun renderContent(words: List<WordData>) {
-        val diffUtil = object : DiffUtil.Callback() {
-            var oldList: List<WordData> = emptyList()
-            var newList: List<WordData> = emptyList()
-
-            override fun getOldListSize() = oldList.size
-            override fun getNewListSize() = newList.size
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return oldList[oldItemPosition] == newList[newItemPosition]
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return (oldList[oldItemPosition].wordid == newList[newItemPosition].wordid
-                        && oldList[oldItemPosition].status == oldList[oldItemPosition].status
-                        && oldList[oldItemPosition].repeatdate == oldList[oldItemPosition].repeatdate)
-            }
-        }
-
-        diffUtil.oldList = adapter.words
-        diffUtil.newList = words
-        val diffResult = DiffUtil.calculateDiff(diffUtil, false)
+        binding.topAppBar.title = "${viewModel.getDictName()} (${viewModel.getDictQuantity()})"
         adapter.words.clear()
         adapter.words.addAll(words)
-        diffResult.dispatchUpdatesTo(adapter)
+        diffCallBack.setNewList(words)
+        DiffUtil.calculateDiff(diffCallBack, false).dispatchUpdatesTo(adapter)
 
     }
 

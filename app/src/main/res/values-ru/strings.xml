@@ -42,4 +42,5 @@
     <string name="hours">" часов"</string>
     <string name="check_all_studied">Проверить изученные</string>
     <string name="search_title">поиск</string>
+    <string name="all_words_list">Список всех слов</string>
 </resources>

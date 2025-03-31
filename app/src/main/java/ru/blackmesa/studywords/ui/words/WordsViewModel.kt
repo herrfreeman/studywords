@@ -17,6 +17,7 @@ class WordsViewModel(
     private val libInteractor: LibraryInteractor,
     private val dictId: Int,
     private val dictName: String,
+    private val dictIsTotal: Boolean,
 ) : AndroidViewModel(application) {
 
     private val words = emptyList<WordData>().toMutableList()
@@ -26,18 +27,23 @@ class WordsViewModel(
     fun observeContent(): LiveData<List<WordData>> = contentLiveData
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 500L
     }
 
     init {
         viewModelScope.launch {
             words.clear()
-            words.addAll(libInteractor.getWords(dictId))
+            words.addAll(
+                if (dictIsTotal) libInteractor.getAllWords()
+                else libInteractor.getWords(dictId)
+            )
             contentLiveData.postValue(words)
         }
     }
 
     fun getDictName() = dictName
+
+    fun getDictQuantity() = words.count()
 
     override fun onCleared() {
         super.onCleared()
@@ -106,4 +112,6 @@ class WordsViewModel(
         searchJob?.cancel()
         postFilteredWords(queryText)
     }
+
+    fun getDictIsTotal() = dictIsTotal
 }

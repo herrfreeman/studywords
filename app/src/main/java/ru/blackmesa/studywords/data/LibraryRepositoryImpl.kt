@@ -114,6 +114,22 @@ class LibraryRepositoryImpl(
             }
         }
     }
+    override suspend fun getAllWords(): List<WordData> {
+        return withContext(Dispatchers.IO) {
+
+            database.libraryDao().getAllWords(settings.userId).map { draftWord ->
+
+                WordData(
+                    wordid = draftWord.wordid,
+                    word = draftWord.word,
+                    status = draftWord.status,
+                    repeatdate = draftWord.repeatdate,
+                    translate = listOf(draftWord.translate1, draftWord.translate2).joinToString()
+                    ,
+                )
+            }
+        }
+    }
 
     override suspend fun setProgress(progress: List<Progress>) {
         withContext(Dispatchers.IO) {

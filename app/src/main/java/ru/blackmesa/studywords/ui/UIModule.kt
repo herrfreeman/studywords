@@ -50,12 +50,13 @@ val uiModule = module {
         )
     }
 
-    viewModel {(dictId: Int, dictName: String) ->
+    viewModel {(dictId: Int, dictName: String, dictIsTotal: Boolean) ->
         WordsViewModel(
             application = get(),
             libInteractor = get(),
             dictId = dictId,
             dictName = dictName,
+            dictIsTotal = dictIsTotal,
         )
     }
 

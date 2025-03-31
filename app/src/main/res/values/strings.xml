@@ -56,5 +56,6 @@
     <string name="descr_status_button" translatable="false">Status button</string>
     <string name="check_all_studied">Check all studied</string>
     <string name="search_title">search</string>
+    <string name="all_words_list">All words list</string>
 
 </resources>
