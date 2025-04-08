@@ -49,7 +49,7 @@ class WordsViewModel(
         super.onCleared()
     }
 
-    fun clearProgress(words: List<WordData>) {
+    fun clearProgress() {
         words.onEach { it.status = 0 }
         viewModelScope.launch {
             libInteractor.setProgress(words.map {

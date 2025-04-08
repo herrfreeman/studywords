@@ -69,7 +69,7 @@ class WordsFragment : Fragment() {
             .setTitle(context.getString(R.string.clear_confirm))
             .setNegativeButton(context.getString(R.string.no_button)) { dialog, which ->
             }.setPositiveButton(context.getString(R.string.yes_button)) { dialog, which ->
-                viewModel.clearProgress(adapter.words)
+                viewModel.clearProgress()
             }
         nothingStudyDialog = MaterialAlertDialogBuilder(context)
             .setNeutralButton("ОК") { dialog, which -> }

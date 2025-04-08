@@ -5,12 +5,14 @@ import ru.blackmesa.studywords.data.models.WordData
 
 class WordsDiffCallback() : DiffUtil.Callback() {
 
-    private var oldList: List<WordData> = emptyList()
-    private var newList: List<WordData> = emptyList()
+    private val oldList = emptyList<WordData>().toMutableList()
+    private val newList = emptyList<WordData>().toMutableList()
 
     fun setNewList(newList: List<WordData>) {
-        this.oldList = this.newList
-        this.newList = newList
+        this.oldList.clear()
+        this.oldList.addAll(this.newList)
+        this.newList.clear()
+        this.newList.addAll(newList.map { it.copy() })
     }
 
     override fun getOldListSize() = oldList.size
@@ -23,8 +25,8 @@ class WordsDiffCallback() : DiffUtil.Callback() {
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return (oldList[oldItemPosition].wordid == newList[newItemPosition].wordid
-                && oldList[oldItemPosition].status == oldList[oldItemPosition].status
-                && oldList[oldItemPosition].repeatdate == oldList[oldItemPosition].repeatdate)
+                && oldList[oldItemPosition].status == newList[newItemPosition].status
+                && oldList[oldItemPosition].repeatdate == newList[newItemPosition].repeatdate)
     }
 }
 
