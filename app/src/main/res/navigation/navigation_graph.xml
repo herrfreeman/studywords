@@ -9,7 +9,14 @@
         android:id="@+id/authenticationFragment"
         android:name="ru.blackmesa.studywords.ui.authentication.AuthenticationFragment"
         android:label="fragment_authentication"
-        tools:layout="@layout/fragment_authentication" />
+        tools:layout="@layout/fragment_authentication" >
+        <action
+            android:id="@+id/action_authenticationFragment_to_createAccountFragment"
+            app:destination="@id/createAccountFragment" />
+        <action
+            android:id="@+id/action_authenticationFragment_to_restorePasswordFragment"
+            app:destination="@id/restorePasswordFragment" />
+    </fragment>
     <fragment
         android:id="@+id/libraryFragment"
         android:name="ru.blackmesa.studywords.ui.library.LibraryFragment"
@@ -44,4 +51,14 @@
         android:name="ru.blackmesa.studywords.ui.about.AboutFragment"
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/createAccountFragment"
+        android:name="ru.blackmesa.studywords.ui.authentication.CreateAccountFragment"
+        android:label="fragment_create_account"
+        tools:layout="@layout/fragment_create_account" />
+    <fragment
+        android:id="@+id/restorePasswordFragment"
+        android:name="ru.blackmesa.studywords.ui.authentication.RestorePasswordFragment"
+        android:label="fragment_restore_password"
+        tools:layout="@layout/fragment_restore_password" />
 </navigation>

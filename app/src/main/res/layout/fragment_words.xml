@@ -12,9 +12,9 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/upBar"
         style="@style/Widget.StudyWords.TopAppBar"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
@@ -22,10 +22,42 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:menu="@menu/word_list_menu"
-            app:navigationIcon="@drawable/ic_back"
-            />
+            app:navigationContentDescription="@string/descr_back_button"
+            app:navigationIcon="@drawable/ic_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchEditTextLayout"
+        style="@style/Widget.StudyWords.SearchWidget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="6dp"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toTopOf="@id/wordsRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upBar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEditText"
+            style="@style/Widget.StudyWords.SearchWidget.Input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_title"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:paddingVertical="10dp"
+            android:paddingStart="40dp"
+
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wordsRecyclerView"
@@ -38,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@id/studyButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/upBar"
+        app:layout_constraintTop_toBottomOf="@id/searchEditTextLayout"
         tools:itemCount="5"
         tools:listitem="@layout/words_item" />
 

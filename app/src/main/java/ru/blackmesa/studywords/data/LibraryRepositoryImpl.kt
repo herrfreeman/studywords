@@ -1,7 +1,6 @@
 package ru.blackmesa.studywords.data
 
 import android.content.Context
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.blackmesa.studywords.data.db.AppDatabase
@@ -14,6 +13,7 @@ import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
+import ru.blackmesa.studywords.data.network.ComplainRequest
 import ru.blackmesa.studywords.data.network.DictionaryRequest
 import ru.blackmesa.studywords.data.network.DictionaryResponse
 import ru.blackmesa.studywords.data.network.LibraryRequest
@@ -22,7 +22,6 @@ import ru.blackmesa.studywords.data.network.NetworkClient
 import ru.blackmesa.studywords.data.network.ProgressRequest
 import ru.blackmesa.studywords.data.network.ProgressResponse
 import ru.blackmesa.studywords.data.settings.SettingsRepository
-import kotlin.math.max
 import kotlin.math.min
 
 class LibraryRepositoryImpl(
@@ -116,6 +115,22 @@ class LibraryRepositoryImpl(
             }
         }
     }
+    override suspend fun getAllWords(): List<WordData> {
+        return withContext(Dispatchers.IO) {
+
+            database.libraryDao().getAllWords(settings.userId).map { draftWord ->
+
+                WordData(
+                    wordid = draftWord.wordid,
+                    word = draftWord.word,
+                    status = draftWord.status,
+                    repeatdate = draftWord.repeatdate,
+                    translate = listOf(draftWord.translate1, draftWord.translate2).joinToString()
+                    ,
+                )
+            }
+        }
+    }
 
     override suspend fun setProgress(progress: List<Progress>) {
         withContext(Dispatchers.IO) {
@@ -147,8 +162,11 @@ class LibraryRepositoryImpl(
         return if (dictionaries.isEmpty()) {
             return DataUpdateResult.Synchronized
         } else {
-            dictionaries.forEach {
-                if (it.isDefault) {
+            database.libraryDao().insertDict(dictionaries.map { it.toEntity(downloaded = false) })
+
+            dictionaries
+                .filter { it.isDefault }
+                .forEach {
                     val dictUpdateResult = updateDictionary(it.id)
                     when (dictUpdateResult) {
                         is DataUpdateResult.Error,
@@ -158,8 +176,7 @@ class LibraryRepositoryImpl(
                         else -> Unit
                     }
                 }
-            }
-            database.libraryDao().insertDict(dictionaries.map { it.toEntity() })
+
             DataUpdateResult.DataUpdated
         }
     }
@@ -177,33 +194,34 @@ class LibraryRepositoryImpl(
             when (response.resultCode) {
                 -1 -> DataUpdateResult.NoConnection
                 200 -> {
-                    database.libraryDao()
-                        .insertWords((response as DictionaryResponse).words.map { it.toEntity() })
-                    database.libraryDao()
-                        .insertTranslate((response as DictionaryResponse).translate.map {
-                            WordTranslateEntity(
-                                id = it.id,
-                                wordId = it.wordId,
-                                translate = it.translate,
-                            )
-                        })
-                    database.libraryDao()
-                        .insertPriorityTranslate((response as DictionaryResponse).translate.map {
-                            PriorityTranslateEntity(
-                                dictId = dictId,
-                                wordId = it.wordId,
-                                translateId = it.id,
-                                count = it.priority,
-                            )
-                        })
-                    database.libraryDao().insertWordInList(
-                        (response as DictionaryResponse).words.map {
-                            WordInDictEntity(
-                                wordId = it.id,
-                                dictId = dictId,
-                            )
-                        }
-                    )
+                    with(database.libraryDao()) {
+                        val dictionary = getDictById(dictId).first()
+                        updateDict(listOf(dictionary.copy(downloaded = true)))
+                        insertWords((response as DictionaryResponse).words.map { it.toEntity() })
+                        insertTranslate((response as DictionaryResponse).translate.map {
+                                WordTranslateEntity(
+                                    id = it.id,
+                                    wordId = it.wordId,
+                                    translate = it.translate,
+                                )
+                            })
+                        insertPriorityTranslate((response as DictionaryResponse).translate.map {
+                                PriorityTranslateEntity(
+                                    dictId = dictId,
+                                    wordId = it.wordId,
+                                    translateId = it.id,
+                                    count = it.priority,
+                                )
+                            })
+                        insertWordInList(
+                            (response as DictionaryResponse).words.map {
+                                WordInDictEntity(
+                                    wordId = it.id,
+                                    dictId = dictId,
+                                )
+                            }
+                        )
+                    }
                     DataUpdateResult.DataUpdated
                 }
 
@@ -252,6 +270,33 @@ class LibraryRepositoryImpl(
             }
 
             else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+        }
+    }
+
+    override suspend fun wordComplain(word: WordData): DataUpdateResult {
+        return withContext(Dispatchers.IO) {
+
+            val request = ComplainRequest(
+                userid = settings.userId,
+                userkey = settings.userKey,
+                wordid = word.wordid,
+                word = word.word,
+                translate1 = word.translate,
+                translate2 = "",
+            )
+
+            val response = networkClient.doRequest(request)
+            when (response.resultCode) {
+                -1 -> DataUpdateResult.NoConnection
+                200 -> DataUpdateResult.DataUpdated
+                401 -> {
+                    settings.userKey = ""
+                    settings.userId = 0
+                    DataUpdateResult.Error("Auth error from library")
+                }
+
+                else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+            }
         }
     }
 

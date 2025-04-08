@@ -12,8 +12,10 @@ interface LibraryInteractor {
     suspend fun updateDictionary(dictId: Int): DataUpdateResult
     suspend fun getDictionaries(): List<Dictionary>
     suspend fun getWords(dictId: Int): List<WordData>
+    suspend fun getAllWords(): List<WordData>
     suspend fun setProgress(progress: List<Progress>)
     suspend fun getDictionariesWithProgress(): List<DictData>
     suspend fun wipeAllLocalData()
+    suspend fun wordComplain(word: WordData): DataUpdateResult
 
 }

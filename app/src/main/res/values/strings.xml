@@ -20,17 +20,45 @@
     <string name="dont_update_button">Don\'t update</string>
     <string name="support_mail" translatable="false">support@blackmesa.ru</string>
     <string name="support_subject" translatable="false">Show Words support request</string>
-    <string name="share_link" translatable="false">https://play.google.com/apps/internaltest/4701673493456768365</string>
+    <string name="share_link" translatable="false">https://play.google.com/store/apps/details?id=ru.blackmesa.studywords</string>
     <string name="share_app_button">Share app</string>
     <string name="write_to_support_button">Write to support</string>
     <string name="about_app_menu">About app</string>
-    <string name="take_part_in_internal_testing">Take part in internal testing:</string>
     <string name="author_caption">Author:</string>
     <string name="author_name">Kirill Vasilev</string>
     <string name="clear_confirm">Are you sure you to clean progress of this dictionary?</string>
     <string name="yes_button">Yes</string>
     <string name="no_button">No</string>
     <string name="nothing_study">There is nothing to study</string>
-    <string name="next_repeat">Next repeat: </string>
+    <string name="next_repeat">"Next repeat in "</string>
+    <string name="days">" days"</string>
+    <string name="hours">" hours"</string>
+    <string name="account_creation_caption">New account creation</string>
+    <string name="login_caption">Enter your email as login:</string>
+    <string name="password_caption">Imagine new password:</string>
+    <string name="apply_new_password">Save new password</string>
+    <string name="welcome_caption">Welcome to Show Words!</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
+    <string name="privacy_policy_link">https://herrfreeman.pythonanywhere.com/privacypolicy_en</string>
+    <string name="restore_password_caption">Restore password</string>
+    <string name="app_link_caption">Google Play:</string>
+    <string name="restore_top_caption">Restore</string>
+    <string name="create_top_caption">Create</string>
+    <string name="about_top_caption">About</string>
+    <string name="manual_link">https://herrfreeman.pythonanywhere.com/manual_en</string>
+    <string name="manual_caption"><u>How to study</u></string>
+    <string name="create_button">Create</string>
+    <string name="descr_download_icon" translatable="false">Dictionary download icon</string>
+    <string name="descr_done_icon" translatable="false">Dictionary done icon</string>
+    <string name="descr_hiding_layout" translatable="false">Hiding layout</string>
+    <string name="descr_library_list" translatable="false">Library list</string>
+    <string name="descr_back_button" translatable="false">Back button</string>
+    <string name="descr_status_button" translatable="false">Status button</string>
+    <string name="check_all_studied">Check all studied</string>
+    <string name="search_title">search</string>
+    <string name="all_words_list">All words list</string>
+    <string name="wrong_word_or_translate">Wrong word or translate</string>
+    <string name="complain_success_message">Thank you for feedback</string>
+    <string name="complain_error_message">An unexpected error occurred while complain</string>
 
 </resources>

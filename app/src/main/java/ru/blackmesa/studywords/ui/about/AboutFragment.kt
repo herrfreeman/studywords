@@ -43,7 +43,6 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -66,6 +65,22 @@ class AboutFragment : Fragment() {
             emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.support_mail)))
             emailIntent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.support_subject))
             context.startActivity(emailIntent)
+        }
+
+        binding.manualLink.setOnClickListener {
+            val openLinkIntent = Intent(Intent.ACTION_VIEW)
+            openLinkIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            openLinkIntent.data =
+                Uri.parse(requireActivity().getString(R.string.manual_link))
+            requireContext().startActivity(openLinkIntent)
+        }
+
+        binding.policyLink.setOnClickListener {
+            val openLinkIntent = Intent(Intent.ACTION_VIEW)
+            openLinkIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            openLinkIntent.data =
+                Uri.parse(requireActivity().getString(R.string.privacy_policy_link))
+            requireContext().startActivity(openLinkIntent)
         }
 
 

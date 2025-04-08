@@ -29,9 +29,10 @@ fun DictEntity.toDictionary() = Dictionary(
     parentId = parentId,
     isFolder = isFolder,
     isDefault = isDefault,
+    downloaded = downloaded,
 )
 
-fun DictionaryDto.toEntity() = DictEntity(
+fun DictionaryDto.toEntity(downloaded: Boolean = false) = DictEntity(
     id = id,
     name = name,
     orderField = orderField,
@@ -39,9 +40,10 @@ fun DictionaryDto.toEntity() = DictEntity(
     parentId = parentId,
     isFolder = isFolder,
     isDefault = isDefault,
+    downloaded = downloaded,
 )
 
-fun DictionaryDto.toDictionary() = Dictionary(
+fun DictionaryDto.toDictionary(downloaded: Boolean = false) = Dictionary(
     id = id,
     name = name,
     orderField = orderField,
@@ -49,6 +51,7 @@ fun DictionaryDto.toDictionary() = Dictionary(
     parentId = parentId,
     isFolder = isFolder,
     isDefault = isDefault,
+    downloaded = downloaded,
 )
 
 fun Dictionary.toDto() = DictionaryDto(
@@ -69,6 +72,7 @@ fun Dictionary.toEntity() = DictEntity(
     parentId = parentId,
     isFolder = isFolder,
     isDefault = isDefault,
+    downloaded = downloaded,
 )
 
 fun WordDto.toEntity() = WordEntity(

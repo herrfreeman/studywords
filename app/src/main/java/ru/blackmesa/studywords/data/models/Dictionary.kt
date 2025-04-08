@@ -1,7 +1,5 @@
 package ru.blackmesa.studywords.data.models
 
-import androidx.room.ColumnInfo
-
 data class Dictionary(
     val id: Int,
     val name: String,
@@ -10,4 +8,5 @@ data class Dictionary(
     val parentId: Int,
     val isFolder: Boolean,
     val isDefault: Boolean,
+    val downloaded: Boolean,
 )

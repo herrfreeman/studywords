@@ -6,8 +6,14 @@
 
         <item name="colorPrimary">#006494</item>
         <item name="colorOnPrimary">#F7F7F2</item>
-<!--        <item name="colorSecondary">#E1F7F5</item>-->
-<!--        <item name="colorOnSecondary">#1E0342</item>-->
+<!--        <item name="colorSecondary">#85D8FF</item>-->
+<!--        <item name="colorOnSecondary">#1A181B</item>-->
+
+
+        <item name="search_background">#F7F7F2</item>
+        <item name="search_hint_color">#AEAFB4</item>
+<!--        <item name="hint_color">@color/yp_gray</item>-->
+        <item name="search_text_color">#1A181B</item>
 
 <!--        <item name="actionOverflowButtonStyle">@style/CustomButtonOverflow</item>-->
         <!--        #0E46A3 9AC8CD-->

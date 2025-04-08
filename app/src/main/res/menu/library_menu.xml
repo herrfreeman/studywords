@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/allWordsDictionary"
+        android:title="@string/all_words_list"
+        android:contentDescription="content_description_more"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/wipeData"
         android:title="@string/wipe_all_data"
         android:contentDescription="content_description_more"

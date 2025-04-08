@@ -1,8 +1,6 @@
 package ru.blackmesa.studywords.ui.authentication
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -18,21 +16,21 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.AuthState
-import ru.blackmesa.studywords.databinding.FragmentAuthenticationBinding
+import ru.blackmesa.studywords.databinding.FragmentCreateAccountBinding
 
-class AuthenticationFragment : Fragment() {
+class CreateAccountFragment : Fragment() {
 
     companion object {
-        fun newInstance() = AuthenticationFragment()
+        fun newInstance() = CreateAccountFragment()
         const val ERROR_MESSAGE = "ERROR_MESSAGE"
 
         fun createArgs(errorMessage: String): Bundle =
             bundleOf(ERROR_MESSAGE to errorMessage)
     }
 
-    private var _binding: FragmentAuthenticationBinding? = null
-    private val binding: FragmentAuthenticationBinding get() = _binding!!
-    private val viewModel: AuthenticationViewModel by viewModel()
+    private var _binding: FragmentCreateAccountBinding? = null
+    private val binding: FragmentCreateAccountBinding get() = _binding!!
+    private val viewModel: CreateAccountViewModel by viewModel()
     private var textWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +42,7 @@ class AuthenticationFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
+        _binding = FragmentCreateAccountBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -53,30 +51,22 @@ class AuthenticationFragment : Fragment() {
 
         //binding.errorMessage.text = arguments?.getString(ERROR_MESSAGE).orEmpty()
 
-        binding.loginButton.setOnClickListener {
+        binding.createButton.setOnClickListener {
             hideKeyboard(binding.userName)
             hideKeyboard(binding.password)
 
-            viewModel.login(
+            viewModel.createAccount(
                 binding.userName.text.toString(),
                 binding.password.text.toString()
             )
         }
 
-        binding.createButton.setOnClickListener {
-            findNavController().navigate(R.id.action_authenticationFragment_to_createAccountFragment)
+        binding.confirmButton.setOnClickListener {
+            viewModel.confirm(binding.confirmCode.text.toString())
         }
 
-        binding.restoreButton.setOnClickListener {
-            findNavController().navigate(R.id.action_authenticationFragment_to_restorePasswordFragment)
-        }
-
-        binding.policyLink.setOnClickListener {
-            val openLinkIntent = Intent(Intent.ACTION_VIEW)
-            openLinkIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            openLinkIntent.data =
-                Uri.parse(requireActivity().getString(R.string.privacy_policy_link))
-            requireContext().startActivity(openLinkIntent)
+        binding.topAppBar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
 
         viewModel.observeAuthState().observe(viewLifecycleOwner) { renderState(it) }
@@ -86,7 +76,6 @@ class AuthenticationFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(p0: Editable?) {
                 setButtonsEnable()
-
             }
         }
         binding.userName.addTextChangedListener(textWatcher)
@@ -94,8 +83,7 @@ class AuthenticationFragment : Fragment() {
     }
 
     private fun setButtonsEnable() {
-        binding.loginButton.isEnabled =
-            !binding.userName.text.isNullOrEmpty() && !binding.password.text.isNullOrEmpty()
+        binding.createButton.isEnabled = !binding.userName.text.isNullOrEmpty() && !binding.password.text.isNullOrEmpty()
     }
 
     private fun hideKeyboard(view: View) {
@@ -113,27 +101,57 @@ class AuthenticationFragment : Fragment() {
         when (state) {
             is AuthState.Default -> {
                 binding.progressBar.isVisible = false
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(true)
             }
 
             is AuthState.DefaultLoading -> {
                 binding.progressBar.isVisible = true
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(false)
             }
 
             is AuthState.ConfirmationRequest -> {
-                throw IllegalStateException("CreateConfirmation on auth frame")
+                binding.progressBar.isVisible = false
+                binding.confirmationLayout.isVisible = true
+                makeMainViewEnabled(false)
+                makeConfirmViewEnabled(true)
+                binding.confirmErrorMessage.text =
+                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
+                binding.confirmCode.setText(state.confirmCode)
             }
 
             is AuthState.ConfirmationLoading -> {
-                throw IllegalStateException("CreateConfirmationLoading on auth frame")
+                binding.progressBar.isVisible = true
+                binding.confirmationLayout.isVisible = true
+                makeMainViewEnabled(false)
+                makeConfirmViewEnabled(false)
+                binding.confirmErrorMessage.text =
+                    Html.fromHtml(state.confirmErrorMessage, Html.FROM_HTML_MODE_LEGACY)
+                binding.confirmCode.setText(state.confirmCode)
             }
 
             is AuthState.Success -> {
                 binding.progressBar.isVisible = false
-                findNavController().popBackStack()
+                binding.confirmationLayout.isVisible = false
+                makeMainViewEnabled(false)
+                findNavController().popBackStack(R.id.libraryFragment, false)
             }
 
         }
         setButtonsEnable()
+    }
+
+    private fun makeMainViewEnabled(isEnabled: Boolean) {
+        binding.mainLayout.isEnabled = isEnabled
+        binding.userName.isEnabled = isEnabled
+        binding.password.isEnabled = isEnabled
+    }
+
+    private fun makeConfirmViewEnabled(isEnabled: Boolean) {
+        binding.confirmationLayout.isEnabled = isEnabled
+        binding.confirmCode.isEnabled = isEnabled
+        binding.confirmButton.isEnabled = isEnabled
     }
 
     override fun onDestroyView() {

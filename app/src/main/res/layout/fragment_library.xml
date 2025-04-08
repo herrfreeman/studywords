@@ -22,9 +22,10 @@
             style="@style/Widget.StudyWords.TopAppBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:title="test"
             app:menu="@menu/library_menu"
-            app:navigationIcon="@drawable/ic_updateholder" />
+            app:navigationContentDescription="@string/descr_status_button"
+            app:navigationIcon="@drawable/ic_updateholder"
+            tools:title="test" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -34,6 +35,7 @@
         style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:contentDescription="@string/descr_library_list"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -49,6 +51,7 @@
         android:layout_height="match_parent"
         android:background="#33000000"
         android:clickable="true"
+        android:contentDescription="@string/descr_hiding_layout"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,10 +109,10 @@
         <TextView
             android:id="@+id/error_message"
             style="@style/Widget.StudyWords.Light"
-            android:layout_height="0dp"
             android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="20dp"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textStyle="italic"
             app:layout_constraintBottom_toTopOf="@id/dont_update"
             app:layout_constraintEnd_toEndOf="parent"
@@ -120,12 +123,12 @@
         <Button
             android:id="@+id/repat_update"
             style="@style/Widget.StudyWords.Button"
-            android:textSize="12sp"
-            android:layout_height="0dp"
             android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="50dp"
             android:layout_marginBottom="20dp"
             android:text="@string/repeat_button"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/dont_update"
             app:layout_constraintStart_toStartOf="parent"
@@ -134,13 +137,13 @@
         <Button
             android:id="@+id/dont_update"
             style="@style/Widget.StudyWords.Button"
-            android:textSize="12sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="20dp"
             android:text="@string/dont_update_button"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/repat_update" />

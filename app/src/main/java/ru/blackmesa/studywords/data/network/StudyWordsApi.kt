@@ -43,4 +43,9 @@ interface StudyWordsApi {
         @Body request: ProgressRequest,
     ): ProgressResponse
 
+    @POST("/complain")
+    @Headers("Content-Type: application/json")
+    suspend fun complain(
+        @Body request: ComplainRequest,
+    ): ComplainResponse
 }

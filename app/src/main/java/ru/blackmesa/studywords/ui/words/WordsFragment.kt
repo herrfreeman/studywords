@@ -2,14 +2,18 @@ package ru.blackmesa.studywords.ui.words
 
 
 import android.os.Bundle
-import android.text.format.DateFormat
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -17,7 +21,8 @@ import ru.blackmesa.studywords.R
 import ru.blackmesa.studywords.data.models.WordData
 import ru.blackmesa.studywords.databinding.FragmentWordsBinding
 import ru.blackmesa.studywords.ui.study.StudyFragment
-import java.util.Date
+import ru.blackmesa.studywords.ui.study.StudyMode
+
 
 class WordsFragment : Fragment() {
 
@@ -26,8 +31,13 @@ class WordsFragment : Fragment() {
 
         const val DICTIONARY_ID_ARG = "DICTIONARY_ID_ARG"
         const val DICTIONARY_NAME_ARG = "DICTIONARY_NAME_ARG"
-        fun createArgs(dictId: Int, dictName: String): Bundle =
-            bundleOf(DICTIONARY_ID_ARG to dictId, DICTIONARY_NAME_ARG to dictName)
+        const val DICTIONARY_IS_TOTAL_ARG = "DICTIONARY_IS_TOTAL_ARG"
+        fun createArgs(dictId: Int, dictName: String, dictIsTotal: Boolean = false): Bundle =
+            bundleOf(
+                DICTIONARY_ID_ARG to dictId,
+                DICTIONARY_NAME_ARG to dictName,
+                DICTIONARY_IS_TOTAL_ARG to dictIsTotal,
+            )
     }
 
     private var _binding: FragmentWordsBinding? = null
@@ -36,6 +46,7 @@ class WordsFragment : Fragment() {
         parametersOf(
             requireArguments().getInt(DICTIONARY_ID_ARG),
             requireArguments().getString(DICTIONARY_NAME_ARG),
+            requireArguments().getBoolean(DICTIONARY_IS_TOTAL_ARG),
         )
     }
     private val adapter = WordsRVAdapter {
@@ -45,14 +56,16 @@ class WordsFragment : Fragment() {
             Toast.LENGTH_SHORT
         ).show()
     }
-    private var confirmDialog: MaterialAlertDialogBuilder? = null
+    private var clearConfirmDialog: MaterialAlertDialogBuilder? = null
     private var nothingStudyDialog: MaterialAlertDialogBuilder? = null
+    private var searchTextWatcher: TextWatcher? = null
+    private val diffCallBack = WordsDiffCallback()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val context = requireContext()
-        confirmDialog = MaterialAlertDialogBuilder(context)
+        clearConfirmDialog = MaterialAlertDialogBuilder(context)
             .setTitle(context.getString(R.string.clear_confirm))
             .setNegativeButton(context.getString(R.string.no_button)) { dialog, which ->
             }.setPositiveButton(context.getString(R.string.yes_button)) { dialog, which ->
@@ -79,6 +92,7 @@ class WordsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.studyButton.isVisible = !viewModel.getDictIsTotal()
         binding.topAppBar.title = viewModel.getDictName()
         binding.wordsRecyclerView.adapter = adapter
         viewModel.observeContent().observe(viewLifecycleOwner) {
@@ -91,48 +105,73 @@ class WordsFragment : Fragment() {
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.clearProgress -> {
-                    confirmDialog?.show()
+                R.id.checkAllDone -> {
+                    findNavController().navigate(
+                        R.id.action_wordsFragment_to_studyFragment,
+                        StudyFragment.createArgs(viewModel.getDoneWords(), StudyMode.CHECK_ONCE)
+                    )
                     true
                 }
-
+                R.id.clearProgress -> {
+                    clearConfirmDialog?.show()
+                    true
+                }
                 else -> false
             }
         }
 
         binding.studyButton.setOnClickListener {
             val currentTimestamp = System.currentTimeMillis() / 1000
-            val wordsToStudy = adapter.words
-                .filter { it.status < 12 && (it.repeatdate == 0L || it.repeatdate <= currentTimestamp) }
-                .shuffled()
-                .sortedBy { if (it.repeatdate > 0) 1 else 2 }
-                .take(10)
+            val wordsToStudy = viewModel.getWordsToStudy()
+            val secInHour = 60 * 60
+            val secInDay = secInHour * 24
 
             if (wordsToStudy.isEmpty()) {
                 val context = requireContext()
                 var message = context.getString(R.string.nothing_study)
-                val futureRepeat = adapter.words.filter { it.status < 12 }
-                if (futureRepeat.isNotEmpty()) {
-                    val nextDate = Date(futureRepeat.minBy { it.repeatdate }.repeatdate*1000)
-                    message += "\n" + context.getString(R.string.next_repeat) + DateFormat.format("dd.MM.yy HH:mm", nextDate)
+                viewModel.getNextRepeatTimestamp()?.let { nextRepeat ->
+                    message += "\n" + context.getString(R.string.next_repeat) + if (nextRepeat - currentTimestamp > secInDay) {
+                        ((nextRepeat - currentTimestamp) / secInDay).toInt()
+                            .toString() + context.getString(R.string.days)
+                    } else {
+                        ((nextRepeat - currentTimestamp) / secInHour).toInt()
+                            .toString() + context.getString(R.string.hours)
+                    }
                 }
                 nothingStudyDialog?.setMessage(message)?.show()
             } else {
                 findNavController().navigate(
                     R.id.action_wordsFragment_to_studyFragment,
-                    StudyFragment.createArgs(wordsToStudy)
+                    StudyFragment.createArgs(wordsToStudy, StudyMode.COMMON)
                 )
             }
         }
 
+        searchTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                viewModel.search(p0.toString())
+            }
+           override fun afterTextChanged(p0: Editable?) {}
+        }
+        binding.searchEditText.addTextChangedListener(searchTextWatcher)
+
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                viewModel.searchImmediately(binding.searchEditText.text.toString())
+                binding.searchEditText.clearFocus()
+                true
+            } else false
+        }
     }
 
     private fun renderContent(words: List<WordData>) {
-        if (adapter.words != words) {
-            adapter.words.clear()
-            adapter.words.addAll(words)
-        }
-        adapter.notifyDataSetChanged()
+        binding.topAppBar.title = "${viewModel.getDictName()} (${viewModel.getDictQuantity()})"
+        adapter.words.clear()
+        adapter.words.addAll(words)
+        diffCallBack.setNewList(words)
+        DiffUtil.calculateDiff(diffCallBack, false).dispatchUpdatesTo(adapter)
+
     }
 
 

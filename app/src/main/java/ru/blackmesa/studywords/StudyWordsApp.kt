@@ -10,7 +10,7 @@ import ru.blackmesa.studywords.data.dataModule
 import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.SettingsInteractor
 import ru.blackmesa.studywords.domain.domainModule
-import ru.blackmesa.studywords.ui.uiModule2
+import ru.blackmesa.studywords.ui.uiModule
 
 class StudyWordsApp : Application() {
 
@@ -30,7 +30,7 @@ class StudyWordsApp : Application() {
             modules(
                 dataModule,
                 domainModule,
-                uiModule2,
+                uiModule,
             )
         }
 
