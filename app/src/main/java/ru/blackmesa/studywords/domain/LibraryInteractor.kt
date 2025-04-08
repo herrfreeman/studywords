@@ -16,5 +16,6 @@ interface LibraryInteractor {
     suspend fun setProgress(progress: List<Progress>)
     suspend fun getDictionariesWithProgress(): List<DictData>
     suspend fun wipeAllLocalData()
+    suspend fun wordComplain(word: WordData): DataUpdateResult
 
 }

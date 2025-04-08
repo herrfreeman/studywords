@@ -1,128 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.StudyWords.Light"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.study.StudyFragment">
+    android:layout_height="match_parent">
 
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/upBar"
-        style="@style/Widget.StudyWords.TopAppBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/Widget.StudyWords.Light"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        tools:context=".ui.study.StudyFragment">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/upBar"
             style="@style/Widget.StudyWords.TopAppBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:navigationContentDescription="@string/descr_back_button"
-            app:navigationIcon="@drawable/ic_back"
-            app:titleCentered="true"
-            tools:title="10" />
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                style="@style/Widget.StudyWords.TopAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:menu="@menu/word_study_menu"
+                app:navigationContentDescription="@string/descr_back_button"
+                app:navigationIcon="@drawable/ic_back"
+                app:titleCentered="true"
+                tools:title="10" />
 
-    <TextView
-        android:id="@+id/word"
-        style="@style/Widget.StudyWords.Light"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="20dp"
-        android:gravity="center_horizontal|bottom"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@id/wordSeparator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/upBar"
-        tools:text="Word" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/word"
+            style="@style/Widget.StudyWords.Light"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            android:gravity="center_horizontal|bottom"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@id/wordSeparator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upBar"
+            tools:text="Word" />
+
+        <View
+            android:id="@+id/wordSeparator"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/dark_blue"
+            app:layout_constraintBottom_toTopOf="@id/buttonBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/upBar" />
+
+        <TextView
+            android:id="@+id/answer"
+            style="@style/Widget.StudyWords.Light"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="20dp"
+            android:gravity="center_horizontal|top"
+            android:textSize="30dp"
+            app:layout_constraintBottom_toTopOf="@id/buttonBox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wordSeparator"
+            tools:text="Answer" />
+
+        <View
+            android:id="@+id/buttonBox"
+            style="@style/Widget.StudyWords.Light"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/okButton"
+            style="@style/Widget.StudyWords.Button.Study"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginBottom="40dp"
+            android:padding="30dp"
+            android:text="@string/study_ok"
+            android:textSize="26sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/buttonBox"
+            app:layout_constraintEnd_toEndOf="@id/buttonBox"
+            app:layout_constraintStart_toStartOf="@id/buttonBox"
+            app:layout_constraintTop_toTopOf="@id/buttonBox" />
+
+        <Button
+            android:id="@+id/yesButton"
+            style="@style/Widget.StudyWords.Button.Study"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="40dp"
+            android:padding="30dp"
+            android:text="@string/study_yes"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@id/buttonBox"
+            app:layout_constraintEnd_toStartOf="@id/noButton"
+            app:layout_constraintStart_toStartOf="@id/buttonBox"
+            app:layout_constraintTop_toTopOf="@id/buttonBox" />
+
+        <Button
+            android:id="@+id/noButton"
+            style="@style/Widget.StudyWords.Button.Study"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="40dp"
+            android:padding="30dp"
+            android:text="@string/study_no"
+            android:textSize="26sp"
+            app:layout_constraintBottom_toBottomOf="@id/buttonBox"
+            app:layout_constraintEnd_toEndOf="@id/buttonBox"
+            app:layout_constraintStart_toEndOf="@id/yesButton"
+            app:layout_constraintTop_toTopOf="@id/buttonBox" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
-        android:id="@+id/wordSeparator"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="20dp"
-        android:background="@color/dark_blue"
-        app:layout_constraintBottom_toTopOf="@id/buttonBox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/upBar" />
-
-    <TextView
-        android:id="@+id/answer"
-        style="@style/Widget.StudyWords.Light"
+        android:id="@+id/hide_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="20dp"
-        android:gravity="center_horizontal|top"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@id/buttonBox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wordSeparator"
-        tools:text="Answer" />
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:clickable="true"
+        android:contentDescription="@string/descr_hiding_layout"
+        android:visibility="gone" />
 
-    <View
-        android:id="@+id/buttonBox"
+    <ProgressBar
+        android:id="@+id/progress_bar"
         style="@style/Widget.StudyWords.Light"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_margin="0dp"
+        android:layout_marginTop="150dp"
+        android:background="@color/transparent"
+        android:visibility="gone" />
 
-    <Button
-        android:id="@+id/okButton"
-        style="@style/Widget.StudyWords.Button.Study"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginBottom="40dp"
-        android:padding="30dp"
-        android:text="@string/study_ok"
-        android:textSize="26sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/buttonBox"
-        app:layout_constraintEnd_toEndOf="@id/buttonBox"
-        app:layout_constraintStart_toStartOf="@id/buttonBox"
-        app:layout_constraintTop_toTopOf="@id/buttonBox" />
-
-    <Button
-        android:id="@+id/yesButton"
-        style="@style/Widget.StudyWords.Button.Study"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="40dp"
-        android:padding="30dp"
-        android:text="@string/study_yes"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toBottomOf="@id/buttonBox"
-        app:layout_constraintEnd_toStartOf="@id/noButton"
-        app:layout_constraintStart_toStartOf="@id/buttonBox"
-        app:layout_constraintTop_toTopOf="@id/buttonBox" />
-
-    <Button
-        android:id="@+id/noButton"
-        style="@style/Widget.StudyWords.Button.Study"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
-        android:padding="30dp"
-        android:text="@string/study_no"
-        android:textSize="26sp"
-        app:layout_constraintBottom_toBottomOf="@id/buttonBox"
-        app:layout_constraintEnd_toEndOf="@id/buttonBox"
-        app:layout_constraintStart_toEndOf="@id/yesButton"
-        app:layout_constraintTop_toTopOf="@id/buttonBox" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

@@ -43,4 +43,7 @@
     <string name="check_all_studied">Проверить изученные</string>
     <string name="search_title">поиск</string>
     <string name="all_words_list">Список всех слов</string>
+    <string name="wrong_word_or_translate">Ошибка в слове или переводе</string>
+    <string name="complain_error_message">Возникла непредвиденная ошибка</string>
+    <string name="complain_success_message">Спасибо за обратную связь</string>
 </resources>

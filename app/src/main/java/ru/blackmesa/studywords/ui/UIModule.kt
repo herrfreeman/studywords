@@ -66,6 +66,7 @@ val uiModule = module {
             libInteractor = get(),
             wordList = wordList,
             studyMode = studyMode,
+            analitics = get(),
         )
     }
 

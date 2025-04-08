@@ -5,9 +5,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import ru.blackmesa.studywords.data.models.DataUpdateResult
 import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
+import ru.blackmesa.studywords.domain.AnaliticsInteractor
 import ru.blackmesa.studywords.domain.LibraryInteractor
 
 class StudyViewModel(
@@ -15,17 +20,21 @@ class StudyViewModel(
     private val libInteractor: LibraryInteractor,
     private val wordList: List<WordData>,
     private val studyMode: Int,
+    private val analitics: AnaliticsInteractor,
 ) : AndroidViewModel(application) {
 
     private val stateLiveData = MutableLiveData<StudyState>()
     fun observeState(): LiveData<StudyState> = stateLiveData
+    private var sendComplainJob: Job? = null
 
     private lateinit var currentWord: WordData
     private val currentQueue: MutableList<WordData> = mutableListOf()
+    private var currentStage = 0
 
     companion object {
-        val UPDATE_DELAY = 1000L
+        val COMPLAIN_DELAY = 500L
         val STRIGHT_STAGE = listOf(0, 1, 4, 5, 8, 9)
+
     }
 
     init {
@@ -37,7 +46,8 @@ class StudyViewModel(
     }
 
     fun showAnswer() {
-        stateLiveData.postValue(StudyState.Answer(currentWord))
+        currentStage = StudyState.STAGE_ANSWER
+        stateLiveData.postValue(StudyState.Study(currentWord, currentStage, getWordsLeft()))
     }
 
     fun gotResult(isCorrect: Boolean) {
@@ -54,8 +64,6 @@ class StudyViewModel(
         } else {
             currentWord.repeatdate = 0L
             currentWord.status = 0
-            //currentWord.status = decreaseStatus(currentWord.status)
-            //currentWord.status = decreaseStatus(currentWord.status)
         }
 
         nextQuestion()
@@ -65,13 +73,6 @@ class StudyViewModel(
     fun setFullyStudied() {
         currentWord.status = 12
         nextQuestion()
-    }
-
-    private fun decreaseStatus(status: Int): Int {
-        return when {
-            status in intArrayOf(0, 4, 8) -> status
-            else -> status - 1
-        }
     }
 
     fun nextQuestion() {
@@ -97,24 +98,46 @@ class StudyViewModel(
             }
         } else {
             currentWord = currentQueue.removeLast()
-            stateLiveData.postValue(
-                StudyState.Question(
-                    currentWord,
-                    if (studyMode == StudyMode.COMMON) {
-                        wordList.filter { it.repeatdate == 0L && it.status < 12 }.size
-                    } else {
-                        currentQueue.size + 1
-                    }
-                )
-            )
+            currentStage = StudyState.STAGE_QUESTION
+            stateLiveData.postValue(StudyState.Study(currentWord, currentStage, getWordsLeft()))
         }
 
+    }
+
+    private fun getWordsLeft(): Int {
+        return if (studyMode == StudyMode.COMMON) {
+            wordList.filter { it.repeatdate == 0L && it.status < 12 }.size
+        } else {
+            currentQueue.size + 1
+        }
     }
 
     fun wordInStraitStage(word: WordData): Boolean = if (studyMode == StudyMode.COMMON) {
         word.status in STRIGHT_STAGE
     } else {
         true
+    }
+
+    fun complain() {
+        stateLiveData.postValue(StudyState.Loading(currentWord, currentStage, getWordsLeft()))
+
+
+        sendComplainJob?.cancel()
+        sendComplainJob = viewModelScope.launch {
+            delay(COMPLAIN_DELAY)
+            analitics.logEvent(FirebaseAnalytics.Event.POST_SCORE, "Complain: ${currentWord.word}")
+            val complainResult = libInteractor.wordComplain(currentWord)
+            when (complainResult) {
+                DataUpdateResult.DataUpdated -> stateLiveData.postValue(
+                    StudyState.ComplainSuccess(currentWord, currentStage, getWordsLeft())
+                )
+                is DataUpdateResult.Error, is DataUpdateResult.NoConnection -> stateLiveData.postValue(
+                    StudyState.ComplainError(currentWord, currentStage, getWordsLeft())
+                )
+                else -> TODO()
+
+            }
+        }
     }
 
 }

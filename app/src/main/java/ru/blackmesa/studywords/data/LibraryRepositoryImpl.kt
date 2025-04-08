@@ -13,6 +13,7 @@ import ru.blackmesa.studywords.data.models.DictData
 import ru.blackmesa.studywords.data.models.Dictionary
 import ru.blackmesa.studywords.data.models.Progress
 import ru.blackmesa.studywords.data.models.WordData
+import ru.blackmesa.studywords.data.network.ComplainRequest
 import ru.blackmesa.studywords.data.network.DictionaryRequest
 import ru.blackmesa.studywords.data.network.DictionaryResponse
 import ru.blackmesa.studywords.data.network.LibraryRequest
@@ -269,6 +270,33 @@ class LibraryRepositoryImpl(
             }
 
             else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+        }
+    }
+
+    override suspend fun wordComplain(word: WordData): DataUpdateResult {
+        return withContext(Dispatchers.IO) {
+
+            val request = ComplainRequest(
+                userid = settings.userId,
+                userkey = settings.userKey,
+                wordid = word.wordid,
+                word = word.word,
+                translate1 = word.translate,
+                translate2 = "",
+            )
+
+            val response = networkClient.doRequest(request)
+            when (response.resultCode) {
+                -1 -> DataUpdateResult.NoConnection
+                200 -> DataUpdateResult.DataUpdated
+                401 -> {
+                    settings.userKey = ""
+                    settings.userId = 0
+                    DataUpdateResult.Error("Auth error from library")
+                }
+
+                else -> DataUpdateResult.Error("Update error: ${response.resultCode}")
+            }
         }
     }
 

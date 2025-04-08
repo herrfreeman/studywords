@@ -119,6 +119,19 @@ class RetrofitNetworkClient(
                     }
                 }
 
+                is ComplainRequest -> {
+                    try {
+                        webService.complain(dto).apply { resultCode = 200 }
+                    } catch (e: HttpException) {
+                        Response().apply {
+                            resultCode = e.code()
+                            errorMessage = e.response()?.errorBody()?.string() ?: ""
+                        }
+                    } catch (e: Throwable) {
+                        Response().apply { resultCode = 500 }
+                    }
+                }
+
                 else -> Response().apply { resultCode = 400 }
             }
         }
